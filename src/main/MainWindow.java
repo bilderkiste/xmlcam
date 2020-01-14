@@ -279,7 +279,7 @@ public class MainWindow extends JFrame {
 			this.currentXMLFile = file;
 			this.setTitle(getCurrentTitle());
 		} catch (IOException e) {
-			Main.log.log(Level.SEVERE, "Error reading file: " + e);
+			Main.log.log(Level.WARNING, "Error reading file: " + e);
 		}
 		// until here
 		

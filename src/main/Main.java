@@ -37,7 +37,7 @@ public class Main {
 	
 	public static final Logger log = Logger.getLogger("Logger");
 	
-	public static final String version = new String("0.1.60");
+	public static final String version = new String("0.1.61");
 
 	public static void main (String[] args) {
 		try {
@@ -49,6 +49,9 @@ public class Main {
 		} catch (IOException e) {
 			log.log(Level.WARNING, "Error writing log file: " + e);
 		}
+		
+		Main.log.log(Level.INFO, "Welcome to xmlCAM build " + version);
+		
 		Program program = new Program();
 		Settings.readSettings();
 		new MainWindow(program);

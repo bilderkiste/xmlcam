@@ -45,7 +45,7 @@ import view.XMLView;
 
 /**
  * This class is the heart piece of xmlCam. Here all G-Code will generated from XML.
- * @author christian
+ * @author Christian Kirsch
  *
  */
 public class Generator {
@@ -381,6 +381,7 @@ public class Generator {
 	private void circle(Node node) throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
 		Tuple center = null, radius = null, zLevel = null;
+		int resolution = 2; // mm
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
@@ -402,13 +403,21 @@ public class Generator {
 		float yCenter = center.getValue(1).floatValue();
 		float radiusv = radius.getValue(0).floatValue();;
 		
-		newX = new BigDecimal(xCenter + radiusv * Math.sin(0), new MathContext(4));
-		newY = new BigDecimal(yCenter + radiusv * Math.cos(0), new MathContext(4));
+		newX = new BigDecimal(xCenter + radiusv * Math.sin(phi), new MathContext(4));
+		newY = new BigDecimal(yCenter + radiusv * Math.cos(phi), new MathContext(4));
 		newZ = zLevel.getValue(0);
 		
 		if(stepZ.doubleValue() <= 0) {
 			throw new IllegalArgumentException("The Z step must be greater than 0");
 		}
+		
+		// Determine phiStep. If the circle is very small, the step should be < 0.5 (that means more G points on the circle
+		double phiStep = 2 * Math.PI / ((2 * radiusv * Math.PI) / resolution);
+		if(phiStep > 0.5) {
+			phiStep = 0.5;
+		}
+		
+		System.out.println("PL: " + phiStep);
 		
 		go0(newX, newY, "Go to start position for the circle"); // go to start position
 		
@@ -417,13 +426,18 @@ public class Generator {
 			while(phi < 2 * Math.PI) {
 				newX = new BigDecimal(xCenter + radiusv * Math.sin(phi));
 				newY = new BigDecimal(yCenter + radiusv * Math.cos(phi));
-				
 				go1(newX, newY, newZ);
 				
-				phi += 0.1;
+				phi += phiStep;			
 			}
-			newZ = newZ.subtract(stepZ);
+			
+			// Tool to startpoint
 			phi = 0;
+			newX = new BigDecimal(xCenter + radiusv * Math.sin(phi));
+			newY = new BigDecimal(yCenter + radiusv * Math.cos(phi));
+			go1(newX, newY, newZ);
+			
+			newZ = newZ.subtract(stepZ);
 		}
 		
 		go0(currentX, currentY, "End circle; Lift up at current position");
@@ -433,6 +447,7 @@ public class Generator {
 	 * Generate G-Code for a semicircle.
 	 * @param node The node with the needed parameters
 	 */
+	@SuppressWarnings("unused")
 	private void semicircle(Node node) throws IllegalArgumentException {
 		
 	}
