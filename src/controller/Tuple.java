@@ -72,5 +72,28 @@ public class Tuple {
 		return type;
 	}
 	
-
+	/**
+	 * Returns the size of values in the tuple;
+	 * @return The size of values
+	 */
+	public int getLength() {
+		return this.parameters.length;
+	}
+	
+	/**
+	 * Calulates the euclidean distance between two tuples. 
+	 * If the length of the tuples is not equal, only the higher values will be skipped.
+	 * @param other The seond tuple
+	 * @return The euclidean distance
+	 */
+	public double distance(Tuple other) {
+		int n = Math.min(parameters.length, other.getLength());
+		double distance = 0;
+		
+		for(int i = 0; i < n;i ++) {
+			double difference = Double.parseDouble(parameters[i]) - other.getValue(i).doubleValue();
+			distance = Math.sqrt(Math.pow(difference, 2) + Math.pow(distance, 2));
+		}
+		return distance;
+	}
 }
