@@ -19,6 +19,7 @@
 
 package controller;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -117,7 +118,7 @@ public class Generator {
 			//e.printStackTrace();
 		} catch(NullPointerException | IndexOutOfBoundsException e) {
 			Main.log.log(Level.SEVERE, "Missing parameter(s); " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
 			//e.printStackTrace();
@@ -279,16 +280,18 @@ public class Generator {
 	 */
 	private void polyline(Node node) throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
-		ArrayList<Tuple> points = new ArrayList<Tuple>();
-		Tuple zLevel = null;;
+		ArrayList<Tuple> xmlPoints = new ArrayList<Tuple>();
+		ArrayList<double[]> toolPath = new ArrayList<double[]>();
+		Tuple zLevel = null;
+		int bezierResolution = 30;
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
 			if(item.getNodeName() == "p") {
-				points.add(new Tuple(item));
+				xmlPoints.add(new Tuple(item));
 			}
 			if(item.getNodeName() == "bez") {
-				points.add(new Tuple(item, Tuple.BEZIER));
+				xmlPoints.add(new Tuple(item, Tuple.BEZIER));
 			}
 			if(item.getNodeName() == "z") {
 				zLevel = new Tuple(item);
@@ -299,63 +302,64 @@ public class Generator {
 		BigDecimal stepZ = zLevel.getValue(2);
 		boolean forward = true;
 		
-		newX = points.get(0).getValue(0);
-		newY = points.get(0).getValue(1);
-		newZ = zLevel.getValue(0);
-		
 		if(stepZ.doubleValue() <= 0) {
 			throw new IllegalArgumentException("The Z step must be greater than 0");
 		}
 		
-		go0(newX, newY, "Go to start position for the polyline"); // go to start position
+		// Create toolpath
+		for(int i = 0; i < xmlPoints.size(); i++) {
+			if(xmlPoints.get(i).getType() == Tuple.POINT) {
+				toolPath.add(new double[] {xmlPoints.get(i).getValue(0).doubleValue(), xmlPoints.get(i).getValue(1).doubleValue()});
+			} else if(xmlPoints.get(i).getType() == Tuple.BEZIER) {
+				double tStep;
+				double[] coords;
+				int n;
+				ArrayList<Tuple> b = new ArrayList<Tuple>();
+			
+				b.add(xmlPoints.get(i - 1)); // Add first control point b0
+				// fill the control points b1 ... bn-1
+				for(n = 0; xmlPoints.get(i + n).getType() == Tuple.BEZIER; n++) {
+					b.add(xmlPoints.get(i + n));
+				}
+				b.add(xmlPoints.get(i + n)); // Add the last control point bn
+				
+				/*System.out.println("Grad " + n);
+				for(int j = 0 ; j < b.size(); j++)
+					System.out.println(b.get(j).getValue(0) + " " + b.get(j).getValue(1));
+				System.out.println("================");*/
+				
+				// Determine euclidian distance of control points
+				tStep = 1 / (getBezierLength(b) / bezierResolution);
+				
+				for(double t = tStep; t < 1; t += tStep) {
+					toolPath.add(deCasteljau(b, t));
+				}
+				
+				i += n - 1; 			// Skip the next inner control points (b1 - bn-1)
+			}
+		}
 		
+		newX = xmlPoints.get(0).getValue(0);
+		newY = xmlPoints.get(0).getValue(1);
+		newZ = zLevel.getValue(0);
+		
+		go0(newX, newY, "Go to start position for the polyline"); // go to start position
+			
 		while(newZ.doubleValue() >= endZ.doubleValue()) {
 			if(forward) {
 				go1(newX, newY, newZ);  // Z sink
-				for(int i = 1; i < points.size(); i++) {
-					if(points.get(i).getType() == Tuple.POINT) {
-						newX = points.get(i).getValue(0);
-						newY = points.get(i).getValue(1);
-						go1(newX, newY, newZ); // X-Y move
-						//System.out.println(points.get(i).getType() + ":" + newX + "," + newY + ","  + newZ);
-					} else if(points.get(i).getType() == Tuple.BEZIER) {
-						for(double t = 0.1; t < 1; t += 0.1) {
-							double x =  (points.get(i - 1).getValue(0).floatValue() - 2 * points.get(i).getValue(0).floatValue() + points.get(i + 1).getValue(0).floatValue()) * Math.pow(t, 2)
-										+ (- 2 * points.get(i - 1).getValue(0).floatValue() + 2 * points.get(i).getValue(0).floatValue()) * t
-										+ points.get(i - 1).getValue(0).floatValue();
-							double y =  (points.get(i - 1).getValue(1).floatValue() - 2 * points.get(i).getValue(1).floatValue() + points.get(i + 1).getValue(1).floatValue()) * Math.pow(t, 2)
-										+ (- 2 * points.get(i - 1).getValue(1).floatValue() + 2 * points.get(i).getValue(1).floatValue()) * t
-										+ points.get(i - 1).getValue(1).floatValue();							
-							newX = new BigDecimal(x, new MathContext(4));
-							newY = new BigDecimal(y, new MathContext(4));
-							go1(newX, newY, newZ); // X-Y move
-							//System.out.println(points.get(i).getType() + ":" + newX + "," + newY + ","  + newZ);
-						}
-						i++; // skip next point, because the bezier use this point as b2 and the machine is already there
-					}
+				for(int j = 1; j < toolPath.size(); j++) {
+					newX = new BigDecimal(toolPath.get(j)[0]);
+					newY = new BigDecimal(toolPath.get(j)[1]);
+					go1(newX, newY, newZ);  // X-Y move
 				}
 				forward = false;
 			} else {
 				go1(newX, newY, newZ);  // Z sink
-				for(int i = points.size() - 2; i >= 0 ; i--) {
-					if(points.get(i).getType() == Tuple.POINT) {
-						newX = points.get(i).getValue(0);
-						newY = points.get(i).getValue(1);
-						go1(newX, newY, newZ); // X-Y move
-					} else if(points.get(i).getType() == Tuple.BEZIER) {
-						for(double t = 0.9; t > 0; t -= 0.1) {
-							double x =  (points.get(i - 1).getValue(0).floatValue() - 2 * points.get(i).getValue(0).floatValue() + points.get(i + 1).getValue(0).floatValue()) * Math.pow(t, 2)
-										+ (- 2 * points.get(i - 1).getValue(0).floatValue() + 2 * points.get(i).getValue(0).floatValue()) * t
-										+ points.get(i - 1).getValue(0).floatValue();
-							double y =  (points.get(i - 1).getValue(1).floatValue() - 2 * points.get(i).getValue(1).floatValue() + points.get(i + 1).getValue(1).floatValue()) * Math.pow(t, 2)
-										+ (- 2 * points.get(i - 1).getValue(1).floatValue() + 2 * points.get(i).getValue(1).floatValue()) * t
-										+ points.get(i - 1).getValue(1).floatValue();							
-							newX = new BigDecimal(x, new MathContext(5));
-							newY = new BigDecimal(y, new MathContext(5));
-							go1(newX, newY, newZ); // X-Y move
-						}
-						i--;
-					}
+				for(int j = toolPath.size() - 2; j >= 0; j--) {
+					newX = new BigDecimal(toolPath.get(j)[0]);
+					newY = new BigDecimal(toolPath.get(j)[1]);
+					go1(newX, newY, newZ);  // X-Y move
 				}
 				forward = true;
 			}
@@ -363,6 +367,78 @@ public class Generator {
 		}
 		go0(currentX, currentY, "End polyline; Lift up at current position");
 	}
+	
+	/**
+	 * Implements the deCastelauAlgorithm. Not finished yet.
+	 * TODO: Finish deCastelauAlgorithm for interpolating curve.
+	 * @param points The ControlPoints b0,...,bn
+	 * @param t The t value 0 <= t <= 1
+	 * @return The x and y coordinates on the bezier 
+	 */
+	private double[] deCasteljau(ArrayList<Tuple> points, double t) {
+		int n = points.size();
+		
+		double[][] bx = new double[n][n];
+		double[][] by = new double[n][n];
+		
+		for(int j = 0; j < n; j++) {
+            bx[0][j] = points.get(j).getValue(0).floatValue();
+            by[0][j] = points.get(j).getValue(1).floatValue();
+        }
+
+		for(int j = 1; j < n; j++) {
+			for (int k = 0; k < n - j; k++) {
+				bx[j][k] = bx[j-1][k] * (1 - t) + bx[j - 1][k + 1] * t;
+				by[j][k] = by[j-1][k] * (1 - t) + by[j - 1][k + 1] * t;
+			}
+		}
+		
+		return new double[] {bx[n-1][0], by[n-1][0]};		
+	}
+	
+	/**
+	 * Returns the coordinate of an quadratic spline.
+	 * @param b0 The start point
+	 * @param b1 The anchor point
+	 * @param b2 The end point
+	 * @param t The position of the coordinate 0 < t <= 1
+	 * @return The coordinate
+	 */
+	private double quadraticBezier(double b0, double b1, double b2, double t) {
+		return  Math.pow((1 - t), 2) * b0
+				+ 2 * t * (1 - t) * b1
+				+ Math.pow(t, 2) * b2;
+	}
+	
+	/**
+	 * Returns the coordinate of an cubic spline.
+	 * @param b0 The start point
+	 * @param b1 The first anchor point
+	 * @param b2 The second anchor point
+	 * @param b3 The end point
+	 * @param t The position of the coordinate 0 < t <= 1
+	 * @return The coordinate
+	 */
+	private double cubicBezier(double b0, double b1, double b2, double b3, double t) {
+		return  Math.pow((1 - t), 3) * b0
+				+ 3 * t * Math.pow((1 - t), 2) * b1
+				+ 3 * Math.pow(t, 2) * (1 - t) * b2
+				+ Math.pow(t, 3) * b3;
+	}
+	
+	/**
+	 * Calulates the euclidean length of the control points.
+	 * @param b The control points
+	 * @return The length
+	 */
+	private double getBezierLength(ArrayList<Tuple> b) {
+		double distance = 0;
+		for(int i = 0; i < b.size() - 1; i++) {
+			distance += b.get(i).distance(b.get(i + 1));
+		}
+		return distance;
+	}
+	
 	
 	/**
 	 * Generate G-Code for a circle.
@@ -416,8 +492,6 @@ public class Generator {
 		if(phiStep > 0.5) {
 			phiStep = 0.5;
 		}
-		
-		System.out.println("PL: " + phiStep);
 		
 		go0(newX, newY, "Go to start position for the circle"); // go to start position
 		
