@@ -330,8 +330,15 @@ public class Generator {
 				
 				// Determine euclidian distance of control points
 				tStep = 1 / (getBezierLength(b) / bezierResolution);
+				if(tStep > 0.1) {
+					tStep = 0.1;
+				}
+				
+				System.out.println("Step: " + tStep);
 				
 				for(double t = tStep; t < 1; t += tStep) {
+					/*toolPath.add(new double[] { quadraticBezier(b.get(0).getValue(0).doubleValue(), b.get(1).getValue(0).doubleValue(), b.get(2).getValue(0).doubleValue(), t), 
+												quadraticBezier(b.get(0).getValue(1).doubleValue(), b.get(1).getValue(1).doubleValue(), b.get(2).getValue(1).doubleValue(), t) });*/
 					toolPath.add(deCasteljau(b, t));
 				}
 				
