@@ -283,7 +283,7 @@ public class Generator {
 		ArrayList<Tuple> xmlPoints = new ArrayList<Tuple>();
 		ArrayList<double[]> toolPath = new ArrayList<double[]>();
 		Tuple zLevel = null;
-		int bezierResolution = 30;
+		int bezierResolution = 5;
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);

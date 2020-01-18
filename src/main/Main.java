@@ -37,7 +37,7 @@ public class Main {
 	
 	public static final Logger log = Logger.getLogger("Logger");
 	
-	public static final String version = new String("0.1.64");
+	public static final String version = new String("0.1.65");
 
 	public static void main (String[] args) {
 		try {
