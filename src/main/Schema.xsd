@@ -7,29 +7,28 @@
 					<xsd:complexType>
 						<xsd:sequence>
 							<xsd:element name="p" type="pointtype" minOccurs="2" maxOccurs="2" />
-							<xsd:element name="z" type="ztype" minOccurs="1" maxOccurs="1" />
+							<xsd:element name="z" type="ztype" />
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
 				<xsd:element name="circle">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element name="p" type="pointtype" minOccurs="1" maxOccurs="1" />
-							<xsd:element name="rad" type="radtype" minOccurs="1" maxOccurs="1" />						
-							<xsd:element name="z" type="ztype" minOccurs="1" maxOccurs="1" />
+							<xsd:element name="p" type="pointtype" />
+							<xsd:element name="rad" type="radtype" />						
+							<xsd:element name="z" type="ztype" />
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
 				<xsd:element name="polyline">
 					<xsd:complexType>
 						<xsd:sequence>
-							<xsd:element name="p" type="pointtype" minOccurs="1" maxOccurs="1" />
+							<xsd:element name="p" type="pointtype" />
 							<xsd:choice minOccurs="0" maxOccurs="unbounded">
-								<xsd:element name="p" type="pointtype" />
 								<xsd:element name="bez" type="pointtype" />
+								<xsd:element name="p" type="pointtype" />
 							</xsd:choice>
-
-							<xsd:element name="z" minOccurs="1" maxOccurs="1" />
+							<xsd:element name="z" type="ztype" />
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
@@ -50,7 +49,7 @@
 	    </xsd:restriction>
 	</xsd:simpleType>
 	
-		<xsd:simpleType name="radtype">
+	<xsd:simpleType name="radtype">
 	    <xsd:restriction base="xsd:string">
 	    	<xsd:pattern value="[0-9]+(\.[0-9]+)?"/>
 	    </xsd:restriction>
