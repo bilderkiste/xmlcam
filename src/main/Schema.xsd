@@ -24,9 +24,16 @@
 					<xsd:complexType>
 						<xsd:sequence>
 							<xsd:element name="p" type="pointtype" />
-							<xsd:choice minOccurs="0" maxOccurs="unbounded">
-								<xsd:element name="bez" type="pointtype" />
-								<xsd:element name="p" type="pointtype" />
+							<xsd:choice minOccurs="1" maxOccurs="unbounded">
+								<xsd:sequence>
+									<xsd:element name="bez" type="pointtype" minOccurs="1" maxOccurs="unbounded" /> 
+								    <xsd:element name="p" type="pointtype" />
+								</xsd:sequence>
+								<xsd:sequence>
+									<xsd:element name="spl" type="pointtype" minOccurs="1" maxOccurs="unbounded" /> 
+								    <xsd:element name="p" type="pointtype" />
+								</xsd:sequence>
+								<xsd:element name="p" type="pointtype" />	
 							</xsd:choice>
 							<xsd:element name="z" type="ztype" />
 						</xsd:sequence>

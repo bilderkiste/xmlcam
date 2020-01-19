@@ -32,6 +32,7 @@ public class Tuple {
 
 	public static final int POINT = 0;
 	public static final int BEZIER = 1;
+	public static final int SPLINE = 2; 
 	
 	private String[] parameters;
 	private int type;

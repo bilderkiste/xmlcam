@@ -19,7 +19,6 @@
 
 package controller;
 
-import java.awt.Point;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -197,85 +196,20 @@ public class Generator {
 		}
 		
 		go0(currentX, currentY, "End line; Lift up at current position");
+		
+		Main.log.log(Level.FINE, "Line element: line from (" + points.get(0).getValue(0) + ", " + points.get(0).getValue(0) + ") to (" + points.get(1).getValue(0) + ", " + points.get(1).getValue(0) + ").");
 			
 	}
 	
 	/**
-	 * Generate G-Code for a polyline
-	 * @param node The node with the needed parameters
-	 */
-	/*private void polyline(Node node) throws IllegalArgumentException {
-		NodeList children = node.getChildNodes();
-		ArrayList<Tupel> points = new ArrayList<Tupel>();
-		Tupel zLevel = null;;
-		
-		for(int i = 0; i < children.getLength(); i++) {
-			Node item = children.item(i);
-			if(item.getNodeName() == "p") {
-				points.add(new Tupel(item));
-			}
-			if(item.getNodeName() == "z") {
-				zLevel = new Tupel(item);
-			}
-		}
-		
-		BigDecimal endZ = zLevel.getValue(1);
-		BigDecimal stepZ = zLevel.getValue(2);
-		boolean forward = true;
-		
-		newX = points.get(0).getValue(0);
-		newY = points.get(0).getValue(1);
-		newZ = zLevel.getValue(0);
-		
-		if(stepZ.doubleValue() <= 0) {
-			throw new IllegalArgumentException("The Z step must be greater than 0");
-		}
-		
-		go0(newX, newY, "Go to start position for the polyline"); // go to start position
-		
-		while(newZ.doubleValue() >= endZ.doubleValue()) {
-			if(forward) {
-				go1(newX, newY, newZ);  // Z sink
-				for(int i = 1; i < points.size(); i++) {
-	
-					newX = points.get(i).getValue(0);
-					newY = points.get(i).getValue(1);
-					
-					go1(newX, newY, newZ); // X-Y move
-				}
-				forward = false;
-			} else {
-				go1(newX, newY, newZ);  // Z sink
-				for(int i = points.size() - 2; i >= 0 ; i--) {
-	
-					newX = points.get(i).getValue(0);
-					newY = points.get(i).getValue(1);
-					
-					go1(newX, newY, newZ); // X-Y move
-				}
-				forward = true;
-			}
-			newZ = newZ.subtract(stepZ);
-		}
-		go0(currentX, currentY, "End polyline; Lift up at current position");
-	}*/
-	
-	/**
-	 * Generate G-Code for a polyline.
-	 * The polyline is defined by two or more points. 
-	 * You can describe a bow by setting an anchor point (quadratic bezier curves) at the moment. You can do this with two points with the <p> tag and an anchor point with a <bez> tag.
-	 * The z-depth must be defined by the <z> tag.
-	 * An code example snippet:
-	 * <pre>{@code
-	 * <polyline>
-	 * 		<p>40,20</p>
-	 * 		<p>80,20</p>
-	 * 		<bez>200,60</bez>
-	 * 		<p>80,100</p>
-	 * 		<p>200,200</p>
-	 * 		<z>0,-1,0.1</z>
-	 * </polyline>
-	 * }</pre>
+	 * This method generates G-Code for a polyline.
+	 * The polyline is defined by two or more points. The tupel in <p> defines the x and y position of the point (<p>x,y</p>). Two consecutive points descibe a line.
+	 *	
+	 * You can describe a bow by setting control points. The start point (b0) and end point (bn) are defined by <p> tags. You need to define one ore more inner control points (b1 to bn-1) with tag <bez>x,y</bez>.
+	 * With one inner control point you describe a quadratic bezier curve (second grade), with two inner control points a cubic bezier curve (third grade), with n control points you describe a curve with grade n + 1.
+	 * For more information see in German https://de.wikipedia.org/wiki/B%C3%A9zierkurve and in English https://en.wikipedia.org/wiki/B%C3%A9zier_curve.
+	 *	
+	 * The z-depth must be defined by the <z> tag. The tupel in <z> defines the the start layer (workpiece surface), the end layer (depth), and the steps (<z>startZ,endZ,stepZ</z>).
 	 * @param node The node with the needed parameters
 	 */
 	private void polyline(Node node) throws IllegalArgumentException {
@@ -292,6 +226,9 @@ public class Generator {
 			}
 			if(item.getNodeName() == "bez") {
 				xmlPoints.add(new Tuple(item, Tuple.BEZIER));
+			}
+			if(item.getNodeName() == "spl") {
+				xmlPoints.add(new Tuple(item, Tuple.SPLINE));
 			}
 			if(item.getNodeName() == "z") {
 				zLevel = new Tuple(item);
@@ -310,9 +247,9 @@ public class Generator {
 		for(int i = 0; i < xmlPoints.size(); i++) {
 			if(xmlPoints.get(i).getType() == Tuple.POINT) {
 				toolPath.add(new double[] {xmlPoints.get(i).getValue(0).doubleValue(), xmlPoints.get(i).getValue(1).doubleValue()});
+				Main.log.log(Level.FINE, "Polyline element: line to (" + xmlPoints.get(i).getValue(0).doubleValue() + ", " + xmlPoints.get(i).getValue(1).doubleValue() + ")");
 			} else if(xmlPoints.get(i).getType() == Tuple.BEZIER) {
-				double tStep;
-				double[] coords;
+				double tStep, numPoints;
 				int n;
 				ArrayList<Tuple> b = new ArrayList<Tuple>();
 			
@@ -322,27 +259,23 @@ public class Generator {
 					b.add(xmlPoints.get(i + n));
 				}
 				b.add(xmlPoints.get(i + n)); // Add the last control point bn
-				
-				/*System.out.println("Grad " + n);
-				for(int j = 0 ; j < b.size(); j++)
-					System.out.println(b.get(j).getValue(0) + " " + b.get(j).getValue(1));
-				System.out.println("================");*/
-				
+			
 				// Determine euclidian distance of control points
-				tStep = 1 / (getBezierLength(b) / bezierResolution);
+				numPoints = getBezierLength(b) / bezierResolution;
+				tStep = 1 / numPoints;
 				if(tStep > 0.1) {
 					tStep = 0.1;
 				}
 				
-				System.out.println("Step: " + tStep);
-				
 				for(double t = tStep; t < 1; t += tStep) {
-					/*toolPath.add(new double[] { quadraticBezier(b.get(0).getValue(0).doubleValue(), b.get(1).getValue(0).doubleValue(), b.get(2).getValue(0).doubleValue(), t), 
-												quadraticBezier(b.get(0).getValue(1).doubleValue(), b.get(1).getValue(1).doubleValue(), b.get(2).getValue(1).doubleValue(), t) });*/
 					toolPath.add(deCasteljau(b, t));
-				}
 				
+				}
+		
 				i += n - 1; 			// Skip the next inner control points (b1 - bn-1)
+				Main.log.log(Level.FINE, "Polyline element: bezier curve grade " + (n + 1) + " with " + (int)(1 / tStep) + " points. Step for tau is " + tStep + ".");
+			} else if(xmlPoints.get(i).getType() == Tuple.SPLINE) {
+				
 			}
 		}
 		
@@ -411,6 +344,7 @@ public class Generator {
 	 * @param t The position of the coordinate 0 < t <= 1
 	 * @return The coordinate
 	 */
+	@SuppressWarnings("unused")
 	private double quadraticBezier(double b0, double b1, double b2, double t) {
 		return  Math.pow((1 - t), 2) * b0
 				+ 2 * t * (1 - t) * b1
@@ -426,6 +360,7 @@ public class Generator {
 	 * @param t The position of the coordinate 0 < t <= 1
 	 * @return The coordinate
 	 */
+	@SuppressWarnings("unused")
 	private double cubicBezier(double b0, double b1, double b2, double b3, double t) {
 		return  Math.pow((1 - t), 3) * b0
 				+ 3 * t * Math.pow((1 - t), 2) * b1
@@ -522,6 +457,8 @@ public class Generator {
 		}
 		
 		go0(currentX, currentY, "End circle; Lift up at current position");
+		
+		Main.log.log(Level.FINE, "Circle element: circle with " + (int)(((Math.PI * 2) / phiStep) + 1) + " points. Step for phi is " + phiStep + ".");
 	}
 	
 	/**

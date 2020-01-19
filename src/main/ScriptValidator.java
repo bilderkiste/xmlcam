@@ -75,7 +75,7 @@ public class ScriptValidator extends Thread {
 			return;
 		}
 		
-		Main.log.log(Level.INFO, "Start new validator thread no. " + this.getId() + ".");
+		Main.log.log(Level.FINE, "Start new validator thread no. " + this.getId() + ".");
 		DefaultStyledDocument document = (DefaultStyledDocument) editorPane.getStyledDocument();
 		MutableAttributeSet attributes = editorPane.getInputAttributes();
 	
@@ -119,7 +119,7 @@ public class ScriptValidator extends Thread {
 				Main.log.log(Level.WARNING, "Validator thread was interrupted. " + e);
 			}
 		}
-		Main.log.log(Level.INFO, "Validator thread "+ this.getId() + " was interrupted.");
+		Main.log.log(Level.FINE, "Validator thread "+ this.getId() + " was interrupted.");
 	}
 	
 	/**

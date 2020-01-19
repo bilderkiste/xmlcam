@@ -20,6 +20,7 @@
 package main;
 
 import java.io.IOException;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -37,13 +38,25 @@ public class Main {
 	
 	public static final Logger log = Logger.getLogger("Logger");
 	
-	public static final String version = new String("0.1.65");
+	public static final String version = new String("0.1.66dev");
 
-	public static void main (String[] args) {
+	public static void main (String[] arguments) {
+		String[] arg = null;
+		for(int i = 0; i < arguments.length; i++) {
+			arg = arguments[i].split("=");
+			if(arg[0].equals("loglevel")) {
+				log.setLevel(Level.parse(arg[1].toUpperCase()));
+			}
+		}
+		
 		try {
-			Handler handler;
-			handler = new FileHandler("xmlCam-Logfile.txt");
-			log.addHandler(handler);
+			Handler consoleHandler = new ConsoleHandler();
+			Handler fileHandler = new FileHandler("xmlCAM-Logfile.txt");
+			consoleHandler.setLevel(Level.ALL);
+			log.setUseParentHandlers(false);
+			log.addHandler(consoleHandler);
+			log.addHandler(fileHandler);
+			log.log(Level.FINE , "Logger at level " + log.getLevel());
 		} catch (SecurityException e) {
 			log.log(Level.WARNING, e.toString());
 		} catch (IOException e) {
