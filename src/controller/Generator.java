@@ -261,7 +261,7 @@ public class Generator {
 				b.add(xmlPoints.get(i + n)); // Add the last control point bn
 			
 				// Determine euclidian distance of control points
-				tStep = 1 / (getBezierLength(b) / bezierResolution);
+				tStep = 1 / (getVectorLength(b) / bezierResolution);
 				if(tStep > 0.1) {
 					tStep = 0.1;
 				}
@@ -276,10 +276,18 @@ public class Generator {
 				double tStep;
 				ArrayList<Tuple> points = new ArrayList<Tuple>();
 				
-				for(int j = -2; j < 2; j++) {
-					points.add(xmlPoints.get(i + j));
+				try {
+					for(int j = -2; j < 2; j++) {
+						points.add(xmlPoints.get(i + j));
+					}
+				} catch(ArrayIndexOutOfBoundsException e) { // If are not two points before the first spline
+					for(int j = -1; j < 2; j++) {
+						points.add(xmlPoints.get(i + j));
+					}
+					points.add(0, new Tuple(new double[] {	xmlPoints.get(i - 1).getValue(0).doubleValue() - (xmlPoints.get(i).getValue(0).doubleValue() - xmlPoints.get(i - 1).getValue(0).doubleValue()), 
+															xmlPoints.get(i - 1).getValue(1).doubleValue() - (xmlPoints.get(i).getValue(1).doubleValue() - xmlPoints.get(i - 1).getValue(1).doubleValue()) }));
 				}
-				
+					
 				if(Main.log.isLoggable(Level.FINER)) {
 					StringBuffer stringBuffer = new StringBuffer("Considerable points for spline " + i + ": ");
 					for(int j = 0; j < points.size(); j++) {
@@ -367,7 +375,7 @@ public class Generator {
 	}
 	
 	/**
-	 * This method calulates the bezier start and end points (0th derivation) and the inner control points (1th derviation or vector) for a spline.
+	 * This method calculates the bezier start and end points (0th derivation) and the inner control points (1th derivation or vector) for a spline.
 	 * @param points b0 = point before start point, b1 start point, b2 end point, b3 point behind end point
 	 * @param t 0 <= tau <= 1
 	 * @return the coordinates for the point on the spline at tau
@@ -376,6 +384,9 @@ public class Generator {
 		double dx1, dy1, dx2, dy2;
 		ArrayList<Tuple> pointList = new ArrayList<Tuple>();
 		double[] point = new double[2];
+		double distance = points.get(1).distance(points.get(2));
+
+		Main.log.finer("Distance: " + distance);
 		
 		pointList.add(points.get(1));
 		
@@ -388,8 +399,9 @@ public class Generator {
 		} else {
 			dx1 = points.get(1).getValue(0).doubleValue() - points.get(0).getValue(0).doubleValue();
 			dy1 = points.get(1).getValue(1).doubleValue() - points.get(0).getValue(1).doubleValue();
-			point[0] = points.get(1).getValue(0).doubleValue() + (1 / 2.0) * dx1;
-			point[1] = points.get(1).getValue(1).doubleValue() + (1 / 2.0) * dy1;
+			double unitFactor = Math.sqrt(Math.pow(dx1, 2) + Math.pow(dy1, 2)); // Einheitsvektor
+			point[0] = points.get(1).getValue(0).doubleValue() + 1 / unitFactor * dx1 * distance * 0.4;
+			point[1] = points.get(1).getValue(1).doubleValue() + 1 / unitFactor * dy1 * distance * 0.4;
 			pointList.add(new Tuple(point));
 		}
 		
@@ -402,8 +414,9 @@ public class Generator {
 		} else {
 			dx2 = points.get(2).getValue(0).doubleValue() - points.get(3).getValue(0).doubleValue();
 			dy2 = points.get(2).getValue(1).doubleValue() - points.get(3).getValue(1).doubleValue();
-			point[0] = points.get(2).getValue(0).doubleValue() + (1 / 2.0) * dx2;
-			point[1] = points.get(2).getValue(1).doubleValue() + (1 / 2.0) * dy2;
+			double unitFactor = Math.sqrt(Math.pow(dx2, 2) + Math.pow(dy2, 2)); // Einheitsvektor
+			point[0] = points.get(2).getValue(0).doubleValue() + (1 / unitFactor) * dx2 * distance * 0.4;
+			point[1] = points.get(2).getValue(1).doubleValue() + (1 / unitFactor) * dy2 * distance * 0.4;
 			pointList.add(new Tuple(point));
 		}
 
@@ -457,7 +470,7 @@ public class Generator {
 	 * @param b The control points
 	 * @return The length
 	 */
-	private double getBezierLength(ArrayList<Tuple> b) {
+	private double getVectorLength(ArrayList<Tuple> b) {
 		double distance = 0;
 		for(int i = 0; i < b.size() - 1; i++) {
 			distance += b.get(i).distance(b.get(i + 1));
