@@ -20,6 +20,7 @@
 package controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import org.w3c.dom.Node;
 
@@ -34,7 +35,7 @@ public class Tuple {
 	public static final int BEZIER = 1;
 	public static final int SPLINE = 2; 
 	
-	private String[] parameters;
+	private ArrayList<Double> values;
 	private int type;
 
 	/**
@@ -49,12 +50,39 @@ public class Tuple {
 	/**
 	 * Constructs an new tuple an fills it with values from an xml node.
 	 * @param node The node with the values
-	 * @param type The type of the node
+	 * @param type The type of the node or tuple
 	 */
 	public Tuple(Node node, int type) {
-		this.parameters = node.getTextContent().split(",");
+		String[] stringValues = node.getTextContent().split(",");
+		this.values = new ArrayList<Double>();
+		for(int i = 0; i < stringValues.length; i++) {
+			values.add(Double.parseDouble(stringValues[i]));
+		}
 		this.type = type;
 	}
+	
+	/**
+	 * Constructs an new tuple an fills it with values from a double array.
+	 * @param values The double array
+	 */
+	public Tuple(double[] values) {
+		this(values, 0);
+	}
+	
+	/**
+	 * Constructs an new tuple an fills it with values from a double array.
+	 * @param values The double array
+	 * @param type The type of the node or tuple
+	 */
+	public Tuple(double[] values, int type) {
+		this.values = new ArrayList<Double>();
+		
+		for(int i = 0; i < values.length; i++) {
+			this.values.add(values[i]);
+		}
+		this.type = type;
+	}
+	
 	
 	/**
 	 * Returns the value from the tuple at the specified position.
@@ -62,11 +90,11 @@ public class Tuple {
 	 * @return The value as a BigDecimal object
 	 */
 	public BigDecimal getValue(int index) {
-		return new BigDecimal(parameters[index].trim());
+		return new BigDecimal(values.get(index));
 	}
 
 	/**
-	 * Returns the type of the tuple. Usually the tupel defines a point.
+	 * Returns the type of the tuple. Usually the tuple defines a point.
 	 * @return The type of the tuple
 	 */
 	public int getType() {
@@ -78,23 +106,38 @@ public class Tuple {
 	 * @return The size of values
 	 */
 	public int getLength() {
-		return this.parameters.length;
+		return this.values.size();
 	}
 	
 	/**
 	 * Calulates the euclidean distance between two tuples. 
 	 * If the length of the tuples is not equal, only the higher values will be skipped.
-	 * @param other The seond tuple
+	 * @param other The second tuple
 	 * @return The euclidean distance
 	 */
 	public double distance(Tuple other) {
-		int n = Math.min(parameters.length, other.getLength());
+		int n = Math.min(values.size(), other.getLength());
 		double distance = 0;
 		
 		for(int i = 0; i < n;i ++) {
-			double difference = Double.parseDouble(parameters[i]) - other.getValue(i).doubleValue();
+			double difference = values.get(i) - other.getValue(i).doubleValue();
 			distance = Math.sqrt(Math.pow(difference, 2) + Math.pow(distance, 2));
 		}
 		return distance;
+	}
+	
+	/**
+	 * Returns the tuple as a string like (a0,a1,...,an).
+	 */
+	public String toString() {
+		StringBuilder tuple = new StringBuilder("(");
+		for(int i = 0; i < values.size(); i++) {
+			if(i > 0) {
+				tuple.append(",");
+			}
+			tuple.append(values.get(i));
+		}
+		tuple.append(")");
+		return tuple.toString();
 	}
 }

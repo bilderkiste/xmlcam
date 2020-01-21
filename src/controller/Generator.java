@@ -249,7 +249,7 @@ public class Generator {
 				toolPath.add(new double[] {xmlPoints.get(i).getValue(0).doubleValue(), xmlPoints.get(i).getValue(1).doubleValue()});
 				Main.log.log(Level.FINE, "Polyline element: line to (" + xmlPoints.get(i).getValue(0).doubleValue() + ", " + xmlPoints.get(i).getValue(1).doubleValue() + ")");
 			} else if(xmlPoints.get(i).getType() == Tuple.BEZIER) {
-				double tStep, numPoints;
+				double tStep;
 				int n;
 				ArrayList<Tuple> b = new ArrayList<Tuple>();
 			
@@ -261,21 +261,51 @@ public class Generator {
 				b.add(xmlPoints.get(i + n)); // Add the last control point bn
 			
 				// Determine euclidian distance of control points
-				numPoints = getBezierLength(b) / bezierResolution;
-				tStep = 1 / numPoints;
+				tStep = 1 / (getBezierLength(b) / bezierResolution);
 				if(tStep > 0.1) {
 					tStep = 0.1;
 				}
 				
 				for(double t = tStep; t < 1; t += tStep) {
 					toolPath.add(deCasteljau(b, t));
-				
 				}
 		
 				i += n - 1; 			// Skip the next inner control points (b1 - bn-1)
 				Main.log.log(Level.FINE, "Polyline element: bezier curve grade " + (n + 1) + " with " + (int)(1 / tStep) + " points. Step for tau is " + tStep + ".");
 			} else if(xmlPoints.get(i).getType() == Tuple.SPLINE) {
+				double tStep;
+				ArrayList<Tuple> points = new ArrayList<Tuple>();
 				
+				for(int j = -2; j < 2; j++) {
+					points.add(xmlPoints.get(i + j));
+				}
+				
+				if(Main.log.isLoggable(Level.FINER)) {
+					StringBuffer stringBuffer = new StringBuffer("Considerable points for spline " + i + ": ");
+					for(int j = 0; j < points.size(); j++) {
+						stringBuffer.append(" p" + j + points.get(j) + ":");
+					}
+					Main.log.log(Level.FINER, stringBuffer.toString());
+				}
+			
+				// Determine euclidian distance of control points
+				// TODO: consider only spline points ant no p0 and p3
+				//tStep = 1 / (getBezierLength(points) / bezierResolution);
+				tStep = 1;
+				if(tStep > 0.1) {
+					tStep = 0.05;
+				}
+				
+				for(double t = tStep; t < 1; t += tStep) {
+					toolPath.add(calculatePoint(points, t));
+				}
+				
+				// insert last point of curve, because due to the machine error we do not hit tau = 1 exactly
+				if(points.get(3).getType() == Tuple.POINT) {
+					toolPath.add(new double[] {points.get(2).getValue(0).doubleValue(), points.get(2).getValue(1).doubleValue()});
+				}
+				
+				Main.log.log(Level.FINE, "Polyline element: spline with " + (int)(1 / tStep) + " points. Step for tau is " + tStep + ".");
 			}
 		}
 		
@@ -334,6 +364,60 @@ public class Generator {
 		}
 		
 		return new double[] {bx[n-1][0], by[n-1][0]};		
+	}
+	
+	/**
+	 * This method calulates the bezier start and end points (0th derivation) and the inner control points (1th derviation or vector) for a spline.
+	 * @param points b0 = point before start point, b1 start point, b2 end point, b3 point behind end point
+	 * @param t 0 <= tau <= 1
+	 * @return the coordinates for the point on the spline at tau
+	 */
+	private double[] calculatePoint(ArrayList<Tuple> points, double t) {
+		double dx1, dy1, dx2, dy2;
+		ArrayList<Tuple> pointList = new ArrayList<Tuple>();
+		double[] point = new double[2];
+		
+		pointList.add(points.get(1));
+		
+		if(points.get(1).getType() == Tuple.SPLINE) {
+			dx1 = 0.5 * (points.get(2).getValue(0).doubleValue() - points.get(0).getValue(0).doubleValue());
+			dy1 = 0.5 * (points.get(2).getValue(1).doubleValue() - points.get(0).getValue(1).doubleValue());
+			point[0] = points.get(1).getValue(0).doubleValue() + (1 / 3.0) * dx1;
+			point[1] = points.get(1).getValue(1).doubleValue() + (1 / 3.0) * dy1;
+			pointList.add(new Tuple(point));
+		} else {
+			dx1 = points.get(1).getValue(0).doubleValue() - points.get(0).getValue(0).doubleValue();
+			dy1 = points.get(1).getValue(1).doubleValue() - points.get(0).getValue(1).doubleValue();
+			point[0] = points.get(1).getValue(0).doubleValue() + (1 / 2.0) * dx1;
+			point[1] = points.get(1).getValue(1).doubleValue() + (1 / 2.0) * dy1;
+			pointList.add(new Tuple(point));
+		}
+		
+		if(points.get(3).getType() == Tuple.SPLINE) {
+			dx2 = 0.5 * (points.get(3).getValue(0).doubleValue() - points.get(1).getValue(0).doubleValue());
+			dy2 = 0.5 * (points.get(3).getValue(1).doubleValue() - points.get(1).getValue(1).doubleValue());
+			point[0] = points.get(2).getValue(0).doubleValue() - (1 / 3.0) * dx2;
+			point[1] = points.get(2).getValue(1).doubleValue() - (1 / 3.0) * dy2;
+			pointList.add(new Tuple(point));
+		} else {
+			dx2 = points.get(2).getValue(0).doubleValue() - points.get(3).getValue(0).doubleValue();
+			dy2 = points.get(2).getValue(1).doubleValue() - points.get(3).getValue(1).doubleValue();
+			point[0] = points.get(2).getValue(0).doubleValue() + (1 / 2.0) * dx2;
+			point[1] = points.get(2).getValue(1).doubleValue() + (1 / 2.0) * dy2;
+			pointList.add(new Tuple(point));
+		}
+
+		pointList.add(points.get(2));
+		
+		if(Main.log.isLoggable(Level.FINER)) {
+			StringBuffer stringBuffer = new StringBuffer("Bezier points:");
+			for(int i = 0; i < pointList.size(); i++) {
+				stringBuffer.append(" t" + i + ":" + pointList.get(i));
+			}
+			Main.log.log(Level.FINER, stringBuffer.toString());
+		}
+		
+		return deCasteljau(pointList, t);
 	}
 	
 	/**

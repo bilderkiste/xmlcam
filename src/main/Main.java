@@ -53,6 +53,7 @@ public class Main {
 			Handler consoleHandler = new ConsoleHandler();
 			Handler fileHandler = new FileHandler("xmlCAM-Logfile.txt");
 			consoleHandler.setLevel(Level.ALL);
+			fileHandler.setLevel(Level.ALL);
 			log.setUseParentHandlers(false);
 			log.addHandler(consoleHandler);
 			log.addHandler(fileHandler);
