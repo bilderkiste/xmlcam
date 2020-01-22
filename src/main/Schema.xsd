@@ -30,8 +30,7 @@
 									<xsd:element name="p" type="pointtype" />
 								</xsd:sequence>
 								<xsd:sequence>
-									<xsd:element name="spl" type="pointtype" minOccurs="1" maxOccurs="unbounded" /> 
-									<xsd:element name="p" type="pointtype" />
+									<xsd:element name="spl" type="pointtype" minOccurs="1" maxOccurs="unbounded" />
 								</xsd:sequence>
 								<xsd:element name="p" type="pointtype" />	
 							</xsd:choice>

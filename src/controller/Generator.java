@@ -120,10 +120,10 @@ public class Generator {
 			e.printStackTrace();
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch(IllegalArgumentException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		// insert end code
@@ -276,18 +276,25 @@ public class Generator {
 				double tStep;
 				ArrayList<Tuple> points = new ArrayList<Tuple>();
 				
-				try {
-					for(int j = -2; j < 2; j++) {
-						points.add(xmlPoints.get(i + j));
-					}
-				} catch(ArrayIndexOutOfBoundsException e) { // If are not two points before the first spline
-					for(int j = -1; j < 2; j++) {
-						points.add(xmlPoints.get(i + j));
-					}
-					points.add(0, new Tuple(new double[] {	xmlPoints.get(i - 1).getValue(0).doubleValue() - (xmlPoints.get(i).getValue(0).doubleValue() - xmlPoints.get(i - 1).getValue(0).doubleValue()), 
-															xmlPoints.get(i - 1).getValue(1).doubleValue() - (xmlPoints.get(i).getValue(1).doubleValue() - xmlPoints.get(i - 1).getValue(1).doubleValue()) }));
+				double dx = xmlPoints.get(i).getValue(0).doubleValue() - xmlPoints.get(i - 1).getValue(0).doubleValue();
+				double dy = xmlPoints.get(i).getValue(1).doubleValue() - xmlPoints.get(i - 1).getValue(1).doubleValue();
+				
+				for(int j = -1; j < 1; j++) {
+					points.add(xmlPoints.get(i + j));
 				}
-					
+				
+				if(i == 1) { // If are not two points before the first spline
+					points.add(0, new Tuple(new double[] { xmlPoints.get(i - 1).getValue(0).doubleValue() - dx, xmlPoints.get(i - 1).getValue(1).doubleValue() - dy } ));	
+				} else {
+					points.add(0, xmlPoints.get(i - 2));
+				}
+				if(i == xmlPoints.size() -1) { // If the last point is missing
+					points.add(new Tuple(new double[] { xmlPoints.get(i).getValue(0).doubleValue() + dx, xmlPoints.get(i).getValue(1).doubleValue() + dy } ));
+				} else {
+					points.add(xmlPoints.get(i + 1));
+				}
+				
+				
 				if(Main.log.isLoggable(Level.FINER)) {
 					StringBuffer stringBuffer = new StringBuffer("Considerable points for spline " + i + ": ");
 					for(int j = 0; j < points.size(); j++) {
