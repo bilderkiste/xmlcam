@@ -105,7 +105,7 @@ public class Tuple {
 	 * Returns the size of values in the tuple;
 	 * @return The size of values
 	 */
-	public int getLength() {
+	public int size() {
 		return this.values.size();
 	}
 	
@@ -116,7 +116,7 @@ public class Tuple {
 	 * @return The euclidean distance
 	 */
 	public double distance(Tuple other) {
-		int n = Math.min(values.size(), other.getLength());
+		int n = Math.min(values.size(), other.size());
 		double distance = 0;
 		
 		for(int i = 0; i < n;i ++) {
@@ -124,6 +124,23 @@ public class Tuple {
 			distance = Math.sqrt(Math.pow(difference, 2) + Math.pow(distance, 2));
 		}
 		return distance;
+	}
+	
+	/**
+	 * Compares this tuple with another. Only the tuple values will compared, not the type.
+	 * @param other The other tuple to compare
+	 * @return true if equal false if not
+	 */
+	public boolean equals(Tuple other) {
+		if(values.size() != other.size()) {
+			return false;
+		}
+		for(int i = 0; i < values.size(); i++) {
+			if(values.get(i) != other.getValue(i).doubleValue()) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**

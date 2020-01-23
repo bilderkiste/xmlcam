@@ -289,11 +289,15 @@ public class Generator {
 					points.add(0, xmlPoints.get(i - 2));
 				}
 				if(i == xmlPoints.size() -1) { // If the last point is missing
-					points.add(new Tuple(new double[] { xmlPoints.get(i).getValue(0).doubleValue() + dx, xmlPoints.get(i).getValue(1).doubleValue() + dy } ));
+					if(xmlPoints.get(i).equals(xmlPoints.get(0))) { // Check if last point is the same then first point (closed shape).
+						Main.log.log(Level.FINER, "Closed shape!");
+						points.add(new Tuple(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() } ));
+					} else {
+						points.add(new Tuple(new double[] { xmlPoints.get(i).getValue(0).doubleValue() + dx, xmlPoints.get(i).getValue(1).doubleValue() + dy } ));
+					}
 				} else {
 					points.add(xmlPoints.get(i + 1));
 				}
-				
 				
 				if(Main.log.isLoggable(Level.FINER)) {
 					StringBuffer stringBuffer = new StringBuffer("Considerable points for spline " + i + ": ");
@@ -434,6 +438,7 @@ public class Generator {
 			for(int i = 0; i < pointList.size(); i++) {
 				stringBuffer.append(" t" + i + ":" + pointList.get(i));
 			}
+			stringBuffer.append(" for tau " + t);
 			Main.log.log(Level.FINER, stringBuffer.toString());
 		}
 		

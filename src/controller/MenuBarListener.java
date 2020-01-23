@@ -79,9 +79,6 @@ public class MenuBarListener implements ActionListener {
 				try {
 					FileReader inputStream = new FileReader(fileChooser.getSelectedFile());
 					xmlEditorPane.read(inputStream, null);
-					xmlEditorPane.getScriptvalidator().interrupt();
-					xmlEditorPane.setScriptvalidator(new ScriptValidator(xmlEditorPane));
-					xmlEditorPane.getScriptvalidator().start();
 					((MainWindow) parentWindow).setCurrentXMLFile(fileChooser.getSelectedFile());
 				} catch (IOException e) {
 					Main.log.log(Level.SEVERE, "Error reading file: " + e);

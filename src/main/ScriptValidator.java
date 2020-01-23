@@ -76,10 +76,11 @@ public class ScriptValidator extends Thread {
 		}
 		
 		Main.log.log(Level.FINE, "Start new validator thread no. " + this.getId() + ".");
-		DefaultStyledDocument document = (DefaultStyledDocument) editorPane.getStyledDocument();
+		DefaultStyledDocument document;
 		MutableAttributeSet attributes = editorPane.getInputAttributes();
 	
 		while(!interrupt) {
+			document = (DefaultStyledDocument) editorPane.getStyledDocument();
 			StyleConstants.setForeground(attributes, Color.BLACK);
 			document.setCharacterAttributes(0, document.getLength(), attributes, true);
 			
@@ -113,7 +114,7 @@ public class ScriptValidator extends Thread {
 			}
 			
 		    try {
-				Thread.sleep(5000);
+				Thread.sleep(3000);
 			} catch(InterruptedException e) {
 				interrupt = true;
 				Main.log.log(Level.WARNING, "Validator thread was interrupted. " + e);
@@ -159,6 +160,23 @@ public class ScriptValidator extends Thread {
 	 */
 	public void addErrorListener(ScriptValidatorErrorListener listener) {
 		errorListener.add(listener);
+	}
+	
+	/**
+	 * Returns the error listener at index.
+	 * @param index The index
+	 * @return The error listener
+	 */
+	public ScriptValidatorErrorListener getErrorListener(int index) {
+		return errorListener.get(index);
+	}
+	
+	/**
+	 * Returns the amount of the registered error listener.
+	 * @return The amount
+	 */
+	public int getErrorListenerSize() {
+		return errorListener.size();
 	}
 	
 	/**
