@@ -34,9 +34,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import main.Main;
 import main.MainWindow;
-import main.ScriptValidator;
 import model.Program;
-import view.XMLView;
+import xml.XMLView;
 
 /**
  * This class implements the listener for actions performed by the menu bar.
@@ -62,7 +61,7 @@ public class MenuBarListener implements ActionListener {
 	}
 
 	/**
-	 * Gets invoked if an action in the menu bar occured.
+	 * Gets invoked if an action in the menu bar occurred.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {

@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package main;
+package xml;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;

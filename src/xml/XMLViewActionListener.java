@@ -1,5 +1,5 @@
 /*********************************************************************\
- * GraphicViewActionListener.java - xmlCam G-Code Generator          *
+ * XMLViewActionListener.java - xmlCam G-Code Generator              *
  * Copyright (C) 2020, Christian Kirsch                              *
  *                                                                   *
  * This program is free software; you can redistribute it and/or     *
@@ -17,42 +17,46 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package controller;
+package xml;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.AbstractButton;
+import javax.swing.JButton;
 
-import view.GraphicViewCanvas;
+import controller.Generator;
+import model.Program;
 
 /**
- * This class implements the actions for the components located in the GraphicView.
+ * This class implements the controller for the button commands in the XMLView.
  * @author Christian Kirsch
  */
 
-public class GraphicViewActionListener implements ActionListener {
-	
-	private GraphicViewCanvas gView;
+public class XMLViewActionListener implements ActionListener {
+
+	private Program programModel;
+	private XMLView editorPane;
 	
 	/**
 	 * Constructs a new listener.
-	 * @param gView The canvas (or panel), that paint the view
+	 * @param programModel The model with the changeable items
+	 * @param editorPane The editorPane with the XML script
 	 */
-	public GraphicViewActionListener(GraphicViewCanvas gView) {
-		this.gView = gView;
+	public XMLViewActionListener(Program programModel, XMLView editorPane) {
+		this.programModel = programModel;
+		this.editorPane = editorPane;
 	}
-
+	
 	/**
-	 * Gets invoked by an action from the components of the GraphicView.
+	 * Gets invoked by an action from the buttons of the XMLView.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
-		AbstractButton actionButton = (AbstractButton) actionEvent.getSource();
-	
-		if(actionButton.getActionCommand() == "show_grid") {
-			gView.setGridVisible(actionButton.isSelected());
-			gView.repaint();
+		JButton actionButton = (JButton) actionEvent.getSource();
+		
+		if(actionButton.getActionCommand() == "generate_gcode") {
+			Generator generator = new Generator(programModel, editorPane);
+			generator.generate();
 		}
 		
 	}

@@ -1,5 +1,5 @@
 /*********************************************************************\
- * Workbench.java - xmlCam G-Code Generator                    *
+ * XMLView.java - xmlCam G-Code Generator                            *
  * Copyright (C) 2020, Christian Kirsch                              *
  *                                                                   *
  * This program is free software; you can redistribute it and/or     *
@@ -17,66 +17,46 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package main;
+package xml;
+
+import javax.swing.JTextPane;
 
 /**
- * This class represents the CNC workbench. It returns the size of and dimensions. 
- * @author Christian Kirsch 
+ * This class implements the XML View.
+ * It extends a textpane where the program can be written through an XML Script.
+ * This will the translated to G-Code by the generator.
+ * @author Christian Kirsch
+ *
  */
 
-public class Workbench {
-
-	/**
-	 * The minimum and maximum values of x and y.
-	 */
-	private int xMin, yMin, xMax, yMax;
+public class XMLView extends JTextPane {
 	
-	protected Workbench(int xMin, int yMin, int xMax, int yMax) {
-		this.xMin = xMin;
-		this.yMin = yMin;
-		this.xMax = xMax;
-		this.yMax = yMax;
-	}
+	private static final long serialVersionUID = 1L;
+	private ScriptValidator scriptValidator;
 	
 	/**
-	 * Returns the x size im mm of the workbench.
-	 * @return the x size
+	 * Constructs an XML-View.
 	 */
-	public int getXDimension() {
-		return xMax - xMin;
-	}
-	
-	/**
-	 * Returns the y size im mm of the workbench.
-	 * @return the y size
-	 */
-	public int getYDimension() {
-		return yMax - yMin;
+	public XMLView() {
+		super();
+		this.scriptValidator = null;
 	}
 
 	/**
-	 * Returns the minimal value of x.
-	 * @return the minimal value.
+	 * Returns the validator, that validates the XML script for correctness.
+	 * @return The validator
 	 */
-	public int getXMin() {
-		return xMin;
-	}
-
-	public int getYMin() {
-		return yMin;
-	}
-
-	public int getXMax() {
-		return xMax;
-	}
-
-	public int getYMax() {
-		return yMax;
-	}
-
-	@Override
-	public String toString() {
-		return new String("(" + xMin + ", " + yMin + ", " + xMax + ", " + yMax + ")");
+	public ScriptValidator getScriptvalidator() {
+		return scriptValidator;
 	}
 	
+	/**
+	 * Sets a new validator, that validates the XML script for correctness.
+	 * @param scriptvalidator The new validator
+	 */
+	public void setScriptvalidator(ScriptValidator scriptvalidator) {
+		this.scriptValidator = scriptvalidator;
+		this.scriptValidator.setEditorPane(this);
+	}
+
 }

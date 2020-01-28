@@ -1,5 +1,5 @@
 /*********************************************************************\
- * ScriptValidatorErrorListener.java - xmlCam G-Code Generator       *
+ * ScriptValidatorErrorView.java - xmlCam G-Code Generator           *
  * Copyright (C) 2020, Christian Kirsch                              *
  *                                                                   *
  * This program is free software; you can redistribute it and/or     *
@@ -17,25 +17,43 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package main;
+package xml;
+
+import java.awt.Dimension;
+
+import javax.swing.JTextPane;
 
 /**
- * This interface provides the method which gets invoked from the script validator when an error occurs or when no error was found.
+ * This class implements the view that shows the errors from the script validator.
  * @author Christian Kirsch
  *
  */
 
-public interface ScriptValidatorErrorListener {
+public class ScriptValidatorErrorView extends JTextPane implements ScriptValidatorErrorListener {
+
+	private static final long serialVersionUID = 1L;
+
+	public ScriptValidatorErrorView() {
+		this.setEditable(false);
+		this.setPreferredSize(new Dimension(this.getWidth(), 35));
+	}
 	
 	/**
 	 * Gets invoked from the script validator when an error occurs.
 	 * @param errorHandler the error handler whith the information about the error
 	 */
-	public void errorOccured(ScriptValidatorErrorHandler errorHandler);
-	
+	@Override
+	public void errorOccured(ScriptValidatorErrorHandler errorHandler) {
+		this.setText("Line " + errorHandler.getLineNumer() + ": " + errorHandler.getMessage());
+	}
+
 	/**
 	 * Gets invoked from the script validator when when no error was found.
 	 */
-	public void noErrorFound();
-	
+	@Override
+	public void noErrorFound() {
+		this.setText(new String());;
+		
+	}
+
 }

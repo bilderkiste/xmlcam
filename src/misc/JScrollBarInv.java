@@ -1,5 +1,5 @@
 /*********************************************************************\
- * XMLViewActionListener.java - xmlCam G-Code Generator              *
+ * JScrollBarInv.java - xmlCam G-Code Generator                      *
  * Copyright (C) 2020, Christian Kirsch                              *
  *                                                                   *
  * This program is free software; you can redistribute it and/or     *
@@ -17,48 +17,37 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package controller;
+package misc;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-
-import model.Program;
-import view.XMLView;
+import javax.swing.JScrollBar;
 
 /**
- * This class implements the controller for the button commands in the XMLView.
- * @author Christian Kirsch
+ * This class implements a reversed JScrollBar. That means, that minimum is on bottom or right and maximum on top or left.
  */
+public class JScrollBarInv extends JScrollBar {
 
-public class XMLViewActionListener implements ActionListener {
-
-	private Program programModel;
-	private XMLView editorPane;
+	private static final long serialVersionUID = 1L;
 	
-	/**
-	 * Constructs a new listener.
-	 * @param programModel The model with the changeable items
-	 * @param editorPane The editorPane with the XML script
-	 */
-	public XMLViewActionListener(Program programModel, XMLView editorPane) {
-		this.programModel = programModel;
-		this.editorPane = editorPane;
+	public JScrollBarInv(int orientation, int value, int extent, int min, int max) {
+		super(orientation, min - extent, extent, max * -1, min * -1);
 	}
 	
-	/**
-	 * Gets invoked by an action from the buttons of the XMLView.
-	 */
 	@Override
-	public void actionPerformed(ActionEvent actionEvent) {
-		JButton actionButton = (JButton) actionEvent.getSource();
-		
-		if(actionButton.getActionCommand() == "generate_gcode") {
-			Generator generator = new Generator(programModel, editorPane);
-			generator.generate();
-		}
-		
+	public int getValue() {
+		return (super.getValue() + super.getVisibleAmount()) * -1;
 	}
 
+	@Override
+	public void setMaximum(int maximum) {
+		super.setMinimum(maximum * -1);
+	}
+	
+	@Override
+	public void setMinimum(int minimum) {
+		super.setMaximum(minimum * -1);
+	}
+	
+
+	
+	
 }

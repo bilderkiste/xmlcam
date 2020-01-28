@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package main;
+package xml;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -38,7 +38,7 @@ import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
-import view.XMLView;
+import main.Main;
 
 public class ScriptValidator extends Thread {
 	
@@ -55,7 +55,7 @@ public class ScriptValidator extends Thread {
 		
 	    try {
 	    	SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			Schema schema = schemaFactory.newSchema(new StreamSource(new InputStreamReader(getClass().getResourceAsStream("/main/Schema.xsd"))));
+			Schema schema = schemaFactory.newSchema(new StreamSource(new InputStreamReader(getClass().getResourceAsStream("/xml/Schema.xsd"))));
 			this.xmlValidator = schema.newValidator();
 			errorHandler = new ScriptValidatorErrorHandler();
 			this.xmlValidator.setErrorHandler(errorHandler);

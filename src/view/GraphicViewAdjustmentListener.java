@@ -1,5 +1,5 @@
 /*********************************************************************\
- * ScriptValidatorErrorView.java - xmlCam G-Code Generator           *
+ * GraphicViewAdjustmentListener.java - xmlCam G-Code Generator          *
  * Copyright (C) 2020, Christian Kirsch                              *
  *                                                                   *
  * This program is free software; you can redistribute it and/or     *
@@ -17,43 +17,32 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package main;
+package view;
 
-import java.awt.Dimension;
-
-import javax.swing.JTextPane;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 
 /**
- * This class implements the view that shows the errors from the script validator.
+ * This class sets values for moving the scrollbars in the graphic view.
  * @author Christian Kirsch
  *
  */
-
-public class ScriptValidatorErrorView extends JTextPane implements ScriptValidatorErrorListener {
-
-	private static final long serialVersionUID = 1L;
-
-	public ScriptValidatorErrorView() {
-		this.setEditable(false);
-		this.setPreferredSize(new Dimension(this.getWidth(), 35));
-	}
+public class GraphicViewAdjustmentListener implements AdjustmentListener {
+	
+	private GraphicView graphicView;
 	
 	/**
-	 * Gets invoked from the script validator when an error occurs.
-	 * @param errorHandler the error handler whith the information about the error
+	 * Constructs a new listener.
+	 * @param gView The canvas (or panel), that paint the view
 	 */
-	@Override
-	public void errorOccured(ScriptValidatorErrorHandler errorHandler) {
-		this.setText("Line " + errorHandler.getLineNumer() + ": " + errorHandler.getMessage());
+	public GraphicViewAdjustmentListener(GraphicView graphicView) {
+		this.graphicView = graphicView;
 	}
-
-	/**
-	 * Gets invoked from the script validator when when no error was found.
-	 */
+	
 	@Override
-	public void noErrorFound() {
-		this.setText(new String());;
-		
+	public void adjustmentValueChanged(AdjustmentEvent adjustment) {
+		//System.out.println("x: val: " + adjustment.getValue() + " min: ");
+		graphicView.repaint();
 	}
 
 }

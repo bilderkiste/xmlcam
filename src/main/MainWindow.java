@@ -37,16 +37,19 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 
-import controller.XMLViewActionListener;
-import controller.GraphicViewActionListener;
 import controller.MenuBarListener;
 import controller.TableViewActionListener;
 import controller.TableViewDummyModelChangeListener;
 import model.Program;
 import view.GraphicView;
+import view.GraphicViewActionListener;
 import view.TableViewDummyModel;
-import view.XMLView;
+import xml.ScriptValidator;
+import xml.ScriptValidatorErrorView;
+import xml.XMLView;
+import xml.XMLViewActionListener;
 
 /**
  * This class creates the GUI for xmlCam.
@@ -363,7 +366,7 @@ public class MainWindow extends JFrame {
 		panel.add(graphicView, BorderLayout.CENTER);
 	
 		JPanel optionPanel = new JPanel();
-		GraphicViewActionListener graphicViewActionListener = new GraphicViewActionListener(graphicView.getGraphicViewCanvasView());
+		GraphicViewActionListener graphicViewActionListener = new GraphicViewActionListener(graphicView);
 	
 		JCheckBox gridCheckbox = new JCheckBox();
 		gridCheckbox.setText("Zeige Raster");
@@ -371,6 +374,18 @@ public class MainWindow extends JFrame {
 		gridCheckbox.setActionCommand("show_grid");
 		gridCheckbox.addActionListener(graphicViewActionListener);
 		optionPanel.add(gridCheckbox);
+		
+		JButton zoomIn = new JButton("+");
+		zoomIn.setActionCommand("zoom_in");
+		zoomIn.addActionListener(graphicViewActionListener);
+		optionPanel.add(zoomIn);
+		
+		JButton zoomOut = new JButton("-");
+		zoomOut.setActionCommand("zoom_out");
+		zoomOut.addActionListener(graphicViewActionListener);
+		optionPanel.add(zoomOut);
+		
+		
 		
 		panel.add(optionPanel, BorderLayout.SOUTH);
 		

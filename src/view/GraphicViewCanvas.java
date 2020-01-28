@@ -24,7 +24,7 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import main.Settings;
+import misc.Settings;
 import model.Program;
 
 /**
@@ -36,14 +36,16 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	private static final long serialVersionUID = 1L;
 	private Program programModel;
 	private boolean gridVisible;
+	private GraphicView graphicView;
 	
 	/**
 	 * Constructs a new canvas.
 	 * @param programModel The program model with G-Code to be displayed
 	 */
-	public GraphicViewCanvas(Program programModel) {
+	public GraphicViewCanvas(Program programModel, GraphicView graphicView) {
 		this.programModel = programModel;
-		this.setBackground(Color.GRAY);
+		this.graphicView = graphicView;
+		this.setBackground(Color.WHITE);
 		this.gridVisible = false;
 	}
 	
@@ -58,8 +60,8 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	super.paint(g);
     	
     	// Paint workbench rectangle
-    	g.setColor(Color.WHITE);
-    	g.fillRect(0, this.getHeight() - Settings.workbench.getYDimension(), Settings.workbench.getXDimension(), Settings.workbench.getYDimension());
+    	//g.setColor(Color.WHITE);
+    	//g.fillRect(0, this.getHeight() - Settings.workbench.getYDimension(), Settings.workbench.getXDimension(), Settings.workbench.getYDimension());
     	
     	// Paint all G0 and G1 moves
         for(int i = 0; i < programModel.getLineSize(); i++) {
@@ -77,8 +79,10 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         			draw = true;
         		}
         		if(draw) {
-        			g.drawLine(GraphicViewHelpers.convertX(x1), GraphicViewHelpers.convertY(y1, this.getHeight()), GraphicViewHelpers.convertX(x2), GraphicViewHelpers.convertY(y2, this.getHeight()));
-            		x1 = x2;
+        			//g.drawLine(GraphicViewHelpers.convertX(x1), GraphicViewHelpers.convertY(y1, this.getHeight()), GraphicViewHelpers.convertX(x2), GraphicViewHelpers.convertY(y2, this.getHeight()));
+        			g.drawLine(GraphicViewHelpers.convertX(x1 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y1 * graphicView.getScale() - graphicView.getyBar().getValue(), this.getHeight(), graphicView.getScale()),
+        						GraphicViewHelpers.convertX(x2 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y2 * graphicView.getScale() - graphicView.getyBar().getValue(), this.getHeight(), graphicView.getScale()));
+        			x1 = x2;
             		y1 = y2;
         		}
 
@@ -97,7 +101,8 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         			draw = true;
         		}
         		if(draw) {
-        			g.drawLine(GraphicViewHelpers.convertX(x1), GraphicViewHelpers.convertY(y1, this.getHeight()), GraphicViewHelpers.convertX(x2), GraphicViewHelpers.convertY(y2, this.getHeight()));
+        			g.drawLine(GraphicViewHelpers.convertX(x1 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y1 * graphicView.getScale() - graphicView.getyBar().getValue(), this.getHeight(), graphicView.getScale()),
+    							GraphicViewHelpers.convertX(x2 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y2 * graphicView.getScale() - graphicView.getyBar().getValue(), this.getHeight(), graphicView.getScale()));
             		x1 = x2;
             		y1 = y2;
         		}
@@ -116,9 +121,10 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	private void paintGrid(Graphics g) {
 		g.setColor(Color.DARK_GRAY);
 		
-		for(int i = 0; i < Settings.workbench.getXDimension(); i += Settings.step) {
-			for(int j = 0; j < Settings.workbench.getYDimension(); j += Settings.step) {
-				g.drawLine(i, this.getHeight() - j, i, this.getHeight() - j);
+		for(int i = 0; i < Settings.workbench.getXDimension() * graphicView.getScale(); i += Settings.step) {
+			for(int j = 0; j < Settings.workbench.getYDimension() * graphicView.getScale(); j += Settings.step) {
+				g.drawLine(i - graphicView.getxBar().getValue(), this.getHeight() - j + graphicView.getyBar().getValue(),
+						i - graphicView.getxBar().getValue(), this.getHeight() - j + graphicView.getyBar().getValue());
 			}
 		}
 	}

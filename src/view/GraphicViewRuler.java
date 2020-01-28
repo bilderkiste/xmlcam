@@ -24,7 +24,7 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import main.Settings;
+import misc.Settings;
 
 /**
  * This class paints the rulers for the Graphic view.
@@ -40,14 +40,16 @@ public class GraphicViewRuler extends JPanel {
 	public final static int Z_RULER = 2;
 	
 	private int axis;
+	private GraphicView graphicView;
 	
 	/**
 	 * Constructs a new ruler.
 	 * @param axis The axis which the ruler shall displayed
 	 */
-	public GraphicViewRuler(int axis) {
+	public GraphicViewRuler(int axis, GraphicView graphicView) {
 		this.setBackground(Color.LIGHT_GRAY);
 		this.axis = axis;
+		this.graphicView = graphicView;
 	}
 	
 	/**
@@ -58,15 +60,15 @@ public class GraphicViewRuler extends JPanel {
 		super.paint(g);
 		
 		if(axis == 0) {
-			for(int i = Settings.workbench.getXMin(); i <= Settings.workbench.getXMax(); i += Settings.step) {
-				g.drawLine(i - Settings.workbench.getXMin(), this.getHeight(), i - Settings.workbench.getXMin(), this.getHeight() - 30);
-				g.drawString(Integer.toString(i), i - Settings.workbench.getXMin() + 2, this.getHeight() - 4);
+			for(int i = Settings.workbench.getXMin() * graphicView.getScale(); i <= (Settings.workbench.getXMin() + Settings.workbench.getXDimension()) * graphicView.getScale(); i += Settings.step) {
+				g.drawLine(i - Settings.workbench.getXMin() * graphicView.getScale() - graphicView.getxBar().getValue(), this.getHeight(), i - Settings.workbench.getXMin() * graphicView.getScale() - graphicView.getxBar().getValue(), this.getHeight() - 30);
+				g.drawString(Integer.toString(i / graphicView.getScale()), i - Settings.workbench.getXMin() * graphicView.getScale() + 2 - graphicView.getxBar().getValue(), this.getHeight() - 4);
 			}
 		
 		} else if(axis == 1) {
-			for(int i = Settings.workbench.getYMin(); i <= Settings.workbench.getYMax(); i += Settings.step) {
-				g.drawLine(0, this.getHeight() - (i - Settings.workbench.getYMin()), 30, this.getHeight() - (i - Settings.workbench.getYMin()));
-				g.drawString(Integer.toString(i), 0, this.getHeight() - (i - Settings.workbench.getYMin()) - 2);
+			for(int i = Settings.workbench.getYMin() * graphicView.getScale(); i <= (Settings.workbench.getYMin() + Settings.workbench.getYDimension()) * graphicView.getScale(); i += Settings.step) {
+				g.drawLine(0, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() - graphicView.getyBar().getValue()), 30, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() - graphicView.getyBar().getValue()));
+				g.drawString(Integer.toString(i / graphicView.getScale()), 0, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() + 2 - graphicView.getyBar().getValue()));
 			}
 		}
 		

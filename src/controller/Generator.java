@@ -37,11 +37,11 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import main.Main;
-import main.Settings;
+import misc.Settings;
 import model.Field;
 import model.Line;
 import model.Program;
-import view.XMLView;
+import xml.XMLView;
 
 /**
  * This class is the heart piece of xmlCam. Here all G-Code will generated from XML.

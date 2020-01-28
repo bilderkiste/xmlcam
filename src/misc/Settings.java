@@ -17,12 +17,14 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package main;
+package misc;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
+
+import main.Main;
 
 /**
  * This class load the settings for the whole program from the file settings.txt, which is located in xmlCam main folder.

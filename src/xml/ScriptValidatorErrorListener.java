@@ -1,5 +1,5 @@
 /*********************************************************************\
- * GraphicViewHelpers.java - xmlCam G-Code Generator                 *
+ * ScriptValidatorErrorListener.java - xmlCam G-Code Generator       *
  * Copyright (C) 2020, Christian Kirsch                              *
  *                                                                   *
  * This program is free software; you can redistribute it and/or     *
@@ -17,32 +17,25 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package view;
-
-import misc.Settings;
+package xml;
 
 /**
- * This class provides some helper methods for the GraphicView.
+ * This interface provides the method which gets invoked from the script validator when an error occurs or when no error was found.
  * @author Christian Kirsch
+ *
  */
-public class GraphicViewHelpers {
+
+public interface ScriptValidatorErrorListener {
 	
 	/**
-     * Converts the coordinate system from Quadrant IV to Quadrant I and move the coordinate system for negative workbenches.
-     * @param coordinate The input coordinate
-     * @param componentHeight The current component height
-     * @return the output coordinate
-     */
-	public static int convertY(int coordinate, int componentHeight, int scale) {
-		return componentHeight - (coordinate - Settings.workbench.getYMin() * scale);
-    }
-    
+	 * Gets invoked from the script validator when an error occurs.
+	 * @param errorHandler the error handler whith the information about the error
+	 */
+	public void errorOccured(ScriptValidatorErrorHandler errorHandler);
+	
 	/**
-     * Moves the coordinate system for negative workbenches.
-     * @param coordinate The input coordinate
-     * @return The output coordinate
-     */
-	public static int convertX(int coordinate, int scale) {
-		return coordinate - Settings.workbench.getXMin() * scale;
-    }
+	 * Gets invoked from the script validator when when no error was found.
+	 */
+	public void noErrorFound();
+	
 }

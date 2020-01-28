@@ -127,7 +127,7 @@ public class Tuple {
 	}
 	
 	/**
-	 * Compares this tuple with another. Only the tuple values will compared, not the type.
+	 * Compares this tuple with another. The type is not considered by the comparison.
 	 * @param other The other tuple to compare
 	 * @return true if equal false if not
 	 */
