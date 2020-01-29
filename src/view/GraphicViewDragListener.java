@@ -1,5 +1,5 @@
 /*********************************************************************\
- * JScrollBarInv.java - xmlCam G-Code Generator                      *
+ * GraphicViewDrag.java - xmlCam G-Code Generator                    *
  * Copyright (C) 2020, Christian Kirsch                              *
  *                                                                   *
  * This program is free software; you can redistribute it and/or     *
@@ -17,37 +17,55 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package misc;
+package view;
 
-import javax.swing.JScrollBar;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
-/**
- * This class implements a reversed JScrollBar. That means, that minimum is on bottom or right and maximum on top or left.
- */
-public class JScrollBarInv extends JScrollBar {
-
-	private static final long serialVersionUID = 1L;
+public class GraphicViewDragListener implements MouseListener, MouseMotionListener {
 	
-	public JScrollBarInv(int orientation, int value, int extent, int min, int max) {
-		super(orientation, min - extent, extent, max * -1, min * -1);
-	}
+	private GraphicView graphicView;
+	private int xPressed, yPressed;
 	
-	@Override
-	public int getValue() {
-		return (super.getValue() + super.getVisibleAmount()) * -1;
+	public GraphicViewDragListener(GraphicView graphicView) {
+		this.graphicView = graphicView;
+		xPressed = 0;
+		yPressed = 0;
 	}
 
 	@Override
-	public void setMaximum(int maximum) {
-		super.setMinimum(maximum * -1);
+	public void mouseClicked(MouseEvent arg0) {
 	}
-	
-	@Override
-	public void setMinimum(int minimum) {
-		super.setMaximum(minimum * -1);
-	}
-	
 
-	
-	
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent event) {
+		xPressed = event.getX();
+		yPressed = event.getY();
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent event) {
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent event) {
+		graphicView.getxBar().setValue(graphicView.getxBar().getValue() - (event.getX() - xPressed));
+		xPressed = event.getX();
+		graphicView.getyBar().setValue(graphicView.getyBar().getValue() - (event.getY() - yPressed));
+		yPressed = event.getY();
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent event) {
+	}
+
 }

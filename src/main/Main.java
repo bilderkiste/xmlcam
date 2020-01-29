@@ -39,7 +39,7 @@ public class Main {
 	
 	public static final Logger log = Logger.getLogger("Logger");
 	
-	public static final String version = new String("0.1.79dev");
+	public static final String version = new String("0.1.80dev");
 
 	public static void main (String[] arguments) {
 		String[] arg = null;

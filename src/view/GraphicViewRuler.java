@@ -67,8 +67,8 @@ public class GraphicViewRuler extends JPanel {
 		
 		} else if(axis == 1) {
 			for(int i = Settings.workbench.getYMin() * graphicView.getScale(); i <= (Settings.workbench.getYMin() + Settings.workbench.getYDimension()) * graphicView.getScale(); i += Settings.step) {
-				g.drawLine(0, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() - graphicView.getyBar().getValue()), 30, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() - graphicView.getyBar().getValue()));
-				g.drawString(Integer.toString(i / graphicView.getScale()), 0, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() + 2 - graphicView.getyBar().getValue()));
+				g.drawLine(0, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() + (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount())), 30, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() + (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount())));
+				g.drawString(Integer.toString(i / graphicView.getScale()), 0, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() + 2 + (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount())));
 			}
 		}
 		

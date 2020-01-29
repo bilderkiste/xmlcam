@@ -56,17 +56,15 @@ public class GraphicViewActionListener implements ActionListener {
 		} else if(actionButton.getActionCommand() == "zoom_in") {
 			graphicView.setScale(graphicView.getScale() + 1);
 			graphicView.getxBar().setMaximum(Settings.workbench.getXDimension() * graphicView.getScale());
-			graphicView.getyBar().setMaximum(Settings.workbench.getYDimension() * graphicView.getScale());
+			graphicView.getyBar().setMinimum(Settings.workbench.getYDimension() * graphicView.getScale() * -1);
 			graphicView.setZoomDisplay(graphicView.getScale());
 			graphicView.repaint();
-			System.out.println(graphicView.getxValue());
 		} else if(actionButton.getActionCommand() == "zoom_out") {
 			graphicView.setScale(graphicView.getScale() - 1);
 			graphicView.getxBar().setMaximum(Settings.workbench.getXDimension() * graphicView.getScale());
-			graphicView.getyBar().setMaximum(Settings.workbench.getYDimension() * graphicView.getScale());
+			graphicView.getyBar().setMinimum(Settings.workbench.getYDimension() * graphicView.getScale() * -1);
 			graphicView.setZoomDisplay(graphicView.getScale());
 			graphicView.repaint();
-			System.out.println(graphicView.getxValue());
 		}
 	}
 

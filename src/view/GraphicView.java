@@ -27,7 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
 
-import misc.JScrollBarInv;
 import misc.Settings;
 import model.Program;
 
@@ -42,17 +41,12 @@ public class GraphicView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Program programModel;
 	private GraphicViewCanvas graphicViewCanvas;
-	private JScrollBar xBar;
-	private JScrollBarInv yBar;
+	private JScrollBar xBar, yBar;
 	private JTextField zoomDisplay;
 	/**
 	 * The scale for the zoom level.
 	 */
 	private int scale;
-	/**
-	 * The current position values of the scrollbars.
-	 */
-	private int xValue, yValue;
 	
 	/**
 	 * Constructs a GrahpicView including the canvas and the rulers.
@@ -99,7 +93,7 @@ public class GraphicView extends JPanel {
 		constraints.gridy = 0;
 		this.add(xBar, constraints);
 		
-		yBar = new JScrollBarInv(JScrollBar.VERTICAL, 0, Settings.workbench.getYDimension(), 0, Settings.workbench.getYDimension());
+		yBar = new JScrollBar(JScrollBar.VERTICAL, Settings.workbench.getYDimension() * -1, Settings.workbench.getYDimension(), Settings.workbench.getYDimension() * -1, 0);
 		yBar.setPreferredSize(new Dimension(16, Settings.workbench.getYDimension()));
 		yBar.addAdjustmentListener(adjustmentListener);
 
@@ -107,7 +101,8 @@ public class GraphicView extends JPanel {
 		constraints.gridy = 1;
 		this.add(yBar, constraints);
 		
-		zoomDisplay = new  JTextField("100%");
+		zoomDisplay = new JTextField();
+		this.setZoomDisplay(this.scale);
 		zoomDisplay.setEditable(false);
 		constraints.gridx = 0;
 		constraints.gridy = 2;
@@ -156,38 +151,6 @@ public class GraphicView extends JPanel {
 	 */
 	public JScrollBar getyBar() {
 		return yBar;
-	}
-
-	/**
-	 * Gets the current position of the x scrollbar.
-	 * @return The current position
-	 */
-	public int getxValue() {
-		return xValue;
-	}
-	
-	/**
-	 * Sets the current position of the x scrollbar.
-	 * @param xValue The new current position
-	 */
-	public void setxValue(int xValue) {
-		this.xValue = xValue;
-	}
-
-	/**
-	 * Gets the current position of the y scrollbar.
-	 * @return The current position
-	 */
-	public int getyValue() {
-		return yValue;
-	}
-
-	/**
-	 * Sets the current position of the y scrollbar.
-	 * @param yValue The new current position
-	 */
-	public void setyValue(int yValue) {
-		this.yValue = yValue;
 	}
 
 	/**

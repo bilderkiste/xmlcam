@@ -23,7 +23,7 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 
 /**
- * This class sets values for moving the scrollbars in the graphic view.
+ * This class call the repaint method for the graphic view if the scrollbars where moved.
  * @author Christian Kirsch
  *
  */
@@ -41,7 +41,6 @@ public class GraphicViewAdjustmentListener implements AdjustmentListener {
 	
 	@Override
 	public void adjustmentValueChanged(AdjustmentEvent adjustment) {
-		//System.out.println("x: val: " + adjustment.getValue() + " min: ");
 		graphicView.repaint();
 	}
 

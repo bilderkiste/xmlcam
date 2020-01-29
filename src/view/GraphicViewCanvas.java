@@ -47,6 +47,9 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 		this.graphicView = graphicView;
 		this.setBackground(Color.WHITE);
 		this.gridVisible = false;
+		GraphicViewDragListener dragger = new GraphicViewDragListener(graphicView);
+		this.addMouseListener(dragger);
+		this.addMouseMotionListener(dragger);
 	}
 	
 	/**
@@ -80,8 +83,8 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         		}
         		if(draw) {
         			//g.drawLine(GraphicViewHelpers.convertX(x1), GraphicViewHelpers.convertY(y1, this.getHeight()), GraphicViewHelpers.convertX(x2), GraphicViewHelpers.convertY(y2, this.getHeight()));
-        			g.drawLine(GraphicViewHelpers.convertX(x1 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y1 * graphicView.getScale() - graphicView.getyBar().getValue(), this.getHeight(), graphicView.getScale()),
-        						GraphicViewHelpers.convertX(x2 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y2 * graphicView.getScale() - graphicView.getyBar().getValue(), this.getHeight(), graphicView.getScale()));
+        			g.drawLine(GraphicViewHelpers.convertX(x1 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y1 * graphicView.getScale() + (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()), this.getHeight(), graphicView.getScale()),
+        						GraphicViewHelpers.convertX(x2 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y2 * graphicView.getScale() + (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()), this.getHeight(), graphicView.getScale()));
         			x1 = x2;
             		y1 = y2;
         		}
@@ -101,8 +104,8 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         			draw = true;
         		}
         		if(draw) {
-        			g.drawLine(GraphicViewHelpers.convertX(x1 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y1 * graphicView.getScale() - graphicView.getyBar().getValue(), this.getHeight(), graphicView.getScale()),
-    							GraphicViewHelpers.convertX(x2 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y2 * graphicView.getScale() - graphicView.getyBar().getValue(), this.getHeight(), graphicView.getScale()));
+        			g.drawLine(GraphicViewHelpers.convertX(x1 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y1 * graphicView.getScale() + (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()), this.getHeight(), graphicView.getScale()),
+    							GraphicViewHelpers.convertX(x2 * graphicView.getScale() - graphicView.getxBar().getValue(), graphicView.getScale()), GraphicViewHelpers.convertY(y2 * graphicView.getScale() + (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()), this.getHeight(), graphicView.getScale()));
             		x1 = x2;
             		y1 = y2;
         		}
@@ -123,8 +126,8 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 		
 		for(int i = 0; i < Settings.workbench.getXDimension() * graphicView.getScale(); i += Settings.step) {
 			for(int j = 0; j < Settings.workbench.getYDimension() * graphicView.getScale(); j += Settings.step) {
-				g.drawLine(i - graphicView.getxBar().getValue(), this.getHeight() - j + graphicView.getyBar().getValue(),
-						i - graphicView.getxBar().getValue(), this.getHeight() - j + graphicView.getyBar().getValue());
+				g.drawLine(i - graphicView.getxBar().getValue(), this.getHeight() - j - (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()),
+						i - graphicView.getxBar().getValue(), this.getHeight() - j - (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()));
 			}
 		}
 	}
