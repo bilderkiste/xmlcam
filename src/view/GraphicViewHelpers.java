@@ -19,6 +19,8 @@
 
 package view;
 
+import javax.swing.JScrollBar;
+
 import misc.Settings;
 
 /**
@@ -28,21 +30,27 @@ import misc.Settings;
 public class GraphicViewHelpers {
 	
 	/**
-     * Converts the coordinate system from Quadrant IV to Quadrant I and move the coordinate system for negative workbenches.
+     * Calculates the Y point for the G-Code coordinate on the drawing canvas.
+     * It converts the coordinate system from Quadrant IV to Quadrant I and move the coordinate system for negative workbenches, consider the zoom scale and position of the scrollbar. 
      * @param coordinate The input coordinate
      * @param componentHeight The current component height
+     * @param scale The zoom scale
+     * @param scrollBar The scrollbar, that belongs to this axis
      * @return the output coordinate
      */
-	public static int convertY(int coordinate, int componentHeight, int scale) {
-		return componentHeight - (coordinate - Settings.workbench.getYMin() * scale);
+	public static int convertY(double coordinate, int componentHeight, int scale, JScrollBar scrollBar) {
+		return (int) (componentHeight - ((coordinate * scale + scrollBar.getValue() + scrollBar.getVisibleAmount()) - Settings.workbench.getYMin() * scale));
     }
     
 	/**
-     * Moves the coordinate system for negative workbenches.
+	 * Calculates the X point for the G-Code coordinate on the drawing canvas.
+     * It moves the coordinate system for negative workbenches, consider the zoom scale and position of the scrollbar.
      * @param coordinate The input coordinate
+     * @param scale The zoom scale
+     * @param scrollBar The scrollbar, that belongs to this axis
      * @return The output coordinate
      */
-	public static int convertX(int coordinate, int scale) {
-		return coordinate - Settings.workbench.getXMin() * scale;
+	public static int convertX(double coordinate, int scale, JScrollBar scrollBar) {
+		return (int) (coordinate * scale - scrollBar.getValue() - Settings.workbench.getXMin() * scale);	
     }
 }
