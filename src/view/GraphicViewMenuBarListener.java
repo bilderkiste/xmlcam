@@ -1,5 +1,5 @@
 /*********************************************************************\
- * GraphicViewActionListener.java - xmlCam G-Code Generator          *
+ * GraphicViewMenuBarListener.java - xmlCam G-Code Generator         *
  * Copyright (C) 2020, Christian Kirsch                              *
  *                                                                   *
  * This program is free software; you can redistribute it and/or     *
@@ -24,45 +24,35 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractButton;
 
-import misc.Settings;
+public class GraphicViewMenuBarListener implements ActionListener {
 
-/**
- * This class implements the actions for the components located in the GraphicView.
- * @author Christian Kirsch
- */
-
-public class GraphicViewActionListener implements ActionListener {
-	
 	private GraphicView graphicView;
 	
 	/**
 	 * Constructs a new listener.
-	 * @param graphicView The canvas (or panel), that paint the view
+	 * @param graphicView The canvas (or panel), that paints the view
 	 */
-	public GraphicViewActionListener(GraphicView graphicView) {
+	public GraphicViewMenuBarListener(GraphicView graphicView) {
 		this.graphicView = graphicView;
 	}
 
-	/**
-	 * Gets invoked by an action from the components of the GraphicView.
-	 */
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
 		AbstractButton actionButton = (AbstractButton) actionEvent.getSource();
-	
-		if(actionButton.getActionCommand() == "zoom_in") {
-			graphicView.setScale(graphicView.getScale() + 1);
-			graphicView.getxBar().setMaximum(Settings.workbench.getXDimension() * graphicView.getScale());
-			graphicView.getyBar().setMinimum(Settings.workbench.getYDimension() * graphicView.getScale() * -1);
-			graphicView.setZoomDisplay(graphicView.getScale());
+		
+		if(actionButton.getActionCommand() == "show_g0") {
+			graphicView.getGraphicViewCanvasView().setG0lineVisible(actionButton.isSelected());
 			graphicView.repaint();
-		} else if(actionButton.getActionCommand() == "zoom_out") {
-			graphicView.setScale(graphicView.getScale() - 1);
-			graphicView.getxBar().setMaximum(Settings.workbench.getXDimension() * graphicView.getScale());
-			graphicView.getyBar().setMinimum(Settings.workbench.getYDimension() * graphicView.getScale() * -1);
-			graphicView.setZoomDisplay(graphicView.getScale());
+		} else if(actionButton.getActionCommand() == "show_g1") {
+			graphicView.getGraphicViewCanvasView().setG1lineVisible(actionButton.isSelected());
+			graphicView.repaint();
+		} else if(actionButton.getActionCommand() == "show_points") {
+			graphicView.getGraphicViewCanvasView().setPointVisible(actionButton.isSelected());
+			graphicView.repaint();
+		} else if(actionButton.getActionCommand() == "show_grid") {
+			graphicView.getGraphicViewCanvasView().setGridVisible(actionButton.isSelected());
 			graphicView.repaint();
 		}
+		
 	}
-
 }

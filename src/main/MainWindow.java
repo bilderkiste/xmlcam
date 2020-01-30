@@ -29,6 +29,7 @@ import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -44,6 +45,7 @@ import controller.TableViewDummyModelChangeListener;
 import model.Program;
 import view.GraphicView;
 import view.GraphicViewActionListener;
+import view.GraphicViewMenuBarListener;
 import view.TableViewDummyModel;
 import xml.ScriptValidator;
 import xml.ScriptValidatorErrorView;
@@ -51,7 +53,7 @@ import xml.XMLView;
 import xml.XMLViewActionListener;
 
 /**
- * This class creates the GUI for xmlCam.
+ * This class creates the GUI for xmlCAM.
  * @author Christian Kirsch
  *
  */
@@ -63,6 +65,8 @@ public class MainWindow extends JFrame {
 	private Program programModel;
 	private XMLView xmlEditorPane;
 	private JMenuBar menuBar;
+	private GraphicView graphicView;
+	
 	/**
 	 * The current which was open by the XML open file dialog.
 	 */
@@ -180,6 +184,7 @@ public class MainWindow extends JFrame {
 	private JMenuBar createMenuBar() {
 		JMenu menu;
 		JMenuItem menuItem;
+		JCheckBoxMenuItem checkBoxMenuItem;
 		
 		menuBar = new JMenuBar();
 		
@@ -243,6 +248,40 @@ public class MainWindow extends JFrame {
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
 			
+		menu = new JMenu("Grafische Ansicht");
+		menu.setMnemonic(KeyEvent.VK_R);
+		menuBar.add(menu);
+		
+		GraphicViewMenuBarListener graphicViewMenuBarListener = new GraphicViewMenuBarListener(graphicView);
+		
+		checkBoxMenuItem = new JCheckBoxMenuItem("Zeige G0");
+		checkBoxMenuItem.setMnemonic(KeyEvent.VK_0);
+		checkBoxMenuItem.setSelected(graphicView.getGraphicViewCanvasView().isG0lineVisible());
+		checkBoxMenuItem.setActionCommand("show_g0");
+		checkBoxMenuItem.addActionListener(graphicViewMenuBarListener);
+		menu.add(checkBoxMenuItem);
+		
+		checkBoxMenuItem = new JCheckBoxMenuItem("Zeige G1");
+		checkBoxMenuItem.setMnemonic(KeyEvent.VK_1);
+		checkBoxMenuItem.setSelected(graphicView.getGraphicViewCanvasView().isG1lineVisible());
+		checkBoxMenuItem.setActionCommand("show_g1");
+		checkBoxMenuItem.addActionListener(graphicViewMenuBarListener);
+		menu.add(checkBoxMenuItem);
+		
+		checkBoxMenuItem = new JCheckBoxMenuItem("Zeige Punkte");
+		checkBoxMenuItem.setMnemonic(KeyEvent.VK_P);
+		checkBoxMenuItem.setSelected(graphicView.getGraphicViewCanvasView().isPointVisible());
+		checkBoxMenuItem.setActionCommand("show_points");
+		checkBoxMenuItem.addActionListener(graphicViewMenuBarListener);
+		menu.add(checkBoxMenuItem);
+		
+		checkBoxMenuItem = new JCheckBoxMenuItem("Zeige Raster");
+		checkBoxMenuItem.setMnemonic(KeyEvent.VK_R);
+		checkBoxMenuItem.setSelected(graphicView.getGraphicViewCanvasView().isGridVisible());
+		checkBoxMenuItem.setActionCommand("show_grid");
+		checkBoxMenuItem.addActionListener(graphicViewMenuBarListener);
+		menu.add(checkBoxMenuItem);
+	
 		return menuBar;
 	}
 	
@@ -361,18 +400,11 @@ public class MainWindow extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		
-		GraphicView graphicView = new GraphicView(programModel);
+		graphicView = new GraphicView(programModel);
 		panel.add(graphicView, BorderLayout.CENTER);
 	
 		JPanel optionPanel = new JPanel();
 		GraphicViewActionListener graphicViewActionListener = new GraphicViewActionListener(graphicView);
-	
-		JCheckBox gridCheckbox = new JCheckBox();
-		gridCheckbox.setText("Zeige Raster");
-		gridCheckbox.setSelected(graphicView.getGraphicViewCanvasView().isGridVisible());
-		gridCheckbox.setActionCommand("show_grid");
-		gridCheckbox.addActionListener(graphicViewActionListener);
-		optionPanel.add(gridCheckbox);
 		
 		JButton zoomIn = new JButton("+");
 		zoomIn.setActionCommand("zoom_in");

@@ -158,7 +158,7 @@ public class GraphicView extends JPanel {
 	 * @param zoomDisplay The scale
 	 */
 	public void setZoomDisplay(int scale) {
-		this.zoomDisplay.setText(scale * 100 +"%");
+		this.zoomDisplay.setText(scale + "x");
 	}
 	
 }

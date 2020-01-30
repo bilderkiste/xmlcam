@@ -35,7 +35,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	
 	private static final long serialVersionUID = 1L;
 	private Program programModel;
-	private boolean gridVisible;
+	private boolean gridVisible, g0lineVisible, g1lineVisible, pointVisible;
 	private GraphicView graphicView;
 	
 	/**
@@ -46,7 +46,11 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 		this.programModel = programModel;
 		this.graphicView = graphicView;
 		this.setBackground(Color.WHITE);
-		this.gridVisible = false;
+		this.gridVisible = true;
+		this.g0lineVisible = true;
+		this.g1lineVisible = true;
+		this.pointVisible = true;
+		
 		GraphicViewDragListener dragger = new GraphicViewDragListener(graphicView);
 		this.addMouseListener(dragger);
 		this.addMouseMotionListener(dragger);
@@ -60,7 +64,6 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	double x1 = Settings.workbench.getXMin(), y1 = Settings.workbench.getYMin(), x2 = 0, y2 = 0;
     	int index = -1;
     	boolean draw; // check if a line draw is needed for x and y. (i.e. a G0 Z6 does not need a draw)
-    	
     	super.paint(g);
     	
     	// Paint workbench rectangle
@@ -71,7 +74,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         for(int i = 0; i < programModel.getLineSize(); i++) {
         	draw = false;
         	if(programModel.getLine(i).getField(0).toString().equals("G0")) {
-        		g.setColor(Color.GREEN);
+	        		
         		index = programModel.getLine(i).getFieldIndex('X');
         		if(index > -1) {
         			x2 = programModel.getLine(i).getField(index).getNumber().doubleValue();
@@ -83,19 +86,18 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         			draw = true;
         		}
         		if(draw) {
-        			//g.drawLine(GraphicViewHelpers.convertX(x1), GraphicViewHelpers.convertY(y1, this.getHeight()), GraphicViewHelpers.convertX(x2), GraphicViewHelpers.convertY(y2, this.getHeight()));
-        			g.drawLine(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()), 
+        			if(g0lineVisible ) {
+        				g.setColor(Color.GREEN);
+        				g.drawLine(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()), 
         						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()), 
         						GraphicViewHelpers.convertX(x2, graphicView.getScale(), graphicView.getxBar()), 
         						GraphicViewHelpers.convertY(y2, this.getHeight(), graphicView.getScale(), graphicView.getyBar()));
+        			}
         			x1 = x2;
-            		y1 = y2;
+                	y1 = y2;
         		}
-
-        	}
-        	
-        	if(programModel.getLine(i).getField(0).toString().equals("G1")) {
-        		g.setColor(Color.BLACK);
+        		
+        	} else if(programModel.getLine(i).getField(0).toString().equals("G1")) {
         		index = programModel.getLine(i).getFieldIndex('X');
         		if(index > -1) {
         			x2 = programModel.getLine(i).getField(index).getNumber().doubleValue();
@@ -107,16 +109,36 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         			draw = true;
         		}
         		if(draw) {
-        			g.drawLine(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()),
-        						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()),
-    							GraphicViewHelpers.convertX(x2, graphicView.getScale(), graphicView.getxBar()),
-    							GraphicViewHelpers.convertY(y2, this.getHeight(), graphicView.getScale(), graphicView.getyBar()));
-        			g.setColor(Color.RED);
-        			g.drawOval(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()) - 2, 
-        						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()) - 2,
-        						4, 4);
+        			if(pointVisible) {
+		        		g.setColor(Color.RED);
+	        			g.drawOval(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()) - 2, 
+	        						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()) - 2,
+	        						4, 4);
+        			}
+        			if(g1lineVisible) {
+        				g.setColor(Color.BLACK);
+	        			g.drawLine(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()),
+	        						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()),
+	    							GraphicViewHelpers.convertX(x2, graphicView.getScale(), graphicView.getxBar()),
+	    							GraphicViewHelpers.convertY(y2, this.getHeight(), graphicView.getScale(), graphicView.getyBar()));
+        			}
         			x1 = x2;
             		y1 = y2;
+            		
+            		// Draw the last point from G1 move but not the zero point
+           			try {
+	            		if(pointVisible && !programModel.getLine(i + 1).getField(0).toString().equals("G1")) {
+	    	        		g.setColor(Color.RED);
+	            			g.drawOval(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()) - 2, 
+	            						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()) - 2,
+	            						4, 4);
+	            		}
+           			} catch(IndexOutOfBoundsException e) {
+           					g.setColor(Color.RED);
+           					g.drawOval(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()) - 2, 
+            						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()) - 2,
+            						4, 4);
+           			}
         		}
         	}
         }
@@ -152,10 +174,61 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	/**
 	 * Sets that the grid is visible or not.
 	 * If it is visible, the paint function will draw the grid.
-	 * @param gridVisible
+	 * @param gridVisible Set true for visible
 	 */
 	public void setGridVisible(boolean gridVisible) {
 		this.gridVisible = gridVisible;
+	}
+
+	/**
+	 * Returns if the G0 moves are visible or not.
+	 * @return True if visible
+	 */
+	public boolean isG0lineVisible() {
+		return g0lineVisible;
+	}
+
+	/**
+	 * Sets that the G0 moves are visible or not.
+	 * If it is visible, the paint function will draw moves.
+	 * @param gridVisible Set true for visible
+	 */
+	public void setG0lineVisible(boolean g0lineVisible) {
+		this.g0lineVisible = g0lineVisible;
+	}
+
+	/**
+	 * Returns if the G1 moves are visible or not.
+	 * @return True if visible
+	 */
+	public boolean isG1lineVisible() {
+		return g1lineVisible;
+	}
+
+	/**
+	 * Sets that the G1 moves are visible or not.
+	 * If it is visible, the paint function will draw moves.
+	 * @param gridVisible Set true for visible
+	 */
+	public void setG1lineVisible(boolean g1lineVisible) {
+		this.g1lineVisible = g1lineVisible;
+	}
+
+	/**
+	 * Returns if the G1 points are visible or not.
+	 * @return True if visible
+	 */
+	public boolean isPointVisible() {
+		return pointVisible;
+	}
+
+	/**
+	 * Sets that the G1 points are visible or not.
+	 * If it is visible, the paint function will draw the points.
+	 * @param gridVisible Set true for visible
+	 */
+	public void setPointVisible(boolean pointVisible) {
+		this.pointVisible = pointVisible;
 	}
 
 	/**
