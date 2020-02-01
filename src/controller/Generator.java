@@ -260,7 +260,7 @@ public class Generator {
 				deCasteljau(b, 0.5, toolPath, 4);
 		
 				i += n - 1; 			// Skip the next inner control points (b1 - bn-1)
-				Main.log.log(Level.FINE, "Polyline element: bezier curve grade " + (n + 1) + ".");
+				Main.log.log(Level.FINE, "Polyline element: bezier curve grade " + (n + 1) + " to (" + b.get(b.size() - 1).getValue(0).doubleValue() + ", " + b.get(b.size() - 1).getValue(1).doubleValue() + ").");
 			} else if(xmlPoints.get(i).getType() == Tuple.SPLINE) {
 				ArrayList<Tuple> points = new ArrayList<Tuple>();
 				
@@ -302,7 +302,7 @@ public class Generator {
 					toolPath.add(new double[] {points.get(2).getValue(0).doubleValue(), points.get(2).getValue(1).doubleValue()});
 				}
 				
-				Main.log.log(Level.FINE, "Polyline element: spline.");
+				Main.log.log(Level.FINE, "Polyline element: spline to (" + points.get(points.size() - 2).getValue(0).doubleValue() + ", " + points.get(points.size() - 2).getValue(1).doubleValue() + ").");
 			}
 		}
 		
@@ -366,7 +366,7 @@ public class Generator {
 			}
 		}
 		
-		if(Main.log.isLoggable(Level.FINER)) {
+		if(Main.log.isLoggable(Level.FINEST)) {
 			StringBuffer matrix = new StringBuffer("deCasteljau Matrix\n");
 			for(int j = 0; j < n; j++) {
 				for (int k = 0; k < n; k++) {
@@ -374,7 +374,7 @@ public class Generator {
 				}
 				matrix.append("\n");
 			}
-			Main.log.finer(matrix.toString());
+			Main.log.finest(matrix.toString());
 		}
 		
 		for(int k = 0; k < n; k++) {
