@@ -68,7 +68,6 @@ public class Generator {
 		this.newX = new BigDecimal(0);
 		this.newY = new BigDecimal(0);
 		this.newZ = new BigDecimal(0);
-
 	}
 	
 	/**
@@ -117,13 +116,13 @@ public class Generator {
 			//e.printStackTrace();
 		} catch(NullPointerException | IndexOutOfBoundsException e) {
 			Main.log.log(Level.SEVERE, "Missing parameter(s); " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch(IllegalArgumentException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 		// insert end code
@@ -217,7 +216,6 @@ public class Generator {
 		ArrayList<Tuple> xmlPoints = new ArrayList<Tuple>();
 		ArrayList<double[]> toolPath = new ArrayList<double[]>();
 		Tuple zLevel = null;
-		int bezierResolution = 5;
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
@@ -249,7 +247,6 @@ public class Generator {
 				toolPath.add(new double[] {xmlPoints.get(i).getValue(0).doubleValue(), xmlPoints.get(i).getValue(1).doubleValue()});
 				Main.log.log(Level.FINE, "Polyline element: line to (" + xmlPoints.get(i).getValue(0).doubleValue() + ", " + xmlPoints.get(i).getValue(1).doubleValue() + ")");
 			} else if(xmlPoints.get(i).getType() == Tuple.BEZIER) {
-				double tStep;
 				int n;
 				ArrayList<Tuple> b = new ArrayList<Tuple>();
 			
@@ -259,21 +256,12 @@ public class Generator {
 					b.add(xmlPoints.get(i + n));
 				}
 				b.add(xmlPoints.get(i + n)); // Add the last control point bn
-			
-				// Determine euclidian distance of control points
-				tStep = 1 / (getVectorLength(b) / bezierResolution);
-				if(tStep > 0.1) {
-					tStep = 0.1;
-				}
-				
-				for(double t = tStep; t < 1; t += tStep) {
-					toolPath.add(deCasteljau(b, t));
-				}
+
+				deCasteljau(b, 0.5, toolPath, 4);
 		
 				i += n - 1; 			// Skip the next inner control points (b1 - bn-1)
-				Main.log.log(Level.FINE, "Polyline element: bezier curve grade " + (n + 1) + " with " + (int)(1 / tStep) + " points. Step for tau is " + tStep + ".");
+				Main.log.log(Level.FINE, "Polyline element: bezier curve grade " + (n + 1) + ".");
 			} else if(xmlPoints.get(i).getType() == Tuple.SPLINE) {
-				double tStep;
 				ArrayList<Tuple> points = new ArrayList<Tuple>();
 				
 				double dx = xmlPoints.get(i).getValue(0).doubleValue() - xmlPoints.get(i - 1).getValue(0).doubleValue();
@@ -307,26 +295,18 @@ public class Generator {
 					Main.log.log(Level.FINER, stringBuffer.toString());
 				}
 			
-				// Determine euclidian distance of control points
-				// TODO: consider only spline points ant no p0 and p3
-				//tStep = 1 / (getBezierLength(points) / bezierResolution);
-				tStep = 1;
-				if(tStep > 0.1) {
-					tStep = 0.05;
-				}
+				calculatePoint(points, 0.5, toolPath, 4);
 				
-				for(double t = tStep; t < 1; t += tStep) {
-					toolPath.add(calculatePoint(points, t));
-				}
-				
-				// insert last point of curve, because due to the machine error we do not hit tau = 1 exactly
+				// insert last point of curve, because we do not add the last control point to the toolpath
 				if(points.get(3).getType() == Tuple.POINT) {
 					toolPath.add(new double[] {points.get(2).getValue(0).doubleValue(), points.get(2).getValue(1).doubleValue()});
 				}
 				
-				Main.log.log(Level.FINE, "Polyline element: spline with " + (int)(1 / tStep) + " points. Step for tau is " + tStep + ".");
+				Main.log.log(Level.FINE, "Polyline element: spline.");
 			}
 		}
+		
+		Main.log.log(Level.FINE, "Generated polyline element with " + toolPath.size() + " points.");
 		
 		newX = xmlPoints.get(0).getValue(0);
 		newY = xmlPoints.get(0).getValue(1);
@@ -364,15 +344,19 @@ public class Generator {
 	 * @param t The t value 0 <= t <= 1
 	 * @return The x and y coordinates on the bezier 
 	 */
-	private double[] deCasteljau(ArrayList<Tuple> points, double t) {
+	private void deCasteljau(ArrayList<Tuple> points, double t, ArrayList<double[]> toolPath, int level) {
 		int n = points.size();
+		ArrayList<Tuple> partCurvePointsLower = new ArrayList<Tuple>();
+		ArrayList<Tuple> partCurvePointsUpper = new ArrayList<Tuple>();
 		
 		double[][] bx = new double[n][n];
 		double[][] by = new double[n][n];
 		
-		for(int j = 0; j < n; j++) {
-            bx[0][j] = points.get(j).getValue(0).floatValue();
-            by[0][j] = points.get(j).getValue(1).floatValue();
+		Main.log.finer("Recursion level:" + level);
+		
+		for(int k = 0; k < n; k++) {
+            bx[0][k] = points.get(k).getValue(0).floatValue();
+            by[0][k] = points.get(k).getValue(1).floatValue();
         }
 
 		for(int j = 1; j < n; j++) {
@@ -382,16 +366,55 @@ public class Generator {
 			}
 		}
 		
-		return new double[] {bx[n-1][0], by[n-1][0]};		
+		if(Main.log.isLoggable(Level.FINER)) {
+			StringBuffer matrix = new StringBuffer("deCasteljau Matrix\n");
+			for(int j = 0; j < n; j++) {
+				for (int k = 0; k < n; k++) {
+					matrix.append(bx[j][k] + ", ");
+				}
+				matrix.append("\n");
+			}
+			Main.log.finer(matrix.toString());
+		}
+		
+		for(int k = 0; k < n; k++) {
+			partCurvePointsLower.add(new Tuple(new double[] {bx[k][0], by[k][0]}));
+		}
+		
+		for(int j = n - 1; j >= 0; j--) {
+			partCurvePointsUpper.add(new Tuple(new double[] {bx[j][n - 1 - j], by[j][n - 1 - j]}));	
+		}
+		
+		if(Main.log.isLoggable(Level.FINER)) {
+			StringBuffer stringBuffer = new StringBuffer("PartCurvePointsLower:");
+			for (int j = 0; j < partCurvePointsLower.size(); j++) {
+				stringBuffer.append(partCurvePointsLower.get(j) + ", ");
+			}
+			stringBuffer.append("\nPartCurvePointsUpper:");
+			for (int j = 0; j < partCurvePointsUpper.size(); j++) {
+				stringBuffer.append(partCurvePointsUpper.get(j) + ", ");
+			}
+			Main.log.finer(stringBuffer.toString());
+		}
+	
+		if(level > 0) {
+			level--;
+			deCasteljau(partCurvePointsLower, 0.5, toolPath, level);
+			deCasteljau(partCurvePointsUpper, 0.5, toolPath, level);	
+		} else {
+			for(int k = 0; k < n - 1; k++) {
+				toolPath.add(new double[] {bx[0][k], by[0][k]});
+			}
+		}
+	
 	}
 	
 	/**
 	 * This method calculates the bezier start and end points (0th derivation) and the inner control points (1th derivation or vector) for a spline.
 	 * @param points b0 = point before start point, b1 start point, b2 end point, b3 point behind end point
 	 * @param t 0 <= tau <= 1
-	 * @return the coordinates for the point on the spline at tau
 	 */
-	private double[] calculatePoint(ArrayList<Tuple> points, double t) {
+	private void calculatePoint(ArrayList<Tuple> points, double t, ArrayList<double[]> toolPath, int level) {
 		double dx1, dy1, dx2, dy2;
 		ArrayList<Tuple> pointList = new ArrayList<Tuple>();
 		double[] point = new double[2];
@@ -442,7 +465,7 @@ public class Generator {
 			Main.log.log(Level.FINER, stringBuffer.toString());
 		}
 		
-		return deCasteljau(pointList, t);
+		deCasteljau(pointList, t, toolPath, level);
 	}
 	
 	/**

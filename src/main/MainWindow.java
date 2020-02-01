@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
