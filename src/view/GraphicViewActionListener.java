@@ -54,13 +54,20 @@ public class GraphicViewActionListener implements ActionListener {
 			graphicView.setScale(graphicView.getScale() + 1);
 			graphicView.getxBar().setMaximum(Settings.workbench.getXDimension() * graphicView.getScale());
 			graphicView.getyBar().setMinimum(Settings.workbench.getYDimension() * graphicView.getScale() * -1);
-			graphicView.setZoomDisplay(graphicView.getScale());
+			//System.out.println("bef: " + graphicView.getxBar().getValue() + ":" + graphicView.getyBar().getValue());
+			//TODO: Improvement of value setting if zoomlevel has changed
+			graphicView.getxBar().setValue((graphicView.getxBar().getValue() / graphicView.getScale()) * (graphicView.getScale() + 1));
+			graphicView.getyBar().setValue(((graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()) / graphicView.getScale()) * (graphicView.getScale() + 1) - graphicView.getyBar().getVisibleAmount());
+			//System.out.println("aft: " + graphicView.getxBar().getValue() + ":" + graphicView.getyBar().getValue());
 			graphicView.repaint();
 		} else if(actionButton.getActionCommand() == "zoom_out") {
 			graphicView.setScale(graphicView.getScale() - 1);
 			graphicView.getxBar().setMaximum(Settings.workbench.getXDimension() * graphicView.getScale());
 			graphicView.getyBar().setMinimum(Settings.workbench.getYDimension() * graphicView.getScale() * -1);
-			graphicView.setZoomDisplay(graphicView.getScale());
+			//System.out.println("bef: " + graphicView.getxBar().getValue() + ":" + graphicView.getyBar().getValue());
+			graphicView.getxBar().setValue((graphicView.getxBar().getValue() / (graphicView.getScale() + 2)) * (graphicView.getScale() + 1));
+			graphicView.getyBar().setValue(((graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()) / (graphicView.getScale() + 2)) * (graphicView.getScale() + 1) - graphicView.getyBar().getVisibleAmount());
+			//System.out.println("aft: " + graphicView.getxBar().getValue() + ":" + graphicView.getyBar().getValue());
 			graphicView.repaint();
 		}
 	}

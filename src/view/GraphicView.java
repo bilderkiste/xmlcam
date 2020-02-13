@@ -134,6 +134,7 @@ public class GraphicView extends JPanel {
 	public void setScale(int scale) {
 		if(scale >= 1) {
 			this.scale = scale;
+			this.setZoomDisplay(scale);
 		}
 	}
 
@@ -157,7 +158,7 @@ public class GraphicView extends JPanel {
 	 * Sets the zoom display with the zoomlevel.
 	 * @param zoomDisplay The scale
 	 */
-	public void setZoomDisplay(int scale) {
+	private void setZoomDisplay(int scale) {
 		this.zoomDisplay.setText(scale + "x");
 	}
 	

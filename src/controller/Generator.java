@@ -295,7 +295,7 @@ public class Generator {
 					Main.log.log(Level.FINER, stringBuffer.toString());
 				}
 			
-				calculatePoint(points, 0.5, toolPath, 4);
+				calculatePoint(points, 0.5, toolPath, 5);
 				
 				// insert last point of curve, because we do not add the last control point to the toolpath
 				if(points.get(3).getType() == Tuple.POINT) {
@@ -505,6 +505,7 @@ public class Generator {
 	 * @param b The control points
 	 * @return The length
 	 */
+	@SuppressWarnings("unused")
 	private double getVectorLength(ArrayList<Tuple> b) {
 		double distance = 0;
 		for(int i = 0; i < b.size() - 1; i++) {
