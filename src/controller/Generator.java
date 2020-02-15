@@ -149,55 +149,26 @@ public class Generator {
 	 */
 	private void line(Node node) throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
-		ArrayList<Tuple> points = new ArrayList<Tuple>();
+		ArrayList<Tuple> xmlPoints = new ArrayList<Tuple>();
+		ArrayList<double[]> toolPath = new ArrayList<double[]>();
 		Tuple zLevel = null;;
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
 			if(item.getNodeName() == "p") {
-				points.add(new Tuple(item));
+				xmlPoints.add(new Tuple(item));
 			}
 			if(item.getNodeName() == "z") {
 				zLevel = new Tuple(item);
 			}
 		}
-		
-		BigDecimal endZ = zLevel.getValue(1);
-		BigDecimal stepZ = zLevel.getValue(2);
-		boolean isAPosition = true;
 
-		newX = points.get(0).getValue(0);
-		newY = points.get(0).getValue(1);
-		newZ = zLevel.getValue(0);
+		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
+		toolPath.add(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() });
 		
-		if(stepZ.doubleValue() <= 0) {
-			throw new IllegalArgumentException("The Z step must be greater than 0");
-		}
+		createGCode(toolPath, zLevel);
 		
-		go0(newX, newY, "Go to start position for the line"); // go to start position
-		
-		while(newZ.doubleValue() >= endZ.doubleValue()) {
-			go1(newX, newY, newZ); // Z sink
-			
-			if(isAPosition) {
-				newX = points.get(1).getValue(0);
-				newY = points.get(1).getValue(1);
-				isAPosition = false;
-			} else {
-				newX = points.get(0).getValue(0);
-				newY = points.get(0).getValue(1);
-				isAPosition = true;
-			}
-			
-			go1(newX, newY, newZ); // X-Y move
-			
-			newZ = newZ.subtract(stepZ);
-		}
-		
-		go0(currentX, currentY, "End line; Lift up at current position");
-		
-		Main.log.log(Level.FINE, "Line element: line from (" + points.get(0).getValue(0) + ", " + points.get(0).getValue(0) + ") to (" + points.get(1).getValue(0) + ", " + points.get(1).getValue(0) + ").");
-			
+		Main.log.log(Level.FINE, "Line element: line from (" + xmlPoints.get(0).getValue(0) + ", " + xmlPoints.get(0).getValue(0) + ") to (" + xmlPoints.get(1).getValue(0) + ", " + xmlPoints.get(1).getValue(0) + ").");
 	}
 	
 	/**
@@ -207,6 +178,8 @@ public class Generator {
 	 * You can describe a bow by setting control points. The start point (b0) and end point (bn) are defined by <p> tags. You need to define one ore more inner control points (b1 to bn-1) with tag <bez>x,y</bez>.
 	 * With one inner control point you describe a quadratic bezier curve (second grade), with two inner control points a cubic bezier curve (third grade), with n control points you describe a curve with grade n + 1.
 	 * For more information see in German https://de.wikipedia.org/wiki/B%C3%A9zierkurve and in English https://en.wikipedia.org/wiki/B%C3%A9zier_curve.
+	 * 
+	 * For creating splines the <spl> tag can be used. The curve will go through the point.
 	 *	
 	 * The z-depth must be defined by the <z> tag. The tupel in <z> defines the the start layer (workpiece surface), the end layer (depth), and the steps (<z>startZ,endZ,stepZ</z>).
 	 * @param node The node with the needed parameters
@@ -231,14 +204,6 @@ public class Generator {
 			if(item.getNodeName() == "z") {
 				zLevel = new Tuple(item);
 			}
-		}
-		
-		BigDecimal endZ = zLevel.getValue(1);
-		BigDecimal stepZ = zLevel.getValue(2);
-		boolean forward = true;
-		
-		if(stepZ.doubleValue() <= 0) {
-			throw new IllegalArgumentException("The Z step must be greater than 0");
 		}
 		
 		// Create toolpath
@@ -306,42 +271,19 @@ public class Generator {
 			}
 		}
 		
+		createGCode(toolPath, zLevel);
+		
 		Main.log.log(Level.FINE, "Generated polyline element with " + toolPath.size() + " points.");
-		
-		newX = xmlPoints.get(0).getValue(0);
-		newY = xmlPoints.get(0).getValue(1);
-		newZ = zLevel.getValue(0);
-		
-		go0(newX, newY, "Go to start position for the polyline"); // go to start position
-			
-		while(newZ.doubleValue() >= endZ.doubleValue()) {
-			if(forward) {
-				go1(newX, newY, newZ);  // Z sink
-				for(int j = 1; j < toolPath.size(); j++) {
-					newX = new BigDecimal(toolPath.get(j)[0]);
-					newY = new BigDecimal(toolPath.get(j)[1]);
-					go1(newX, newY, newZ);  // X-Y move
-				}
-				forward = false;
-			} else {
-				go1(newX, newY, newZ);  // Z sink
-				for(int j = toolPath.size() - 2; j >= 0; j--) {
-					newX = new BigDecimal(toolPath.get(j)[0]);
-					newY = new BigDecimal(toolPath.get(j)[1]);
-					go1(newX, newY, newZ);  // X-Y move
-				}
-				forward = true;
-			}
-			newZ = newZ.subtract(stepZ);
-		}
-		go0(currentX, currentY, "End polyline; Lift up at current position");
 	}
 	
 	/**
-	 * Implements the deCastelauAlgorithm. Not finished yet.
-	 * TODO: Finish deCastelauAlgorithm for interpolating curve.
+	 * Implements the deCastelau algorithm as a recursive curve interpolation.
+	 * The curve will be split at tau and the algorithm will be invoked for both sub curves again until level 0 is reached.
+	 * 
 	 * @param points The ControlPoints b0,...,bn
-	 * @param t The t value 0 <= t <= 1
+	 * @param t The tau value 0 <= t <= 1
+	 * @param toolPath The tool path where to insert the curve points
+	 * @param level The current level depth of recursive implementation. 
 	 * @return The x and y coordinates on the bezier 
 	 */
 	private void deCasteljau(ArrayList<Tuple> points, double t, ArrayList<double[]> toolPath, int level) {
@@ -531,6 +473,7 @@ public class Generator {
 	 */
 	private void circle(Node node) throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
+		ArrayList<double[]> toolPath = new ArrayList<double[]>();
 		Tuple center = null, radius = null, zLevel = null;
 		int resolution = 2; // mm
 		
@@ -547,49 +490,24 @@ public class Generator {
 			}
 		}
 		
-		BigDecimal endZ = zLevel.getValue(1);
-		BigDecimal stepZ = zLevel.getValue(2);
 		float phi = 0;
 		float xCenter = center.getValue(0).floatValue();
 		float yCenter = center.getValue(1).floatValue();
 		float radiusv = radius.getValue(0).floatValue();;
-		
-		newX = new BigDecimal(xCenter + radiusv * Math.sin(phi), new MathContext(4));
-		newY = new BigDecimal(yCenter + radiusv * Math.cos(phi), new MathContext(4));
-		newZ = zLevel.getValue(0);
-		
-		if(stepZ.doubleValue() <= 0) {
-			throw new IllegalArgumentException("The Z step must be greater than 0");
-		}
-		
+			
 		// Determine phiStep. If the circle is very small, the step should be < 0.5 (that means more G points on the circle
 		double phiStep = 2 * Math.PI / ((2 * radiusv * Math.PI) / resolution);
 		if(phiStep > 0.5) {
 			phiStep = 0.5;
 		}
-		
-		go0(newX, newY, "Go to start position for the circle"); // go to start position
-		
-		while(newZ.floatValue() >= endZ.floatValue()) {
-			go1(newX, newY, newZ);
-			while(phi < 2 * Math.PI) {
-				newX = new BigDecimal(xCenter + radiusv * Math.sin(phi));
-				newY = new BigDecimal(yCenter + radiusv * Math.cos(phi));
-				go1(newX, newY, newZ);
-				
-				phi += phiStep;			
-			}
-			
-			// Tool to startpoint
-			phi = 0;
-			newX = new BigDecimal(xCenter + radiusv * Math.sin(phi));
-			newY = new BigDecimal(yCenter + radiusv * Math.cos(phi));
-			go1(newX, newY, newZ);
-			
-			newZ = newZ.subtract(stepZ);
+	
+		while(phi < 2 * Math.PI) {
+			toolPath.add(new double[] { xCenter + radiusv * Math.sin(phi), yCenter + radiusv * Math.cos(phi) });
+			phi += phiStep;			
 		}
+		toolPath.add(new double[] { xCenter + radiusv * Math.sin(0), yCenter + radiusv * Math.cos(0) });
 		
-		go0(currentX, currentY, "End circle; Lift up at current position");
+		createGCode(toolPath, zLevel);
 		
 		Main.log.log(Level.FINE, "Circle element: circle with " + (int)(((Math.PI * 2) / phiStep) + 1) + " points. Step for phi is " + phiStep + ".");
 	}
@@ -613,6 +531,50 @@ public class Generator {
 		programModel.addLine(new Line());
 		programModel.addField(new Field('G', new BigDecimal(0)));
 		programModel.addField(new Field('F', feedrate.getValue(0)));
+	}
+	
+	/**
+	 * This method creates the G-Code for the toolpath.
+	 * 
+	 * @param toolPath The toolpath
+	 * @param zLevel The milling depth (z-axis)
+	 */
+	private void createGCode(ArrayList<double[]> toolPath, Tuple zLevel) {
+		BigDecimal endZ = zLevel.getValue(1);
+		BigDecimal stepZ = zLevel.getValue(2);
+		boolean forward = true;
+		
+		if(stepZ.doubleValue() <= 0) {
+			throw new IllegalArgumentException("The Z step must be greater than 0");
+		}
+		
+		newX = new BigDecimal(toolPath.get(0)[0]);
+		newY = new BigDecimal(toolPath.get(0)[1]);
+		newZ = zLevel.getValue(0);
+		
+		go0(newX, newY, "Go to start position for element."); // go to start position
+			
+		while(newZ.doubleValue() >= endZ.doubleValue()) {
+			if(forward) {
+				go1(newX, newY, newZ);  // Z sink
+				for(int j = 1; j < toolPath.size(); j++) {
+					newX = new BigDecimal(toolPath.get(j)[0]);
+					newY = new BigDecimal(toolPath.get(j)[1]);
+					go1(newX, newY, newZ);  // X-Y move
+				}
+				forward = false;
+			} else {
+				go1(newX, newY, newZ);  // Z sink
+				for(int j = toolPath.size() - 2; j >= 0; j--) {
+					newX = new BigDecimal(toolPath.get(j)[0]);
+					newY = new BigDecimal(toolPath.get(j)[1]);
+					go1(newX, newY, newZ);  // X-Y move
+				}
+				forward = true;
+			}
+			newZ = newZ.subtract(stepZ);
+		}
+		go0(currentX, currentY, "End element; Lift up at current position.");	
 	}
 	
 	/**
