@@ -68,7 +68,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	
     	// Paint workbench rectangle
     	g.setColor(Color.WHITE);
-    	g.fillRect(GraphicViewHelpers.convertX(0, graphicView.getScale(), graphicView.getxBar()), GraphicViewHelpers.convertY(Settings.workbench.getYDimension(), this.getHeight(), graphicView.getScale(), graphicView.getyBar()), Settings.workbench.getXDimension() * graphicView.getScale(), Settings.workbench.getYDimension() * graphicView.getScale());
+    	g.fillRect(0, this.getHeight() - Settings.workbench.getYDimension() * graphicView.getScale() - (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()), (Settings.workbench.getXDimension() * graphicView.getScale()) - graphicView.getxBar().getValue(), Settings.workbench.getYDimension() * graphicView.getScale());
     	
     	// Paint all G0 and G1 moves
         for(int i = 0; i < programModel.getLineSize(); i++) {
