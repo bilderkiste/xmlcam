@@ -66,6 +66,8 @@ public class GraphicView extends JPanel {
 		rulerY.setPreferredSize(new Dimension(40, Settings.workbench.getYDimension()));
 		constraints.gridx = 0;
 		constraints.gridy = 1;
+		constraints.weightx = 0;
+		constraints.weighty = 0;
 		this.add(rulerY, constraints);
 		
 		graphicViewCanvas = new GraphicViewCanvas(this.programModel, this);
@@ -75,6 +77,8 @@ public class GraphicView extends JPanel {
 		
 		constraints.gridx = 1;
 		constraints.gridy = 1;
+		constraints.weightx = 1;
+		constraints.weighty = 1;
 		this.add(graphicViewCanvas, constraints);
 		
 		GraphicViewRuler rulerX = new GraphicViewRuler(GraphicViewRuler.X_RULER, this);
@@ -82,6 +86,8 @@ public class GraphicView extends JPanel {
 		rulerX.setPreferredSize(new Dimension(Settings.workbench.getXDimension(), 40));
 		constraints.gridx = 1;
 		constraints.gridy = 2;
+		constraints.weightx = 0;
+		constraints.weighty = 0;
 		this.add(rulerX, constraints);
 		
 		GraphicViewAdjustmentListener adjustmentListener = new GraphicViewAdjustmentListener(this);
@@ -91,6 +97,8 @@ public class GraphicView extends JPanel {
 		xBar.addAdjustmentListener(adjustmentListener);
 		constraints.gridx = 1;
 		constraints.gridy = 0;
+		constraints.weightx = 0;
+		constraints.weighty = 0;
 		this.add(xBar, constraints);
 		
 		yBar = new JScrollBar(JScrollBar.VERTICAL, Settings.workbench.getYDimension() * -1, Settings.workbench.getYDimension(), Settings.workbench.getYDimension() * -1, 0);
@@ -99,6 +107,8 @@ public class GraphicView extends JPanel {
 
 		constraints.gridx = 2;
 		constraints.gridy = 1;
+		constraints.weightx = 0;
+		constraints.weighty = 0;
 		this.add(yBar, constraints);
 		
 		zoomDisplay = new JTextField();
@@ -107,6 +117,8 @@ public class GraphicView extends JPanel {
 		constraints.gridx = 0;
 		constraints.gridy = 2;
 		this.add(zoomDisplay, constraints);	
+		
+		this.addComponentListener(new GraphicViewComponentListener(this));
 	}
 
 	/**
