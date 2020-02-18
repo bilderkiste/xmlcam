@@ -46,7 +46,9 @@ public class GraphicViewComponentListener implements ComponentListener {
 	@Override
 	public void componentResized(ComponentEvent arg0) {
 		graphicView.getxBar().setVisibleAmount(graphicView.getWidth() - 60);
-		graphicView.getyBar().setValue((graphicView.getHeight() - 60) * -1);
+		if(graphicView.getyBar().getValue() * -1 <= graphicView.getyBar().getVisibleAmount()) {
+			graphicView.getyBar().setValue((graphicView.getHeight() - 60) * -1);
+		}
 		graphicView.getyBar().setVisibleAmount(graphicView.getHeight() - 60);
 	}
 
