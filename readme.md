@@ -1,1 +1,1 @@
-See https://xmlcam.bilderkiste.info for more information.
+See https://pfalzfeld.com for more information.
