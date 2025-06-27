@@ -13,11 +13,13 @@
 <p>If you click the "Insert row" button, a new row will inserted above the selected row. If you click the "Delete row" button the selected row or rows (multiple selection) will deleted. By clicking "New Field" a new field will inserted in the selected row.</p>
 <p>You can define start and end G-Code in two text files. This files shall placed in the same folder as the .jar file and named "start.gcode" and "end.gcode". The files will parsed and inserted to the generated G-Code automatically.</p>
 <h2>Elements</h2>
+<h3>Line Element</h3>
 <p>This element generates G-Code for a line. <br />The line is defined by two points defined with &lt;p&gt; tags. The tupel in &lt;p&gt; defines the x and y position of the point (&lt;p&gt;x,y&lt;/p&gt;).<br />The z-depth must be defined by the &lt;z&gt; tag. The tupel in &lt;z&gt; defines the the start layer (workpiece surface), the end layer (depth), and the steps (&lt;z&gt;startZ,endZ,stepZ&lt;/z&gt;).</p>
 <pre>&lt;line&gt;<br />  &lt;p&gt;40,200&lt;/p&gt;<br />  &lt;p&gt;340,250&lt;/p&gt;<br />  &lt;z&gt;0,-1,0.1&lt;/z&gt;<br />&lt;/line&gt;</pre>
 <p>This code snippet has the following result:</p>
 <p><img src="images/elements/lineelement.png" alt="A line" /></p>
 
+<h3>Polyline-Element</h3>
 <p>This element generates G-Code for a polyline.<br />The polyline is defined by two or more points. The tupel in &lt;p&gt; defines the x and y position of the point (&lt;p&gt;x,y&lt;/p&gt;). Two consecutive points descibe a line.</p>
 <h3>Bezier curves</h3>
 <p>You can describe a bow by setting control points. The start point (b<sub>0</sub>) and end point (b<sub>n</sub>) are defined by &lt;p&gt; tags. You need to define one ore more inner control points (b<sub>1</sub> to b<sub>n-1</sub>) with tag &lt;bez&gt;x,y&lt;/bez&gt;.<br />With one inner control point you describe a quadratic bezier curve (second grade), with two inner control points a cubic bezier curve (third grade), with n control points you describe a curve with grade n + 1.<br />For more information see the wikipedia article in <a href="https://de.wikipedia.org/wiki/B%C3%A9zierkurve" target="_blank" rel="noopener">German</a> or in <a href="https://en.wikipedia.org/wiki/B%C3%A9zier_curve" target="_blank" rel="noopener">English</a>.</p>
@@ -31,8 +33,14 @@
 <p>This code snippet has the following result:</p>
 <p><img src="images/elements/polylineelement_spline.png" alt="The spline in a polyline element" /></p>
 <p>The z-depth must be defined by the &lt;z&gt; tag. The tupel in &lt;z&gt; defines the the start layer (workpiece surface), the end layer (depth), and the steps (&lt;z&gt;startZ,endZ,stepZ&lt;/z&gt;).</p>
-
+<h3>Circle Element</h3>
 <p> This element generates G-Code for a circle.<br /> A circle is defined by the center point determined through a &lt;p&gt; tag and a radius defined through a &lt;rad&gt; tag. The tupel in &lt;p&gt; defines the x and y position of the point (&lt;p&gt;x,y&lt;/p&gt;). The number in &lt;rad&gt; tag defines the radius (&lt;rad&gt;radius&lt;/rad).<br /> The z-depth must be defined by the &lt;z&gt; tag. The tupel in &lt;z&gt; defines the the start layer (workpiece surface), the end layer (depth), and the steps (&lt;z&gt;startZ,endZ,stepZ&lt;/z&gt;).</p>
 <pre>&lt;circle&gt;<br />  &lt;p&gt;100,200&lt;/p&gt;<br />  &lt;rad&gt;50&lt;/rad&gt;<br />  &lt;z&gt;0,-1,0.1&lt;/z&gt;<br />&lt;/circle&gt;</pre>
 <p>This code snippet has the following result:</p>
 <p><img src="images/elements/circleelement.png" alt="A circle" /></p>
+<h3>Feedrate Element</h3>
+<p>This element sets the feedrate in mm/min for all subsequent G-Code.</p>
+<pre>&lt;feedrate&gt;200&lt;/feedrate&gt;</pre>
+<p>The generated G-Code for this snippet is</p>
+<p>G0 F200</p>
+<p> </p>
