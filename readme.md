@@ -4,6 +4,13 @@
 <p>I use for my machine the GRBL V1.1 firmware Please take into account, that other firmware could interpret the G-Code different. If you are not sure, check the documentation, how the behaviour of you firmware is.</p>
 <p>I am not responsible for any damages on your machine. Please be careful by using the software in this early state, because I have to check as well if the G-Code works reliable.</p>
 <p> </p>
+<h2>What is xmlCam?</h2>
+<p>xmlCam is a software to generate G-Code very fast and with less effort for a CNC-Milling machine.</p>
+<p>The only thing you need to do is to create the toolpathes with elements via XML-Code. See the <a href="index.php?Itemid=102">documentation</a> for further explanation.</p>
+<p>The software is in an early state and comes with absolutely no warranty. I will try to continue development for xmlCam, but programming is not my profession so I have to do it in freetime. I ask for your understanding if some bugs are in the software. You can report the bugs on the <a href="https://github.com/bilderkiste/xmlCAM" target="_blank" rel="noopener">GitHub bug tracker</a>.</p>
+<p>xmlCAM is free software licensed under the GNU General Public License version 3 published by the Free Software Foundation. <a href="index.php?Itemid=106">For more information read the license here.</a></p>
+<p> </p>
+
 <h2>Views</h2>
 <p>The XML View shows the XML document which is the source for G-Code generation. You can write your XML in the textpane and generate G-Code by pressing "Generate G-Code".</p>
 <p><img src="images/views/xmlview.png" alt="XML View" /></p>
