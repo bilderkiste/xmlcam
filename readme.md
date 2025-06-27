@@ -1,7 +1,7 @@
 <p>This is the documentation site for xmlCam.</p>
 <p>All measures here are in the metric system. Length values are always mm and velocitys mm/s if there is no other unit mentioned.</p>
 <p>The software considers all contours as a gravur, that mean that it doesn't consider the diameter of the tool. The contour is in center of the tool then at the moment. For closed contours I will maybe implement (if I have enough time) a correction of the tool radius for inner our outer miiling of the contour.</p>
-<p>I use for my machine the Marlin Firmware Version 1.1.9 (Homepage <a href="http://marlinfw.org/" target="_blank" rel="noopener">http://marlinfw.org/</a>). Please take into account, that other firmware could interpret the G-Code different. If you are not sure, check the documentation, how the behaviour of you firmware is.</p>
+<p>I use for my machine the GRBL V1.1 firmware Please take into account, that other firmware could interpret the G-Code different. If you are not sure, check the documentation, how the behaviour of you firmware is.</p>
 <p>I am not responsible for any damages on your machine. Please be careful by using the software in this early state, because I have to check as well if the G-Code works reliable.</p>
 <p> </p>
 
