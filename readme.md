@@ -1,4 +1,4 @@
-<p>This is the documentation site for xmlCam.</p>
+<H1>This is the documentation site for xmlCam.</H1>
 <p>All measures here are in the metric system. Length values are always mm and velocitys mm/s if there is no other unit mentioned.</p>
 <p>The software considers all contours as a gravur, that mean that it doesn't consider the diameter of the tool. The contour is in center of the tool then at the moment. For closed contours I will maybe implement (if I have enough time) a correction of the tool radius for inner our outer miiling of the contour.</p>
 <p>I use for my machine the GRBL V1.1 firmware Please take into account, that other firmware could interpret the G-Code different. If you are not sure, check the documentation, how the behaviour of you firmware is.</p>
@@ -12,13 +12,22 @@
 <p> </p>
 
 <h2>Views</h2>
+<h3>XML View</h3>
 <p>The XML View shows the XML document which is the source for G-Code generation. You can write your XML in the textpane and generate G-Code by pressing "Generate G-Code".</p>
 <p><img src="images/views/xmlview.png" alt="XML View" /></p>
 <p>There is a validator, which validates your XML in real time. Red font color shows mistakes and black font color shows correct code. The description of the error will displayed in a field over the XML text pane.</p>
+<h3>Table view</h3>
 <p>The table view show the generated G-Code. By clicking a cell you can edit the field. If your input is invalid, your input will skipped.</p>
 <p><img src="images/views/tableview.png" alt="Table View" /></p>
 <p>If you click the "Insert row" button, a new row will inserted above the selected row. If you click the "Delete row" button the selected row or rows (multiple selection) will deleted. By clicking "New Field" a new field will inserted in the selected row.</p>
 <p>You can define start and end G-Code in two text files. This files shall placed in the same folder as the .jar file and named "start.gcode" and "end.gcode". The files will parsed and inserted to the generated G-Code automatically.</p>
+<h3>Graphic View</h3>
+<p>The graphic view show the generated G-Code as the name says as a graphic. The bottom sided ruler shows the x axis and the left sided ruler shows the y axis.</p>
+<p>Green lines represent G0 moves with an security height for the z axis. You can define the security height in the settings.txt file. You can find more about the settings <a href="index.php?Itemid=109">here</a>.</p>
+<p>The black lines represent the G1 moves, which will move at z height defined in the &lt;z&gt; tag.</p>
+<p><img src="images/views/graphicview.png" alt="Graphic View" /></p>
+<p>It is possible to zoom in and out by clicking the "+" and "-" button.</p>
+<p>On the menubar -&gt; Graphic View it is possible to show or hide the G0 and G1 moves as well the calculated points and the grid suitable to the x and y rulers.</p>
 <h2>Elements</h2>
 <h3>Line Element</h3>
 <p>This element generates G-Code for a line. <br />The line is defined by two points defined with &lt;p&gt; tags. The tupel in &lt;p&gt; defines the x and y position of the point (&lt;p&gt;x,y&lt;/p&gt;).<br />The z-depth must be defined by the &lt;z&gt; tag. The tupel in &lt;z&gt; defines the the start layer (workpiece surface), the end layer (depth), and the steps (&lt;z&gt;startZ,endZ,stepZ&lt;/z&gt;).</p>
