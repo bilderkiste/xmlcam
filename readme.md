@@ -44,3 +44,20 @@
 <p>The generated G-Code for this snippet is</p>
 <p>G0 F200</p>
 <p> </p>
+<h2>Installation</h2>
+<h3>Linux</h3>
+<h4>Installation under Linux</h4>
+<p>To run the .jar file you need to install the java virtual machine.</p>
+<p>Check if the Java Runtime Environment is installed correctly open a console and execute</p>
+<pre>java</pre>
+<p>If the java help appears, java is installed correctly, if not you need to install the Java Runtime Environment with command</p>
+<pre>apt-get install openjdk-11-jre</pre>
+<p>Download the xmlCAM file from <a href="index.php?Itemid=103">here</a> and extract it in a folder of your choice. Enter the folder and execute xmlCAM by running</p>
+<pre>java -jar xmlCAM.jar</pre>
+<h4>Installation under Windows</h4>
+<p>To run the .jar file you need to install the java virtual machine version 1.8 or higher.</p>
+<p>Check if the Java Runtime Environment is installed correctly open a console by typing <code>cmd</code> and execute</p>
+<p>java.exe</p>
+<p>If the java help appears, java is installed correctly, if not you need to install the Java Runtime Environment, Download the machine suitable to your computer from <a href="https://www.java.com/de/download" target="_blank" rel="noopener">https://www.java.com/de/download </a>and install the software.</p>
+<p>Download the xmlCAM file from <a href="index.php?Itemid=103">here</a> and extract it in a folder of your choice. Enter the folder and execute xmlCAM by running</p>
+<pre>java -jar xmlCAM.jar</pre>
