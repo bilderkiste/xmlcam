@@ -8,7 +8,10 @@
 <p>The XML View shows the XML document which is the source for G-Code generation. You can write your XML in the textpane and generate G-Code by pressing "Generate G-Code".</p>
 <p><img src="images/views/xmlview.png" alt="XML View" /></p>
 <p>There is a validator, which validates your XML in real time. Red font color shows mistakes and black font color shows correct code. The description of the error will displayed in a field over the XML text pane.</p>
-
+<p>The table view show the generated G-Code. By clicking a cell you can edit the field. If your input is invalid, your input will skipped.</p>
+<p><img src="images/views/tableview.png" alt="Table View" /></p>
+<p>If you click the "Insert row" button, a new row will inserted above the selected row. If you click the "Delete row" button the selected row or rows (multiple selection) will deleted. By clicking "New Field" a new field will inserted in the selected row.</p>
+<p>You can define start and end G-Code in two text files. This files shall placed in the same folder as the .jar file and named "start.gcode" and "end.gcode". The files will parsed and inserted to the generated G-Code automatically.</p>
 <h2>Elements</h2>
 <p>This element generates G-Code for a line. <br />The line is defined by two points defined with &lt;p&gt; tags. The tupel in &lt;p&gt; defines the x and y position of the point (&lt;p&gt;x,y&lt;/p&gt;).<br />The z-depth must be defined by the &lt;z&gt; tag. The tupel in &lt;z&gt; defines the the start layer (workpiece surface), the end layer (depth), and the steps (&lt;z&gt;startZ,endZ,stepZ&lt;/z&gt;).</p>
 <pre>&lt;line&gt;<br />  &lt;p&gt;40,200&lt;/p&gt;<br />  &lt;p&gt;340,250&lt;/p&gt;<br />  &lt;z&gt;0,-1,0.1&lt;/z&gt;<br />&lt;/line&gt;</pre>
