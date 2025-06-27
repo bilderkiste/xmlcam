@@ -4,7 +4,12 @@
 <p>I use for my machine the GRBL V1.1 firmware Please take into account, that other firmware could interpret the G-Code different. If you are not sure, check the documentation, how the behaviour of you firmware is.</p>
 <p>I am not responsible for any damages on your machine. Please be careful by using the software in this early state, because I have to check as well if the G-Code works reliable.</p>
 <p> </p>
+<h2>Views</h2>
+<p>The XML View shows the XML document which is the source for G-Code generation. You can write your XML in the textpane and generate G-Code by pressing "Generate G-Code".</p>
+<p><img src="images/views/xmlview.png" alt="XML View" /></p>
+<p>There is a validator, which validates your XML in real time. Red font color shows mistakes and black font color shows correct code. The description of the error will displayed in a field over the XML text pane.</p>
 
+<h2>Elements</h2>
 <p>This element generates G-Code for a line. <br />The line is defined by two points defined with &lt;p&gt; tags. The tupel in &lt;p&gt; defines the x and y position of the point (&lt;p&gt;x,y&lt;/p&gt;).<br />The z-depth must be defined by the &lt;z&gt; tag. The tupel in &lt;z&gt; defines the the start layer (workpiece surface), the end layer (depth), and the steps (&lt;z&gt;startZ,endZ,stepZ&lt;/z&gt;).</p>
 <pre>&lt;line&gt;<br />  &lt;p&gt;40,200&lt;/p&gt;<br />  &lt;p&gt;340,250&lt;/p&gt;<br />  &lt;z&gt;0,-1,0.1&lt;/z&gt;<br />&lt;/line&gt;</pre>
 <p>This code snippet has the following result:</p>
