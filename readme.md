@@ -1,13 +1,13 @@
 <H1>This is the documentation site for xmlCam.</H1>
-<p>All measures here are in the metric system. Length values are always mm and velocitys mm/s if there is no other unit mentioned.</p>
-<p>The software considers all contours as a gravur, that mean that it doesn't consider the diameter of the tool. The contour is in center of the tool then at the moment. For closed contours I will maybe implement (if I have enough time) a correction of the tool radius for inner our outer miiling of the contour.</p>
-<p>I use for my machine the GRBL V1.1 firmware Please take into account, that other firmware could interpret the G-Code different. If you are not sure, check the documentation, how the behaviour of you firmware is.</p>
-<p>I am not responsible for any damages on your machine. Please be careful by using the software in this early state, because I have to check as well if the G-Code works reliable.</p>
 <h2>What is xmlCam?</h2>
 <p>xmlCam is a software to generate G-Code very fast and with less effort for a CNC-Milling machine.</p>
 <p>The only thing you need to do is to create the toolpathes with elements via XML-Code.
 <p>The software is in an early state and comes with absolutely no warranty. I will try to continue development for xmlCam, but programming is not my profession so I have to do it in freetime. I ask for your understanding if some bugs are in the software.</p>
 <p>xmlCAM is free software licensed under the GNU General Public License version 3 published by the Free Software Foundation. <a href="index.php?Itemid=106">For more information read the license here.</a></p>
+<p>All measures here are in the metric system. Length values are always mm and velocitys mm/s if there is no other unit mentioned.</p>
+<p>The software considers all contours as a gravur, that mean that it doesn't consider the diameter of the tool. The contour is in center of the tool then at the moment. For closed contours I will maybe implement (if I have enough time) a correction of the tool radius for inner our outer miiling of the contour.</p>
+<p>I use for my machine the GRBL V1.1 firmware Please take into account, that other firmware could interpret the G-Code different. If you are not sure, check the documentation, how the behaviour of you firmware is.</p>
+<p>I am not responsible for any damages on your machine. Please be careful by using the software in this early state, because I have to check as well if the G-Code works reliable.</p>
 <h2>Views</h2>
 <h3>XML View</h3>
 <p>The XML View shows the XML document which is the source for G-Code generation. You can write your XML in the textpane and generate G-Code by pressing "Generate G-Code".</p>
