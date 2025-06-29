@@ -30,6 +30,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -52,6 +53,7 @@ public class Generator {
 	private Program programModel;
 	private XMLView xmlEditorPane;
 	private BigDecimal currentX, currentY, currentZ, newX, newY, newZ;
+	private BigDecimal translateX, translateY;
 	
 	/**
 	 * Constructs a new G-Code Generator.
@@ -67,6 +69,39 @@ public class Generator {
 		this.newX = new BigDecimal(0);
 		this.newY = new BigDecimal(0);
 		this.newZ = new BigDecimal(0);
+		this.translateX = new BigDecimal(0);
+		this.translateY = new BigDecimal(0);
+	}
+	
+	/**
+	 * Goes through the DOM recursively. Needed if translation tag is used.
+	 * @param node the
+	 */
+	private void getChildNodes(Node node) {
+		NodeList commands = null;
+		commands = node.getChildNodes();
+		int commandNumber = 0;
+		
+		/*for(commandNumber = 0; commandNumber < commands.getLength(); commandNumber++) {
+			System.out.println(commands.item(commandNumber). + " ;" + commands.item(commandNumber));
+		}*/
+		for(commandNumber = 0; commandNumber < commands.getLength(); commandNumber++) {
+			if(commands.item(commandNumber).getNodeName() == "line") {
+				line(commands.item(commandNumber));
+			} else if(commands.item(commandNumber).getNodeName() == "polyline") {
+				polyline(commands.item(commandNumber));
+			} else if(commands.item(commandNumber).getNodeName() == "circle") {
+				circle(commands.item(commandNumber));
+			} else if(commands.item(commandNumber).getNodeName() == "feedrate") {
+				setFeedRate(commands.item(commandNumber));
+			} else if(commands.item(commandNumber).getNodeName() == "translate") {
+				setTranslation(commands.item(commandNumber));
+				getChildNodes(commands.item(commandNumber));
+				// Translate tag closed. Reset translate values
+				this.translateX = new BigDecimal(0);
+				this.translateY = new BigDecimal(0);
+			}
+		}
 	}
 	
 	/**
@@ -74,8 +109,6 @@ public class Generator {
 	 */
 	public void generate() {
 		Node mainNode;
-		NodeList commands = null;
-		int commandNumber = 0;
 		
 		programModel.clear();
 		
@@ -93,35 +126,21 @@ public class Generator {
 			
 			mainNode = doc.getFirstChild();
 			if(mainNode.getNodeName() == "program") {
-				commands = mainNode.getChildNodes();
-				/*for(commandNumber = 0; commandNumber < commands.getLength(); commandNumber++) {
-					System.out.println(commands.item(commandNumber). + " ;" + commands.item(commandNumber));
-				}*/
-				for(commandNumber = 0; commandNumber < commands.getLength(); commandNumber++) {
-					if(commands.item(commandNumber).getNodeName() == "line") {
-						line(commands.item(commandNumber));
-					} else if(commands.item(commandNumber).getNodeName() == "polyline") {
-						polyline(commands.item(commandNumber));
-					} else if(commands.item(commandNumber).getNodeName() == "circle") {
-						circle(commands.item(commandNumber));
-					} else if(commands.item(commandNumber).getNodeName() == "feedrate") {
-						setFeedRate(commands.item(commandNumber));
-					}
-				}
+				getChildNodes(mainNode);
 			}
 			
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			Main.log.log(Level.SEVERE, "XML parsing failed; " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch(NullPointerException | IndexOutOfBoundsException e) {
 			Main.log.log(Level.SEVERE, "Missing parameter(s); " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch(IllegalArgumentException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		// insert end code
@@ -130,6 +149,17 @@ public class Generator {
 		} catch (IOException e) {
 			Main.log.log(Level.WARNING, "Failed to load >end.gcode<: " + e);
 		}
+	}
+	
+	/**
+	 * Adds the translation to the x and y values of a point.
+	 * @param pint The point.
+	 * @return The point translated.
+	 */
+	private Tuple addTranslation(Tuple point) {
+		point.setValue(0, point.getValue(0).doubleValue() + this.translateX.doubleValue());
+		point.setValue(1, point.getValue(1).doubleValue() + this.translateX.doubleValue());
+		return point;
 	}
 
 	/**
@@ -150,7 +180,7 @@ public class Generator {
 		NodeList children = node.getChildNodes();
 		ArrayList<Tuple> xmlPoints = new ArrayList<Tuple>();
 		ArrayList<double[]> toolPath = new ArrayList<double[]>();
-		Tuple zLevel = null;;
+		Tuple zLevel = null;
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
@@ -160,6 +190,10 @@ public class Generator {
 			if(item.getNodeName() == "z") {
 				zLevel = new Tuple(item);
 			}
+		}
+		
+		for(int i = 0; i < xmlPoints.size(); i++) {
+			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
 		}
 
 		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
@@ -203,6 +237,10 @@ public class Generator {
 			if(item.getNodeName() == "z") {
 				zLevel = new Tuple(item);
 			}
+		}
+		
+		for(int i = 0; i < xmlPoints.size(); i++) {
+			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
 		}
 		
 		// Create toolpath
@@ -479,7 +517,7 @@ public class Generator {
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
 			if(item.getNodeName() == "p") {
-				center = new Tuple(item);
+				center = addTranslation(new Tuple(item));
 			}
 			if(item.getNodeName() == "rad") {
 				radius = new Tuple(item);
@@ -530,6 +568,30 @@ public class Generator {
 		programModel.addLine(new Line());
 		programModel.addField(new Field('G', new BigDecimal(0)));
 		programModel.addField(new Field('F', feedrate.getValue(0)));
+	}
+	
+	/**
+	 * Sets the translation for x and y coordinates within the translation tag.
+	 * 	An code example snippet:
+	 * <pre>{@code
+	 * <translation x="10" y="10">
+	 * 		...
+	 * </translation>
+	 * }</pre>
+	 * @param node
+	 * @throws IllegalArgumentException
+	 */
+	
+	private void setTranslation(Node node) throws IllegalArgumentException {
+		NamedNodeMap map = node.getAttributes();
+		try {
+			this.translateX = new BigDecimal(map.getNamedItem("x").getTextContent());
+			this.translateY = new BigDecimal(map.getNamedItem("y").getTextContent());
+		} catch(NullPointerException e) {
+			Main.log.log(Level.SEVERE, "Missing translation parameter(s); " + e);
+		} catch(NumberFormatException e) {
+			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
+		}	
 	}
 	
 	/**

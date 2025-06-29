@@ -92,6 +92,15 @@ public class Tuple {
 	public BigDecimal getValue(int index) {
 		return new BigDecimal(values.get(index));
 	}
+	
+	/**
+	 * Sets one value in the tuple at index.
+	 * @param index The index
+	 * @param value The value
+	 */
+	public void setValue(int index, double value) {
+		values.set(index, value);
+	}
 
 	/**
 	 * Returns the type of the tuple. Usually the tuple defines a point.

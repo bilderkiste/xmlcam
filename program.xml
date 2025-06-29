@@ -1,5 +1,12 @@
 <?xml version="1.0"?>
 <program>
+	<translate x="-10" y="100">
+		<line>
+			<p>100,100</p>
+			<p>100,200</p>
+			<z>0,-1,0.1</z>
+		</line>
+	</translate>
 	<line>
 		<p>100,100</p>
 		<p>100,200</p>
@@ -12,9 +19,11 @@
 		<z>0,-1,0.1</z>
 	</polyline>
 	<feedrate>200</feedrate>
-	<circle>
-		<p>200,200</p>
-		<rad>30</rad>
-		<z>0,-1,0.1</z>
-	</circle>
+	<translate x="2" y="20">
+		<circle>
+			<p>200,200</p>
+			<rad>30</rad>
+			<z>0,-1,0.1</z>
+		</circle>
+	</translate>
 </program>
