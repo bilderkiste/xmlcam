@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<program>
+	<line>
+		<p>100,100</p>
+		<p>100,200</p>
+		<z>0,-1,0.1</z>
+	</line>
+	<polyline>
+		<p>120,100</p>
+		<p>120,200</p>
+		<p>120,250</p>
+		<z>0,-1,0.1</z>
+	</polyline>
+	<feedrate>200</feedrate>
+	<circle>
+		<p>200,200</p>
+		<rad>30</rad>
+		<z>0,-1,0.1</z>
+	</circle>
+</program>
