@@ -1,4 +1,5 @@
 security-height = 5;		// The security height for a G0 move above the workpiece.
 workbench = 0, 0, 400, 400;		// The bounds of the workbench (xmin, ymin, xmax, ymax).
 step = 50; 			// The ruler and grid steps for graphical view.
+font-size = 18; // Font size for the XML View
 	
