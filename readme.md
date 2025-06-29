@@ -61,6 +61,17 @@
 <pre>&lt;feedrate&gt;200&lt;/feedrate&gt;</pre>
 <p>The generated G-Code for this snippet is</p>
 <p>G0 F200</p>
+<h3>Translation Element</h3>
+The Translation Element shift the Elements within this tag through the x and y pane.
+<pre>
+  <translate x="100" y="500">
+    <circle>
+      <p>20,20</p>
+      <rad>5</rad>
+      <z>0,-2,0,2</z>
+    </circle>
+  </translate>
+</pre>
 <h2>Settings</h2>
 <p>You can define your own settings for xmlCam. At the moment there are only a few settings to be done available.</p>
 <pre>security-height = 5;         // The security height for a G0 move above the workpiece.<br />workbench = 0, 0, 400, 400;  // The bounds of the workbench (xmin, ymin, xmax, ymax).<br />step = 50;                   // The ruler and grid steps for graphical view.</pre>
