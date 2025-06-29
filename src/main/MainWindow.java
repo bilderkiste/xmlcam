@@ -20,6 +20,7 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileReader;
@@ -41,6 +42,7 @@ import javax.swing.JTable;
 import controller.MenuBarListener;
 import controller.TableViewActionListener;
 import controller.TableViewDummyModelChangeListener;
+import misc.Settings;
 import model.Program;
 import view.GraphicView;
 import view.GraphicViewActionListener;
@@ -308,6 +310,7 @@ public class MainWindow extends JFrame {
 		
 		xmlEditorPane = new XMLView();  
 		xmlEditorPane.setContentType("text/plain");
+		xmlEditorPane.setFont(xmlEditorPane.getFont().deriveFont(Font.PLAIN, Settings.xmlFontSize));
 		
 		xmlEditorPane.setText("<?xml version=\"1.0\"?>\n");
 		
