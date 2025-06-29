@@ -64,13 +64,13 @@
 <h3>Translation Element</h3>
 The Translation Element shift the Elements within this tag through the x and y pane.
 <pre>
-  <translate x="100" y="500">
-    <circle>
-      <p>20,20</p>
-      <rad>5</rad>
-      <z>0,-2,0,2</z>
-    </circle>
-  </translate>
+&lt;translate x&equals;&quot;100&quot; y&equals;&quot;500&quot;&gt;
+&NewLine;    &lt;circle&gt;
+&NewLine;      &lt;p&gt;20&comma;20&lt;&sol;p&gt;
+&NewLine;      &lt;rad&gt;5&lt;&sol;rad&gt;
+&NewLine;      &lt;z&gt;0&comma;-2&comma;0&comma;2&lt;&sol;z&gt;
+&NewLine;    &lt;&sol;circle&gt;
+&NewLine;  &lt;&sol;translate&gt;
 </pre>
 <h2>Settings</h2>
 <p>You can define your own settings for xmlCam. At the moment there are only a few settings to be done available.</p>
