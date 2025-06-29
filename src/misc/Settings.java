@@ -47,6 +47,10 @@ public abstract class Settings {
 	 * The ruler and grid steps for graphical view.
 	 */
 	public static int step;
+	/**
+	 * The font size for the XML Editor
+	 */
+	public static int xmlFontSize;
 	
 	/**
 	 * Reads the user settings from the file settings.txt. The file shall be located in the main folder.
@@ -117,6 +121,22 @@ public abstract class Settings {
 			} else {
 				throw new IllegalArgumentException("Could not find scale step parameter in settings file");
 			}
+			
+			searchIndex = stringBuilder.indexOf("font-size");
+			if(searchIndex > -1) {
+				searchIndex = stringBuilder.indexOf("=", searchIndex);
+				endIndex = stringBuilder.indexOf(";", searchIndex);
+				if(searchIndex > -1 && endIndex > -1) {
+					xmlFontSize = Integer.parseInt(stringBuilder.substring(searchIndex + 1, endIndex).trim());
+					if(xmlFontSize < 0 || xmlFontSize > 30) {
+						throw new IllegalArgumentException("Font size must be greater than 0 and smaller than 30");
+					}
+				} else {
+					throw new IllegalArgumentException("Wrong parameter in settings file for font size");
+				}
+			} else {
+				throw new IllegalArgumentException("Could not find font size parameter in settings file");
+			}
 
 		} catch (IOException e) {
 			Main.log.log(Level.WARNING, "Failed to load settings.txt: " + e + ". Set default values.");
@@ -134,6 +154,7 @@ public abstract class Settings {
 		securityHeight = 5;
 		workbench = new Workbench(0, 0, 400, 400);
 		step = 50;
+		xmlFontSize=12;
 	}
 
 }
