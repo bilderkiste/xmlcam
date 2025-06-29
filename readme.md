@@ -64,11 +64,11 @@
 <h3>Translation Element</h3>
 The Translation Element shift the Elements within this tag through the x and y pane.
 <pre>
-&lt;translate x&equals;&quot;100&quot; y&equals;&quot;500&quot;&gt;
+&lt;translate x&equals;&quot;100&quot; y&equals;&quot;50&quot;&gt;
   &lt;circle&gt;
     &lt;p&gt;20&comma;20&lt;&sol;p&gt;
     &lt;rad&gt;5&lt;&sol;rad&gt;
-    &lt;z&gt;0&comma;-2&comma;0&comma;2&lt;&sol;z&gt;
+    &lt;z&gt;0&comma;-2&comma;0.2&lt;&sol;z&gt;
   &lt;&sol;circle&gt;
 &lt;&sol;translate&gt;
 </pre>
