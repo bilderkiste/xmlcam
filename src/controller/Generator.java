@@ -158,7 +158,7 @@ public class Generator {
 	 */
 	private Tuple addTranslation(Tuple point) {
 		point.setValue(0, point.getValue(0).doubleValue() + this.translateX.doubleValue());
-		point.setValue(1, point.getValue(1).doubleValue() + this.translateX.doubleValue());
+		point.setValue(1, point.getValue(1).doubleValue() + this.translateY.doubleValue());
 		return point;
 	}
 
@@ -201,7 +201,7 @@ public class Generator {
 		
 		createGCode(toolPath, zLevel);
 		
-		Main.log.log(Level.FINE, "Line element: line from (" + xmlPoints.get(0).getValue(0) + ", " + xmlPoints.get(0).getValue(0) + ") to (" + xmlPoints.get(1).getValue(0) + ", " + xmlPoints.get(1).getValue(0) + ").");
+		Main.log.log(Level.FINE, "Line element: line from (" + xmlPoints.get(0).getValue(0) + ", " + xmlPoints.get(0).getValue(1) + ") to (" + xmlPoints.get(1).getValue(0) + ", " + xmlPoints.get(1).getValue(1) + ").");
 	}
 	
 	/**
@@ -586,9 +586,16 @@ public class Generator {
 		NamedNodeMap map = node.getAttributes();
 		try {
 			this.translateX = new BigDecimal(map.getNamedItem("x").getTextContent());
+		} catch(NullPointerException e) {
+			Main.log.log(Level.WARNING, "Missing translation parameter(s); " + e);
+		} catch(NumberFormatException e) {
+			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
+		}	
+		
+		try {
 			this.translateY = new BigDecimal(map.getNamedItem("y").getTextContent());
 		} catch(NullPointerException e) {
-			Main.log.log(Level.SEVERE, "Missing translation parameter(s); " + e);
+			Main.log.log(Level.WARNING, "Missing translation parameter(s); " + e);
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
 		}	
