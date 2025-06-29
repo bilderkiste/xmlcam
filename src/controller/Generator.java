@@ -131,16 +131,16 @@ public class Generator {
 			
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			Main.log.log(Level.SEVERE, "XML parsing failed; " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch(NullPointerException | IndexOutOfBoundsException e) {
 			Main.log.log(Level.SEVERE, "Missing parameter(s); " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch(IllegalArgumentException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 		// insert end code

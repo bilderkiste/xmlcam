@@ -38,6 +38,20 @@
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
+				<xsd:element name="translate">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:choice minOccurs="0" maxOccurs="unbounded">
+								<xsd:element name="line" />
+								<xsd:element name="polyline" />
+								<xsd:element name="circle" />			
+							</xsd:choice>
+						</xsd:sequence>
+						<xsd:attribute name="x" type="xsd:decimal" />
+						<xsd:attribute name="y" type="xsd:decimal" />
+					</xsd:complexType>
+
+				</xsd:element>
 				<xsd:element name="feedrate" type="xsd:positiveInteger" />
 			</xsd:choice>
 		</xsd:complexType>
