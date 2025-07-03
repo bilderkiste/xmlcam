@@ -75,7 +75,8 @@ This element shifts the elements within this tag through the x and y pane.
 The center of the circle in this examle is now at (120,70).
 <h2>Settings</h2>
 <p>You can define your own settings for xmlCam. At the moment there are only a few settings to be done available.</p>
-<pre>security-height = 5;         // The security height for a G0 move above the workpiece.<br />workbench = 0, 0, 400, 400;  // The bounds of the workbench (xmin, ymin, xmax, ymax).<br />step = 50;                   // The ruler and grid steps for graphical view.</pre>
+<pre>security-height = 5;         // The security height for a G0 move above the workpiece.<br />workbench = 0, 0, 400, 400;  // The bounds of the workbench (xmin, ymin, xmax, ymax).<br />step = 50;                   // The ruler and grid steps for graphical view.
+font-size = 18; // Font size for the XML View</pre>
 <p>You need to save this into a file named "settings.txt" located in the xmlCam main folder. If you don't define the settings, default values will loaded.</p>
 <h2>Installation</h2>
 <h4>Installation under Linux</h4>
