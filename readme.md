@@ -29,13 +29,11 @@
 <p>On the menubar -&gt; Graphic View it is possible to show or hide the G0 and G1 moves as well the calculated points and the grid suitable to the x and y rulers.</p>
 <h2>Elements</h2>
 <h3>Drill element</h3>
-<p>This element generates the G-Code for a drill at the point &lt;p&gt;x,y&lt;. The z tag defines the start and the end (depth) of the drill.
-<pre>
-&#x9;&#x9;&#x3C;drill&#x3E;
+<p>This element generates the G-Code for a drill at the point &lt;p&gt;x,y&lt;p&gt;. The z tag defines the start and the end (depth) of the drill.
+<pre>&#x9;&#x9;&#x3C;drill&#x3E;
 &#x9;&#x9;&#x9;&#x3C;p&#x3E;100,100&#x3C;/p&#x3E;
 &#x9;&#x9;&#x9;&#x3C;z&#x3E;0,-1&#x3C;/z&#x3E;
-&#x9;&#x9;&#x3C;/drill&#x3E;
-</pre>
+&#x9;&#x9;&#x3C;/drill&#x3E;</pre>
 Hint: You need only two parameters for the z tag.
 </p>
 <h3>Line Element</h3>
