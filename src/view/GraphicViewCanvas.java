@@ -108,13 +108,14 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         			y2 = programModel.getLine(i).getField(index).getNumber().doubleValue();
         			draw = true;
         		}
+        		
+    			if(pointVisible) {
+	        		g.setColor(Color.RED);
+        			g.drawOval(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()) - 2, 
+        						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()) - 2,
+        						4, 4);
+    			}
         		if(draw) {
-        			if(pointVisible) {
-		        		g.setColor(Color.RED);
-	        			g.drawOval(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()) - 2, 
-	        						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()) - 2,
-	        						4, 4);
-        			}
         			if(g1lineVisible) {
         				g.setColor(Color.BLACK);
 	        			g.drawLine(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()),

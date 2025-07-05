@@ -34,6 +34,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import main.Main;
 import main.MainWindow;
+import misc.Settings;
 import model.Program;
 import xml.XMLView;
 
@@ -73,6 +74,7 @@ public class MenuBarListener implements ActionListener {
 		} else if(menuItem.getActionCommand() == "open_xml") {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(new FileNameExtensionFilter("XML Dateien", "xml"));
+			fileChooser.setCurrentDirectory(Settings.userDir);
 			int returnVal = fileChooser.showOpenDialog(parentWindow);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {	
 				try {
@@ -96,6 +98,7 @@ public class MenuBarListener implements ActionListener {
 		} else if(menuItem.getActionCommand() == "save_xml") {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(new FileNameExtensionFilter("XML Dateien", "xml"));
+			fileChooser.setCurrentDirectory(Settings.userDir);
 			int returnVal = fileChooser.showSaveDialog(parentWindow);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {
@@ -118,6 +121,7 @@ public class MenuBarListener implements ActionListener {
 		} else if(menuItem.getActionCommand() == "open_gcode") {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(new FileNameExtensionFilter("G-Code Dateien", "gcode"));
+			fileChooser.setCurrentDirectory(Settings.userDir);
 			int returnVal = fileChooser.showOpenDialog(parentWindow);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {
@@ -140,6 +144,7 @@ public class MenuBarListener implements ActionListener {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(new FileNameExtensionFilter("G-Code Dateien", "gcode"));
 			//fileChooser.setFileFilter(new FileNameExtensionFilter("Textdateien", "txt"));
+			fileChooser.setCurrentDirectory(Settings.userDir);
 			int returnVal = fileChooser.showSaveDialog(parentWindow);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {

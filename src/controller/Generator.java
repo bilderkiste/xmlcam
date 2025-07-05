@@ -86,7 +86,9 @@ public class Generator {
 			System.out.println(commands.item(commandNumber). + " ;" + commands.item(commandNumber));
 		}*/
 		for(commandNumber = 0; commandNumber < commands.getLength(); commandNumber++) {
-			if(commands.item(commandNumber).getNodeName() == "line") {
+			if(commands.item(commandNumber).getNodeName() == "drill") {
+				drill(commands.item(commandNumber));
+			} else if(commands.item(commandNumber).getNodeName() == "line") {
 				line(commands.item(commandNumber));
 			} else if(commands.item(commandNumber).getNodeName() == "polyline") {
 				polyline(commands.item(commandNumber));
@@ -134,7 +136,7 @@ public class Generator {
 			//e.printStackTrace();
 		} catch(NullPointerException | IndexOutOfBoundsException e) {
 			Main.log.log(Level.SEVERE, "Missing parameter(s); " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
 			//e.printStackTrace();
@@ -162,6 +164,49 @@ public class Generator {
 		return point;
 	}
 
+	/**
+	 * Generate G-Code for a drill.
+	 * The drill is defined by one points defined with <p> tags.
+	 * The z-depth must be defined by the <z> tag.
+	 * An code example snippet:
+	 * <pre>{@code
+	 * <drill>
+	 * 		<p>40,20</p>
+	 * 		<z>0,-1,0.1</z>
+	 * </drill>
+	 * }</pre>
+	 * @param node The node with the needed parameters
+	 */
+	private void drill(Node node) throws IllegalArgumentException {
+		NodeList children = node.getChildNodes();
+		Tuple xmlPoint = null;
+		ArrayList<double[]> toolPath = new ArrayList<double[]>();
+		Tuple zLevel = null;
+		
+		for(int i = 0; i < children.getLength(); i++) {
+			Node item = children.item(i);
+			if(item.getNodeName() == "p") {
+				xmlPoint = addTranslation(new Tuple(item));
+			}
+			if(item.getNodeName() == "z") {
+				zLevel = new Tuple(item);
+			}
+		}
+
+		// cut the z tuple
+		if(zLevel.size() > 2) {
+			zLevel = zLevel.subList(0,1);
+		} 
+		// add one whole step to endZ
+		zLevel.addValue(zLevel.getValue(1).abs().doubleValue());
+		
+		toolPath.add(new double[] { xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue() });
+		
+		createGCode(toolPath, zLevel);
+		
+		Main.log.log(Level.FINE, "Drill element: drill at (" + xmlPoint.getValue(0) + ", " + xmlPoint.getValue(1) + ").");
+	}
+	
 	/**
 	 * Generate G-Code for a line.
 	 * The line is defined by two points defined with <p> tags.

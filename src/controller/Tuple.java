@@ -94,12 +94,34 @@ public class Tuple {
 	}
 	
 	/**
+	 * Returns a part of the tuple as tuple from index to index.
+	 * @param from Start of the new tuple
+	 * @param to End of the new tuple
+	 * @return The new tuple with the partial content from the old tuple.
+	 */
+	public Tuple subList(int from, int to) throws ArrayIndexOutOfBoundsException {
+		double[] list = new double[to - from + 1];
+		for(int i = from; i <= to; i++) {
+			list[i] = values.get(i);
+		}
+		return new Tuple(list);
+	}
+	
+	/**
 	 * Sets one value in the tuple at index.
 	 * @param index The index
 	 * @param value The value
 	 */
 	public void setValue(int index, double value) {
 		values.set(index, value);
+	}
+	
+	/**
+	 * Add a value add the end of the tuple.
+	 * @param value The value
+	 */
+	public void addValue(double value) {
+		values.add(value);
 	}
 
 	/**

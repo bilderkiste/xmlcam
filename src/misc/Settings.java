@@ -20,6 +20,7 @@
 package misc;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -53,6 +54,11 @@ public abstract class Settings {
 	public static int xmlFontSize;
 	
 	/**
+	 * The start directory for the JFileChooser Dialog
+	 */
+	public static File userDir;
+	
+	/**
 	 * Reads the user settings from the file settings.txt. The file shall be located in the main folder.
 	 * If an error occurs, the default setting will be loaded.
 	 */
@@ -64,6 +70,8 @@ public abstract class Settings {
 			BufferedReader bufferedReader = new BufferedReader(new FileReader("settings.txt"));
 			StringBuilder stringBuilder = new StringBuilder();
 			int searchIndex, endIndex;
+			
+			userDir = new File(System.getProperty("user.dir"));
 			
 			while((lineBuffer = bufferedReader.readLine()) != null) {
 				stringBuilder.append(lineBuffer);

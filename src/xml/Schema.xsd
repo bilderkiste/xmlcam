@@ -4,7 +4,7 @@
 	<xs:complexType name="drill">
 		<xs:sequence>
 			<xs:element name="p" type="pointtype" />
-			<xs:element name="z" type="ztype" />
+			<xs:element name="z" type="ztype2" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -12,7 +12,7 @@
 	<xs:complexType name="line">
 		<xs:sequence>
 			<xs:element name="p" type="pointtype" minOccurs="2" maxOccurs="2" />
-			<xs:element name="z" type="ztype" />
+			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 	</xs:complexType>
 		
@@ -20,7 +20,7 @@
 		<xs:sequence>
 			<xs:element name="p" type="pointtype" />
 			<xs:element name="rad" type="radtype" />						
-			<xs:element name="z" type="ztype" />
+			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -37,7 +37,7 @@
 				</xs:sequence>
 				<xs:element name="p" type="pointtype" />	
 			</xs:choice>
-			<xs:element name="z" type="ztype" />
+			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -71,9 +71,15 @@
 	    </xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="ztype">
+	<xs:simpleType name="ztype3">
 	    <xs:restriction base="xs:string">
 	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?,-?[0-9]+(\.[0-9]+)?,[0-9]+(\.[0-9]+)?"/>
+	    </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ztype2">
+	    <xs:restriction base="xs:string">
+	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?,-?[0-9]+(\.[0-9]+)?"/>
 	    </xs:restriction>
 	</xs:simpleType>
 	
