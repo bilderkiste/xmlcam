@@ -156,8 +156,8 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	private void paintGrid(Graphics g) {
 		g.setColor(Color.DARK_GRAY);
 		
-		for(int i = 0; i < Settings.workbench.getXDimension() * graphicView.getScale(); i += Settings.step) {
-			for(int j = 0; j < Settings.workbench.getYDimension() * graphicView.getScale(); j += Settings.step) {
+		for(int i = 0; i < Settings.workbench.getXDimension() * graphicView.getScale(); i += Settings.gridStep) {
+			for(int j = 0; j < Settings.workbench.getYDimension() * graphicView.getScale(); j += Settings.gridStep) {
 				g.drawLine(i - graphicView.getxBar().getValue(), this.getHeight() - j - (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()),
 						i - graphicView.getxBar().getValue(), this.getHeight() - j - (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()));
 			}

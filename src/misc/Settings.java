@@ -47,7 +47,7 @@ public abstract class Settings {
 	/**
 	 * The ruler and grid steps for graphical view.
 	 */
-	public static int step;
+	public static int gridStep;
 	/**
 	 * The font size for the XML Editor
 	 */
@@ -63,22 +63,19 @@ public abstract class Settings {
 	 * If an error occurs, the default setting will be loaded.
 	 */
 	public static void readSettings() {
-	
+
 		try {
 			String lineBuffer;
 			String[] values;
 			BufferedReader bufferedReader = new BufferedReader(new FileReader("settings.txt"));
 			StringBuilder stringBuilder = new StringBuilder();
 			int searchIndex, endIndex;
-			
-			userDir = new File(System.getProperty("user.dir"));
-			
+		
 			while((lineBuffer = bufferedReader.readLine()) != null) {
 				stringBuilder.append(lineBuffer);
 			}
 			
 			bufferedReader.close();
-			
 			
 			searchIndex = stringBuilder.indexOf("security-height");
 			if(searchIndex > -1) {
@@ -86,14 +83,16 @@ public abstract class Settings {
 				endIndex = stringBuilder.indexOf(";", searchIndex);
 				if(searchIndex > -1 && endIndex > -1) {
 					securityHeight = Integer.parseInt(stringBuilder.substring(searchIndex + 1, endIndex).trim());
-					if(step < 0) {
-						throw new IllegalArgumentException("Security height must be greater than 0");
+					if(securityHeight < 0) {
+						setSecurityHeightDefault("Security height must be greater than 0.");
+					} else {
+						Main.log.log(Level.FINE, "Set security height successfully to value " + securityHeight + ".");
 					}
 				} else {
-					throw new IllegalArgumentException("Wrong parameter in settings file for securityHeight.");
+					setSecurityHeightDefault("Wrong parameter in settings file for securityHeight.");
 				}
 			} else {
-				throw new IllegalArgumentException("Could not find securityHeight parameter in settings file.");
+				setSecurityHeightDefault("Could not find securityHeight parameter in settings file.");
 			}
 			
 			workbench = new Workbench(0, 0, 400, 400);
@@ -105,29 +104,33 @@ public abstract class Settings {
 					values = stringBuilder.substring(searchIndex + 1, endIndex).split(",");
 					workbench = new Workbench(Integer.parseInt(values[0].trim()), Integer.parseInt(values[1].trim()), Integer.parseInt(values[2].trim()), Integer.parseInt(values[3].trim()));
 					if(workbench.getXDimension() < 1 || workbench.getYDimension() < 1 ) {
-						throw new IllegalArgumentException("Workbench has illegal dimenstions");
+						setWorkbenchDefault("Workbench has illegal dimenstions");
+					} else {
+						Main.log.log(Level.FINE, "Set workbench successfully to values " + workbench + ".");
 					}
 				} else {
-					throw new IllegalArgumentException("Wrong parameter in settings file for workbench");
+					setWorkbenchDefault("Wrong parameter in settings file for workbench.");
 				}
 			} else {
-				throw new IllegalArgumentException("Could not find workbench parameter in settings file");
+				setWorkbenchDefault("Could not find workbench parameter in settings file.");
 			}
 			
-			searchIndex = stringBuilder.indexOf("step");
+			searchIndex = stringBuilder.indexOf("grid-step");
 			if(searchIndex > -1) {
 				searchIndex = stringBuilder.indexOf("=", searchIndex);
 				endIndex = stringBuilder.indexOf(";", searchIndex);
 				if(searchIndex > -1 && endIndex > -1) {
-					step = Integer.parseInt(stringBuilder.substring(searchIndex + 1, endIndex).trim());
-					if(step < 10) {
-						throw new IllegalArgumentException("Scale step must be greater than 9");
+					gridStep = Integer.parseInt(stringBuilder.substring(searchIndex + 1, endIndex).trim());
+					if(gridStep < 10) {
+						setGridStepDefault("Scale step must be greater than 9.");
+					} else {
+						Main.log.log(Level.FINE, "Set grid step for graphical view successfully to " + gridStep + ".");
 					}
 				} else {
-					throw new IllegalArgumentException("Wrong parameter in settings file for scale step");
+					setGridStepDefault("Wrong parameter in settings file for scale step.");
 				}
 			} else {
-				throw new IllegalArgumentException("Could not find scale step parameter in settings file");
+				setGridStepDefault("Could not find grid step parameter in settings file.");
 			}
 			
 			searchIndex = stringBuilder.indexOf("font-size");
@@ -137,32 +140,93 @@ public abstract class Settings {
 				if(searchIndex > -1 && endIndex > -1) {
 					xmlFontSize = Integer.parseInt(stringBuilder.substring(searchIndex + 1, endIndex).trim());
 					if(xmlFontSize < 0 || xmlFontSize > 30) {
-						throw new IllegalArgumentException("Font size must be greater than 0 and smaller than 30");
+						setFontSizeDefault("Font size must be greater than 0 and smaller than 30.");
+					} else {
+						Main.log.log(Level.FINE, "Set font size for XML-Editor successfully to " + xmlFontSize + "pt.");
 					}
 				} else {
-					throw new IllegalArgumentException("Wrong parameter in settings file for font size");
+					setFontSizeDefault("Wrong parameter in settings file for font size.");
 				}
 			} else {
-				throw new IllegalArgumentException("Could not find font size parameter in settings file");
+				setFontSizeDefault("Could not find font size parameter in settings file.");
+			}
+			
+			searchIndex = stringBuilder.indexOf("standard-dir");
+			if(searchIndex > -1) {
+				searchIndex = stringBuilder.indexOf("=", searchIndex);
+				endIndex = stringBuilder.indexOf(";", searchIndex);
+				if(searchIndex > -1 && endIndex > -1) {
+					userDir = new File(stringBuilder.substring(searchIndex + 1, endIndex).trim());
+					if(!userDir.exists()) {
+						setUserDirDefault("Standard directory does not exist.");
+					} else {
+						Main.log.log(Level.FINE, "Set standard directory for XML and G-Code successfully to " + userDir + ".");
+					}
+				} 
+			} else {
+				setUserDirDefault("Could not find standard directory for XML and G-Code in settings file.");
 			}
 
 		} catch (IOException e) {
 			Main.log.log(Level.WARNING, "Failed to load settings.txt: " + e + ". Set default values.");
-			setDefault();
+			setAllDefaults();
 		} catch (IllegalArgumentException e) {
 			Main.log.log(Level.WARNING, e + ". Skip all values in file and set default values.");
-			setDefault();
+			setAllDefaults();
+		} catch (Exception e) {
+			Main.log.log(Level.WARNING, e + ". Skip all values in file and set default values.");
+			setAllDefaults();
 		}
 	}
 	
 	/**
-	 * Set the default values, if an error occured.
+	 * Set all default values, if an error occured.
 	 */
-	private static void setDefault() {
+	private static void setAllDefaults() {
+		setSecurityHeightDefault("");
+		setWorkbenchDefault("");
+		setGridStepDefault("");
+		setFontSizeDefault("");
+		setUserDirDefault("");
+	}
+	
+	/**
+	 * Set default for security height.
+	 */
+	private static void setSecurityHeightDefault(String message) {
 		securityHeight = 5;
+		Main.log.log(Level.FINE, message + "Set security height to default value " + securityHeight  + ".");
+	}
+	
+	/**
+	 * Set default for workbench measurest.
+	 */
+	private static void setWorkbenchDefault(String message) {
 		workbench = new Workbench(0, 0, 400, 400);
-		step = 50;
-		xmlFontSize=12;
+		Main.log.log(Level.FINE, message + "Set workbench to default value " + workbench + ".");
 	}
 
+	/**
+	 * Set default for grid step for graphical view.
+	 */
+	private static void setGridStepDefault(String message) {
+		gridStep= 50;
+		Main.log.log(Level.FINE, message + "Set grid step to default value " + gridStep + ".");
+	}
+	
+	/**
+	 * Set default for XML-Editor font size.
+	 */
+	private static void setFontSizeDefault(String message) {
+		xmlFontSize=12;
+		Main.log.log(Level.FINE, message + "Set XML-Editor font size to default value " + xmlFontSize +"pt.");
+	}
+	
+	/**
+	 * Set default for user directory.
+	 */
+	private static void setUserDirDefault(String message) {
+		userDir = new File(System.getProperty("user.dir"));
+		Main.log.log(Level.FINE, message + "Set standard user directory for XML and G-Code to default value " + userDir);
+	}
 }

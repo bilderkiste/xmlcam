@@ -45,8 +45,15 @@ public class Main {
 		String[] arg = null;
 		for(int i = 0; i < arguments.length; i++) {
 			arg = arguments[i].split("=");
-			if(arg[0].equals("loglevel")) {
+			if(arg[i].equals("loglevel")) {
 				log.setLevel(Level.parse(arg[1].toUpperCase()));
+			} else if(arg[i].equals("help")) {
+				System.out.println("Options:");
+				System.out.println("loglevel=<level>  <level>=fine|warning|error");
+				System.exit(0);
+			} else {
+				System.out.println("Type option help for more information.");
+				System.exit(0);
 			}
 		}
 		

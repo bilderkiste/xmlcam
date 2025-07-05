@@ -60,13 +60,13 @@ public class GraphicViewRuler extends JPanel {
 		super.paint(g);
 		
 		if(axis == 0) {
-			for(int i = Settings.workbench.getXMin() * graphicView.getScale(); i <= (Settings.workbench.getXMin() + Settings.workbench.getXDimension()) * graphicView.getScale(); i += Settings.step) {
+			for(int i = Settings.workbench.getXMin() * graphicView.getScale(); i <= (Settings.workbench.getXMin() + Settings.workbench.getXDimension()) * graphicView.getScale(); i += Settings.gridStep) {
 				g.drawLine(i - Settings.workbench.getXMin() * graphicView.getScale() - graphicView.getxBar().getValue(), this.getHeight(), i - Settings.workbench.getXMin() * graphicView.getScale() - graphicView.getxBar().getValue(), this.getHeight() - 30);
 				g.drawString(Integer.toString(i / graphicView.getScale()), i - Settings.workbench.getXMin() * graphicView.getScale() + 2 - graphicView.getxBar().getValue(), this.getHeight() - 4);
 			}
 		
 		} else if(axis == 1) {
-			for(int i = Settings.workbench.getYMin() * graphicView.getScale(); i <= (Settings.workbench.getYMin() + Settings.workbench.getYDimension()) * graphicView.getScale(); i += Settings.step) {
+			for(int i = Settings.workbench.getYMin() * graphicView.getScale(); i <= (Settings.workbench.getYMin() + Settings.workbench.getYDimension()) * graphicView.getScale(); i += Settings.gridStep) {
 				g.drawLine(0, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() + (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount())), 30, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() + (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount())));
 				g.drawString(Integer.toString(i / graphicView.getScale()), 0, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() + 2 + (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount())));
 			}
