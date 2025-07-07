@@ -65,8 +65,8 @@
 							<xs:element name="circle" type="circle" />
 							<xs:element name="rectangle" type="rectangle" />
 						</xs:choice>
-						<xs:attribute name="x" type="xs:decimal" />
-						<xs:attribute name="y" type="xs:decimal" />
+						<xs:attribute name="x" type="translationtype" />
+						<xs:attribute name="y" type="translationtype" />
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="feedrate" type="xs:positiveInteger" />
@@ -76,19 +76,25 @@
 	
 	<xs:simpleType name="pointtype">
 	    <xs:restriction base="xs:string">
-	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?,-?[0-9]+(\.[0-9]+)?"/>
+	    	<xs:pattern value="[0-9]+(\.[0-9]+)?,-?[0-9]+(\.[0-9]+)?"/>
+	    </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="translationtype">
+	    <xs:restriction base="xs:string">
+	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?"/>
 	    </xs:restriction>
 	</xs:simpleType>
 	
 	<xs:simpleType name="ztype3">
 	    <xs:restriction base="xs:string">
-	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?,-?[0-9]+(\.[0-9]+)?,[0-9]+(\.[0-9]+)?"/>
+	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?,-[0-9]+(\.[0-9]+)?,[0-9]+(\.[0-9]+)?"/>
 	    </xs:restriction>
 	</xs:simpleType>
 	
 	<xs:simpleType name="ztype2">
 	    <xs:restriction base="xs:string">
-	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?,-?[0-9]+(\.[0-9]+)?"/>
+	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?,-[0-9]+(\.[0-9]+)?"/>
 	    </xs:restriction>
 	</xs:simpleType>
 	
