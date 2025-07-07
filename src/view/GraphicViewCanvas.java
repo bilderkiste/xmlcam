@@ -71,7 +71,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	g.fillRect(0, this.getHeight() - Settings.workbench.getYDimension() * graphicView.getScale() - (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()), (Settings.workbench.getXDimension() * graphicView.getScale()) - graphicView.getxBar().getValue(), Settings.workbench.getYDimension() * graphicView.getScale());
     	
     	// Paint all G0 and G1 moves
-        for(int i = 0; i < programModel.getLineSize(); i++) {
+        for(int i = 0; i < programModel.size(); i++) {
         	draw = false;
         	if(programModel.getLine(i).getField(0).toString().equals("G0")) {
 	        		

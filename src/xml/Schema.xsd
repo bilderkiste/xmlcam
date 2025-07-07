@@ -15,6 +15,13 @@
 			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:complexType name="rectangle">
+		<xs:sequence>
+			<xs:element name="p" type="pointtype" minOccurs="2" maxOccurs="2" />
+			<xs:element name="z" type="ztype3" />
+		</xs:sequence>
+	</xs:complexType>
 		
 	<xs:complexType name="circle">
 		<xs:sequence>
@@ -48,6 +55,7 @@
 				<xs:element name="line" type="line" />
 				<xs:element name="polyline" type="polyline" />
 				<xs:element name="circle" type="circle" />
+				<xs:element name="rectangle" type="rectangle" />
 				<xs:element name="translate">
 					<xs:complexType>
 						<xs:choice minOccurs="1" maxOccurs="unbounded">
@@ -55,6 +63,7 @@
 							<xs:element name="line" type="line" />
 							<xs:element name="polyline" type="polyline" />
 							<xs:element name="circle" type="circle" />
+							<xs:element name="rectangle" type="rectangle" />
 						</xs:choice>
 						<xs:attribute name="x" type="xs:decimal" />
 						<xs:attribute name="y" type="xs:decimal" />

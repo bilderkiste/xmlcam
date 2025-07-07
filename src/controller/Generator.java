@@ -94,6 +94,8 @@ public class Generator {
 				polyline(commands.item(commandNumber));
 			} else if(commands.item(commandNumber).getNodeName() == "circle") {
 				circle(commands.item(commandNumber));
+			} else if(commands.item(commandNumber).getNodeName() == "rectangle") {
+				rectangle(commands.item(commandNumber));
 			} else if(commands.item(commandNumber).getNodeName() == "feedrate") {
 				setFeedRate(commands.item(commandNumber));
 			} else if(commands.item(commandNumber).getNodeName() == "translate") {
@@ -136,7 +138,7 @@ public class Generator {
 			//e.printStackTrace();
 		} catch(NullPointerException | IndexOutOfBoundsException e) {
 			Main.log.log(Level.SEVERE, "Missing parameter(s); " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
 			//e.printStackTrace();
@@ -595,6 +597,51 @@ public class Generator {
 	}
 	
 	/**
+	 * Generate G-Code for a rectangle.
+	 * A rectangle is defined by two points for the diagonal edges determined through a <p> tag.
+	 * The z-depth must be defined by the <z> tag.
+	 * An code example snippet:
+	 * <pre>{@code
+	 * <rectangle>
+	 * 		<p>100,100</p>
+	 * 		<p>150,150</p>
+	 *		<z>0,-1,0.1</z>
+	 * </rectangle>
+	 * }</pre>
+	 * @param node The node with the needed parameters
+	 */
+	private void rectangle(Node node) throws IllegalArgumentException {
+		NodeList children = node.getChildNodes();
+		ArrayList<Tuple> xmlPoints = new ArrayList<Tuple>();
+		ArrayList<double[]> toolPath = new ArrayList<double[]>();
+		Tuple zLevel = null;
+		
+		for(int i = 0; i < children.getLength(); i++) {
+			Node item = children.item(i);
+			if(item.getNodeName() == "p") {
+				xmlPoints.add(new Tuple(item));
+			}
+			if(item.getNodeName() == "z") {
+				zLevel = new Tuple(item);
+			}
+		}
+		
+		for(int i = 0; i < xmlPoints.size(); i++) {
+			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
+		}
+		
+		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
+		toolPath.add(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
+		toolPath.add(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() });
+		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() });
+		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
+		
+		createGCode(toolPath, zLevel);
+		
+		Main.log.log(Level.FINE, "Rectangle element: rectangle from (" + xmlPoints.get(0).getValue(0) + ", " + xmlPoints.get(0).getValue(1) + ") to (" + xmlPoints.get(1).getValue(0) + ", " + xmlPoints.get(1).getValue(1) + ").");
+	}
+	
+	/**
 	 * Generate G-Code for a semicircle.
 	 * @param node The node with the needed parameters
 	 */
@@ -656,7 +703,7 @@ public class Generator {
 		BigDecimal endZ = zLevel.getValue(1);
 		BigDecimal stepZ = zLevel.getValue(2);
 		boolean forward = true;
-		
+				
 		if(stepZ.doubleValue() <= 0) {
 			throw new IllegalArgumentException("The Z step must be greater than 0");
 		}
@@ -667,7 +714,7 @@ public class Generator {
 		
 		go0(newX, newY, "Go to start position for element."); // go to start position
 			
-		while(newZ.doubleValue() >= endZ.doubleValue()) {
+		while(true) {
 			if(forward) {
 				go1(newX, newY, newZ);  // Z sink
 				for(int j = 1; j < toolPath.size(); j++) {
@@ -685,7 +732,17 @@ public class Generator {
 				}
 				forward = true;
 			}
+			// If last zLevel was cutted, break
+			if(newZ.doubleValue() == endZ.doubleValue()) {
+				break;
+			}
+			
 			newZ = newZ.subtract(stepZ);
+			
+			// If last zLevel is < endLevel cut the last zLevel with endZ value
+			if(newZ.doubleValue() < endZ.doubleValue()) {
+				newZ = new BigDecimal(endZ.doubleValue());
+			}
 		}
 		go0(currentX, currentY, "End element; Lift up at current position.");	
 	}
@@ -729,7 +786,7 @@ public class Generator {
 		programModel.addLine(new Line());
 		
 		if(comment != null) {
-			programModel.setComment(programModel.getLineSize() - 1, comment);
+			programModel.setComment(programModel.size() - 1, comment);
 		}
 		
 		programModel.addField(new Field('G', new BigDecimal(0)));
@@ -744,7 +801,8 @@ public class Generator {
 			this.currentY = y;
 		}
 			
-		if(!newZ.equals(currentZ)) {
+		// move z always to security high when G0 move shall performed
+		if(!z.equals(currentZ)) {
 			programModel.addField(new Field('Z', z));
 			this.currentZ = z;
 		}
@@ -752,6 +810,7 @@ public class Generator {
 		if(feedrate != null) {
 			programModel.addField(new Field('F', feedrate));
 		}
+	
 	}
 	
 	/**
@@ -780,7 +839,7 @@ public class Generator {
 		programModel.addLine(new Line());
 		
 		if(comment != null) {
-			programModel.setComment(programModel.getLineSize() - 1, comment);
+			programModel.setComment(programModel.size() - 1, comment);
 		}
 		
 		programModel.addField(new Field('G', new BigDecimal(1)));
@@ -803,6 +862,11 @@ public class Generator {
 		if(feedrate != null) {
 			programModel.addField(new Field('F', feedrate));
 		}
+		
+		// remove line if there are no arguments
+		/*if(programModel.getLine(programModel.size() - 1).size() <= 1) {
+			programModel.removeLine(programModel.size() - 1);
+		}*/
 
 	}
 	

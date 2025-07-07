@@ -217,7 +217,7 @@ public class Program {
 	 * Returns the maximum size of fields in a line in the program.
 	 * @return maximum size;
 	 */
-	public int getFieldSize() {
+	public int getMaxFieldSize() {
 		int maxSize = 0;
 		for(int i = 0; i < lines.size(); i++) {
 			if(lines.get(i).size() > maxSize) {
@@ -228,10 +228,10 @@ public class Program {
 	}
 	
 	/**
-	 * Return the size of lines in the program.
-	 * @return line size;
+	 * Returns the amount of lines the program.
+	 * @return the amount;
 	 */
-	public int getLineSize() {
+	public int size() {
 		return lines.size();
 	}
 	

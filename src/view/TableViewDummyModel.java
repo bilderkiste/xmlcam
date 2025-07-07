@@ -76,7 +76,7 @@ public class TableViewDummyModel extends AbstractTableModel implements ProgramMo
 	 */
 	@Override
 	public int getColumnCount() {
-		return programModel.getFieldSize() + 1; // +1 is for the comment
+		return programModel.getMaxFieldSize() + 1; // +1 is for the comment
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class TableViewDummyModel extends AbstractTableModel implements ProgramMo
 	 */
 	@Override
 	public int getRowCount() {
-		return programModel.getLineSize();
+		return programModel.size();
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class TableViewDummyModel extends AbstractTableModel implements ProgramMo
 	 */
 	@Override
 	public String getColumnName(int column) {
-		if(column == programModel.getFieldSize()) {
+		if(column == programModel.getMaxFieldSize()) {
 			return new String("Kommentar");
 		} else {
 			return super.getColumnName(column);
