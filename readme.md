@@ -64,6 +64,17 @@ Hint: You need only two parameters for the z tag.
 <p>This code snippet has the following result:</p>
 <p>![circleelement](https://github.com/user-attachments/assets/d617076b-eb83-42c5-bb75-fd249bc67011)
 </p>
+<h3>Rectangle Element</h3>
+<p>A rectangle is defined by two points for the diagonal edges determined through a &st;p&gt; tag.
+The z-depth must be defined by the &st;z&gt; tag.
+	An code example snippet:
+	<pre>
+&lt;rectangle&gt;
+	&lt;p&gt;100,100&lt;&#x2F;p&gt;
+	&lt;p&gt;150,150&lt;&#x2F;p&gt;
+	&lt;z&gt;0,-1,0.1&lt;&#x2F;z&gt;
+&lt;&#x2F;rectangle&gt;
+	</pre>
 <h3>Feedrate Element</h3>
 <p>This element sets the feedrate in mm/min for all subsequent G-Code.</p>
 <pre>&lt;feedrate&gt;200&lt;/feedrate&gt;</pre>
