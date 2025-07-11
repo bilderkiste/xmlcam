@@ -20,6 +20,7 @@
 package model;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 /**
  * This class represents a G-Code field like G0.
@@ -48,7 +49,13 @@ public class Field {
 	public Field(char letter, BigDecimal number) {
 		this.setLetter(letter);
 		this.hasNumber = true;
-		this.number = number;
+		// Check if number has decimal places. If yes then round them to 8 decimal places.
+		if(number.scale() > 0) {
+			double value = number.round(new MathContext(8)).doubleValue();
+			this.number = new BigDecimal(value);
+		} else {
+			this.number= number;
+		}
 	}
 	
 	/**
@@ -109,8 +116,8 @@ public class Field {
 	@Override
 	public String toString() {
 		if(hasNumber) {
-			if(number.floatValue() % 1 != 0) { // check if decimal place is greater than 0
-				return new String() + letter + number.floatValue(); //number.round(new MathContext(4));
+			if(number.doubleValue() % 1 != 0) { // check if decimal place is greater than 0
+				return new String() + letter + number.doubleValue();
 			} else {
 				return new String() + letter + number.intValue();
 			}
