@@ -64,8 +64,8 @@ Hint: You need only two parameters for the z tag.
 <p>This code snippet has the following result:</p>
 <p>![circleelement](https://github.com/user-attachments/assets/d617076b-eb83-42c5-bb75-fd249bc67011)
 </p>
-With the &lt;seg&gt; tag you can define the number of segments in the circe. You can i.e. define an hexagon by adding the &lt;seg&gt;8&lt;/seg&gt; tag.
-<pre>&lt;circle&gt;<br />  &lt;p&gt;100,200&lt;/p&gt;<br />  &lt;rad&gt;50&lt;/rad&gt;<br />  &lt;seg&gt;8&lt;/seg&gt;<br />  &lt;z&gt;0,-1,0.1&lt;/z&gt;<br />&lt;/circle&gt;</pre>
+With the &lt;seg&gt; tag you can define the number of segments in the circe. You can i.e. define an hexagon by adding the &lt;seg&gt;6&lt;/seg&gt; tag.
+<pre>&lt;circle&gt;<br />  &lt;p&gt;100,200&lt;/p&gt;<br />  &lt;rad&gt;50&lt;/rad&gt;<br />  &lt;seg&gt;6&lt;/seg&gt;<br />  &lt;z&gt;0,-1,0.1&lt;/z&gt;<br />&lt;/circle&gt;</pre>
 <h3>Rectangle Element</h3>
 <p>A rectangle is defined by two points for the diagonal edges determined through a &lt;p&gt; tag.
 The z-depth must be defined by the &lt;z&gt; tag.
