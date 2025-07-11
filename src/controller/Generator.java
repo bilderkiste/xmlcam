@@ -558,8 +558,9 @@ public class Generator {
 	private void circle(Node node) throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
 		ArrayList<double[]> toolPath = new ArrayList<double[]>();
-		Tuple center = null, radius = null, zLevel = null;
+		Tuple center = null, radius = null, zLevel = null, segments = null;
 		int resolution = 2; // mm
+		double phiStep = 0;
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
@@ -569,25 +570,36 @@ public class Generator {
 			if(item.getNodeName() == "rad") {
 				radius = new Tuple(item);
 			}
+			if(item.getNodeName() == "seg") {
+				segments = new Tuple(item);
+			}
 			if(item.getNodeName() == "z") {
 				zLevel = new Tuple(item);
 			}
 		}
 		
-		float phi = 0;
+	
+		double phi = 0;
 		float xCenter = center.getValue(0).floatValue();
 		float yCenter = center.getValue(1).floatValue();
 		float radiusv = radius.getValue(0).floatValue();;
-			
-		// Determine phiStep. If the circle is very small, the step should be < 0.5 (that means more G points on the circle
-		double phiStep = 2 * Math.PI / ((2 * radiusv * Math.PI) / resolution);
-		if(phiStep > 0.5) {
-			phiStep = 0.5;
+		
+		if(segments == null) { 
+			// Determine phiStep. If the circle is very small, the step should be < 0.5 (that means more G points on the circle
+			phiStep = 2 * Math.PI / ((2 * radiusv * Math.PI) / resolution);
+			if(phiStep > 0.5) {
+				phiStep = 0.5;
+			}
+		} else {
+			if(segments.getValue(0).intValue() < 3) {
+				throw new IllegalArgumentException("Segment value has to be greater 2.");
+			}
+			phiStep =  2 * Math.PI / segments.getValue(0).intValue();
 		}
 	
 		while(phi < 2 * Math.PI) {
 			toolPath.add(new double[] { xCenter + radiusv * Math.sin(phi), yCenter + radiusv * Math.cos(phi) });
-			phi += phiStep;			
+			phi += phiStep;
 		}
 		toolPath.add(new double[] { xCenter + radiusv * Math.sin(0), yCenter + radiusv * Math.cos(0) });
 		
@@ -863,7 +875,7 @@ public class Generator {
 			programModel.addField(new Field('F', feedrate));
 		}
 		
-		// remove line if there are no arguments
+		// remove line if there are no commands
 		/*if(programModel.getLine(programModel.size() - 1).size() <= 1) {
 			programModel.removeLine(programModel.size() - 1);
 		}*/
