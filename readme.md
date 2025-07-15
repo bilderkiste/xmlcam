@@ -1,6 +1,6 @@
-<H1>This is the documentation site for xmlCam.</H1>
-<h2>What is xmlCam?</h2>
-<p>xmlCam is a software to generate G-Code very fast and with less effort for a CNC-Milling machine.</p>
+<H1>This is the documentation site for xmlCAM.</H1>
+<h2>What is xmlCAM?</h2>
+<p>xmlCAM is a software to generate G-Code very fast and with less effort for a CNC-Milling machine.</p>
 <p>The only thing you need to do is to create the toolpathes with elements via XML-Code.
 <p>The software is in an early state and comes with absolutely no warranty. I will try to continue development for xmlCam, but programming is not my profession so I have to do it in freetime. I ask for your understanding if some bugs are in the software.</p>
 <p>xmlCAM is free software licensed under the GNU General Public License version 3 published by the Free Software Foundation. <a href="index.php?Itemid=106">For more information read the license here.</a></p>
