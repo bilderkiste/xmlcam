@@ -19,6 +19,7 @@
 
 package controller;
 
+import java.awt.Polygon;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -562,6 +563,17 @@ public class Generator {
 		int resolution = 2; // mm
 		double phiStep = 0;
 		
+		NamedNodeMap map = node.getAttributes();
+		
+		boolean pocket = false;
+		
+		try {
+			map.getNamedItem("pocket").getTextContent();
+			pocket = true;
+		} catch(NullPointerException e) {
+		
+		} 
+		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
 			if(item.getNodeName() == "p") {
@@ -578,6 +590,7 @@ public class Generator {
 			}
 		}
 		
+		Polygon polygon = new Polygon();
 	
 		double phi = 0;
 		float xCenter = center.getValue(0).floatValue();
@@ -599,10 +612,19 @@ public class Generator {
 	
 		while(phi < 2 * Math.PI) {
 			toolPath.add(new double[] { xCenter + radiusv * Math.sin(phi), yCenter + radiusv * Math.cos(phi) });
+			polygon.addPoint((int) (xCenter + radiusv * Math.sin(phi)), (int) (yCenter + radiusv * Math.cos(phi)));
 			phi += phiStep;
 		}
 		toolPath.add(new double[] { xCenter + radiusv * Math.sin(0), yCenter + radiusv * Math.cos(0) });
 		
+		//create pockettoolpath
+		if(pocket) {
+			toolPath.addAll(createPocket(polygon));
+		}
+		
+		System.out.println(polygon.getBounds());
+		System.out.println(polygon.contains(51,51));
+		System.out.println(polygon.contains(144,75.5));
 		createGCode(toolPath, zLevel);
 		
 		Main.log.log(Level.FINE, "Circle element: circle at (" + center.getValue(0) + "," + center.getValue(1) + ") with " + (int)(((Math.PI * 2) / phiStep) + 1) + " points. Step for phi is " + phiStep + ".");
@@ -703,6 +725,39 @@ public class Generator {
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
 		}	
+	}
+	
+	private ArrayList<double[]> createPocket(Polygon polygon) {
+		double stepOver = 2.0;
+		
+		ArrayList<double[]> toolPath = new ArrayList<double[]>();
+		
+		// Begrenzungsrechteck berechnen
+		int xMin = polygon.getBounds().x;
+		int xMax = xMin + polygon.getBounds().width;
+		int yMin = polygon.getBounds().y;
+		int yMax = yMin + polygon.getBounds().height;
+		
+		for(double y = yMin; y < yMax; y += stepOver) {
+			boolean inside = false;
+			double startX = 0;
+			for(double x = xMin; x <= xMax; x += 0.5) {
+				if(polygon.contains(x, y)) {
+					if(!inside) {
+						startX = x;
+						inside = true;
+					}
+				} else {
+					if(inside) {
+						double endX = x;
+						inside = false;
+						toolPath.add(new double[] { startX, y });
+						toolPath.add(new double[] { endX, y });
+					}
+				}	
+			}	
+		}
+		return toolPath;
 	}
 	
 	/**
