@@ -563,13 +563,15 @@ public class Generator {
 		int resolution = 2; // mm
 		double phiStep = 0;
 		
-		NamedNodeMap map = node.getAttributes();
-		
+		Polygon polygon = new Polygon();
 		boolean pocket = false;
 		
+		NamedNodeMap map = node.getAttributes();
+
 		try {
-			map.getNamedItem("pocket").getTextContent();
-			pocket = true;
+			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
+				pocket = true;
+			}
 		} catch(NullPointerException e) {
 		
 		} 
@@ -590,7 +592,7 @@ public class Generator {
 			}
 		}
 		
-		Polygon polygon = new Polygon();
+		
 	
 		double phi = 0;
 		float xCenter = center.getValue(0).floatValue();
@@ -650,6 +652,19 @@ public class Generator {
 		ArrayList<double[]> toolPath = new ArrayList<double[]>();
 		Tuple zLevel = null;
 		
+		Polygon polygon = new Polygon();
+		boolean pocket = false;
+		
+		NamedNodeMap map = node.getAttributes();
+		
+		try {
+			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
+				pocket = true;
+			}
+		} catch(NullPointerException e) {
+		
+		} 
+		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
 			if(item.getNodeName() == "p") {
@@ -665,10 +680,19 @@ public class Generator {
 		}
 		
 		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
+		polygon.addPoint((int) xmlPoints.get(0).getValue(0).doubleValue(), (int) xmlPoints.get(0).getValue(1).doubleValue());
 		toolPath.add(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
+		polygon.addPoint((int) xmlPoints.get(1).getValue(0).doubleValue(), (int) xmlPoints.get(0).getValue(1).doubleValue());
 		toolPath.add(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() });
+		polygon.addPoint((int) xmlPoints.get(1).getValue(0).doubleValue(), (int) xmlPoints.get(1).getValue(1).doubleValue());
 		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() });
+		polygon.addPoint((int) xmlPoints.get(0).getValue(0).doubleValue(), (int) xmlPoints.get(1).getValue(1).doubleValue());
 		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
+		
+		//create pockettoolpath
+		if(pocket) {
+			toolPath.addAll(createPocket(polygon));
+		}
 		
 		createGCode(toolPath, zLevel);
 		
