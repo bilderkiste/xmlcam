@@ -270,6 +270,8 @@ public class Generator {
 		ArrayList<Tuple> xmlPoints = new ArrayList<Tuple>();
 		ArrayList<double[]> toolPath = new ArrayList<double[]>();
 		Tuple zLevel = null;
+
+		boolean pocket = false;
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
@@ -286,6 +288,16 @@ public class Generator {
 				zLevel = new Tuple(item);
 			}
 		}
+		
+		NamedNodeMap map = node.getAttributes();
+
+		try {
+			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
+				pocket = true;
+			}
+		} catch(NullPointerException e) {
+		
+		} 
 		
 		for(int i = 0; i < xmlPoints.size(); i++) {
 			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
@@ -354,6 +366,11 @@ public class Generator {
 				
 				Main.log.log(Level.FINE, "Polyline element: spline to (" + points.get(points.size() - 2).getValue(0).doubleValue() + ", " + points.get(points.size() - 2).getValue(1).doubleValue() + ").");
 			}
+		}
+		
+		//create pockettoolpath
+		if(pocket) {
+			toolPath.addAll(createPocket(toolPath));
 		}
 		
 		createGCode(toolPath, zLevel);
@@ -563,7 +580,6 @@ public class Generator {
 		int resolution = 2; // mm
 		double phiStep = 0;
 		
-		Polygon polygon = new Polygon();
 		boolean pocket = false;
 		
 		NamedNodeMap map = node.getAttributes();
@@ -614,19 +630,15 @@ public class Generator {
 	
 		while(phi < 2 * Math.PI) {
 			toolPath.add(new double[] { xCenter + radiusv * Math.sin(phi), yCenter + radiusv * Math.cos(phi) });
-			polygon.addPoint((int) (xCenter + radiusv * Math.sin(phi)), (int) (yCenter + radiusv * Math.cos(phi)));
 			phi += phiStep;
 		}
 		toolPath.add(new double[] { xCenter + radiusv * Math.sin(0), yCenter + radiusv * Math.cos(0) });
 		
 		//create pockettoolpath
 		if(pocket) {
-			toolPath.addAll(createPocket(polygon));
+			toolPath.addAll(createPocket(toolPath));
 		}
-		
-		System.out.println(polygon.getBounds());
-		System.out.println(polygon.contains(51,51));
-		System.out.println(polygon.contains(144,75.5));
+	
 		createGCode(toolPath, zLevel);
 		
 		Main.log.log(Level.FINE, "Circle element: circle at (" + center.getValue(0) + "," + center.getValue(1) + ") with " + (int)(((Math.PI * 2) / phiStep) + 1) + " points. Step for phi is " + phiStep + ".");
@@ -652,7 +664,6 @@ public class Generator {
 		ArrayList<double[]> toolPath = new ArrayList<double[]>();
 		Tuple zLevel = null;
 		
-		Polygon polygon = new Polygon();
 		boolean pocket = false;
 		
 		NamedNodeMap map = node.getAttributes();
@@ -680,18 +691,14 @@ public class Generator {
 		}
 		
 		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
-		polygon.addPoint((int) xmlPoints.get(0).getValue(0).doubleValue(), (int) xmlPoints.get(0).getValue(1).doubleValue());
 		toolPath.add(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
-		polygon.addPoint((int) xmlPoints.get(1).getValue(0).doubleValue(), (int) xmlPoints.get(0).getValue(1).doubleValue());
 		toolPath.add(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() });
-		polygon.addPoint((int) xmlPoints.get(1).getValue(0).doubleValue(), (int) xmlPoints.get(1).getValue(1).doubleValue());
 		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() });
-		polygon.addPoint((int) xmlPoints.get(0).getValue(0).doubleValue(), (int) xmlPoints.get(1).getValue(1).doubleValue());
 		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
 		
 		//create pockettoolpath
 		if(pocket) {
-			toolPath.addAll(createPocket(polygon));
+			toolPath.addAll(createPocket(toolPath));
 		}
 		
 		createGCode(toolPath, zLevel);
@@ -751,10 +758,14 @@ public class Generator {
 		}	
 	}
 	
-	private ArrayList<double[]> createPocket(Polygon polygon) {
+	private ArrayList<double[]> createPocket(ArrayList<double[]> toolPath) {
 		double stepOver = 2.0;
 		
-		ArrayList<double[]> toolPath = new ArrayList<double[]>();
+		//create polygon for the pocket boundaries
+		Polygon polygon = new Polygon();
+		for(int i = 0; i < toolPath.size(); i++) {
+			polygon.addPoint((int) toolPath.get(i)[0], (int) toolPath.get(i)[1]);
+		}
 		
 		// Begrenzungsrechteck berechnen
 		int xMin = polygon.getBounds().x;
