@@ -42,6 +42,7 @@ import misc.Settings;
 import model.Field;
 import model.Line;
 import model.Program;
+import model.Tool;
 import xml.XMLView;
 
 /**
@@ -55,6 +56,7 @@ public class Generator {
 	private XMLView xmlEditorPane;
 	private BigDecimal currentX, currentY, currentZ, newX, newY, newZ;
 	private BigDecimal translateX, translateY;
+	private Tool tool;
 	
 	/**
 	 * Constructs a new G-Code Generator.
@@ -72,6 +74,7 @@ public class Generator {
 		this.newZ = new BigDecimal(0);
 		this.translateX = new BigDecimal(0);
 		this.translateY = new BigDecimal(0);
+		this.tool = null;
 	}
 	
 	/**
@@ -758,8 +761,14 @@ public class Generator {
 		}	
 	}
 	
+	/**
+	 * Creates a pocket toolpath for the shape given by the toolPath. The pocket will milled by parallel moves in x direction.
+	 * @param toolPath the toolpath from the shape
+	 * @return
+	 */
 	private ArrayList<double[]> createPocket(ArrayList<double[]> toolPath) {
-		double stepOver = 2.0;
+		ArrayList<double[]> pocketToolPath = new ArrayList<double[]>();
+		this.tool = new Tool(2.0);
 		
 		//create polygon for the pocket boundaries
 		Polygon polygon = new Polygon();
@@ -773,26 +782,26 @@ public class Generator {
 		int yMin = polygon.getBounds().y;
 		int yMax = yMin + polygon.getBounds().height;
 		
-		for(double y = yMin; y < yMax; y += stepOver) {
+		for(double y = yMin + tool.getRadius(); y < yMax; y += tool.getRadius()) {
 			boolean inside = false;
 			double startX = 0;
 			for(double x = xMin; x <= xMax; x += 0.5) {
 				if(polygon.contains(x, y)) {
 					if(!inside) {
-						startX = x;
+						startX = x + tool.getRadius();
 						inside = true;
 					}
 				} else {
 					if(inside) {
-						double endX = x;
+						double endX = x - tool.getRadius();
 						inside = false;
-						toolPath.add(new double[] { startX, y });
-						toolPath.add(new double[] { endX, y });
+						pocketToolPath.add(new double[] { startX, y });
+						pocketToolPath.add(new double[] { endX, y });
 					}
 				}	
 			}	
 		}
-		return toolPath;
+		return pocketToolPath;
 	}
 	
 	/**
