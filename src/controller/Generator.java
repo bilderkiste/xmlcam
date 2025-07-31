@@ -20,6 +20,8 @@
 package controller;
 
 import java.awt.Polygon;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -771,21 +773,24 @@ public class Generator {
 		this.tool = new Tool(2.0);
 		
 		//create polygon for the pocket boundaries
-		Polygon polygon = new Polygon();
-		for(int i = 0; i < toolPath.size(); i++) {
-			polygon.addPoint((int) toolPath.get(i)[0], (int) toolPath.get(i)[1]);
+		Path2D.Double polygon = new Path2D.Double();
+		polygon.moveTo(toolPath.get(0)[0], toolPath.get(0)[1]);
+		for(int i = 1; i < toolPath.size(); i++) {
+			polygon.lineTo(toolPath.get(i)[0], toolPath.get(i)[1]);
 		}
+		polygon.closePath();
 		
 		// Begrenzungsrechteck berechnen
-		int xMin = polygon.getBounds().x;
-		int xMax = xMin + polygon.getBounds().width;
-		int yMin = polygon.getBounds().y;
-		int yMax = yMin + polygon.getBounds().height;
+		Rectangle2D bounds= polygon.getBounds2D();
+		double xMin = bounds.getMinX();
+		double xMax = bounds.getMaxX();
+		double yMin = bounds.getMinY();
+		double yMax = bounds.getMaxY();
 		
 		for(double y = yMin + tool.getRadius(); y < yMax; y += tool.getRadius()) {
 			boolean inside = false;
 			double startX = 0;
-			for(double x = xMin; x <= xMax; x += 0.5) {
+			for(double x = xMin; x <= xMax; x += 0.1) {
 				if(polygon.contains(x, y)) {
 					if(!inside) {
 						startX = x + tool.getRadius();
