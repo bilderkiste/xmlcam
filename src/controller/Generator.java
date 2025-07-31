@@ -790,7 +790,7 @@ public class Generator {
 		for(double y = yMin + tool.getRadius(); y < yMax; y += tool.getRadius()) {
 			boolean inside = false;
 			double startX = 0;
-			for(double x = xMin; x <= xMax; x += 0.1) {
+			for(double x = xMin - 0.2; x <= xMax + 0.2; x += 0.1) {
 				if(polygon.contains(x, y)) {
 					if(!inside) {
 						startX = x + tool.getRadius();
@@ -802,6 +802,7 @@ public class Generator {
 						inside = false;
 						pocketToolPath.add(new double[] { startX, y });
 						pocketToolPath.add(new double[] { endX, y });
+						System.out.println("y" + y);
 					}
 				}	
 			}	
