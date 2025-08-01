@@ -30,10 +30,10 @@
 <h2>Elements</h2>
 <h3>Drill element</h3>
 <p>This element generates the G-Code for a drill at the point &lt;p&gt;x,y&lt;/p&gt;. The z tag defines the start and the end (depth) of the drill.
-<pre>&#x9;&#x9;&#x3C;drill&#x3E;
-&#x9;&#x9;&#x9;&#x3C;p&#x3E;100,100&#x3C;/p&#x3E;
-&#x9;&#x9;&#x9;&#x3C;z&#x3E;0,-1&#x3C;/z&#x3E;
-&#x9;&#x9;&#x3C;/drill&#x3E;</pre>
+<pre>&lt;drill&gt;
+			&lt;p&gt;100,100&lt;&#x2F;p&gt;
+			&lt;z&gt;0,-1&lt;&#x2F;z&gt;
+&lt;&#x2F;drill&gt;</pre>
 Hint: You need only two parameters for the z tag.
 </p>
 <h3>Line Element</h3>
@@ -92,6 +92,14 @@ This element shifts the elements within this tag through the x and y pane.
 &lt;&sol;translate&gt;
 </pre>
 The center of the circle in this examle is now at (120,70).
+<h3>Pockets</h3>
+You can create pockets by adding the pocket attribute to the element tag.
+Pockets work for circle, rectangle and polyline elements.
+<pre>&lt;rectangle pocket&#x3D;&quot;parallel&quot;&gt;
+  &lt;p&gt;10,10&lt;&#x2F;p&gt;
+  &lt;p&gt;20,20&lt;&#x2F;p&gt;
+  &lt;z&gt;0,-1,0.1&lt;&#x2F;z&gt;
+&lt;&#x2F;rectangle&gt;</pre>
 <h2>Settings</h2>
 <p>You can define your own settings for xmlCam. At the moment there are only a few settings to be done available.</p>
 <pre>security-height = 5;		// The security height for a G0 move above the workpiece.
