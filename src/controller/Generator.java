@@ -45,6 +45,7 @@ import model.Field;
 import model.Line;
 import model.Program;
 import model.Tool;
+import model.ToolPathPoint;
 import xml.XMLView;
 
 /**
@@ -188,7 +189,7 @@ public class Generator {
 	private void drill(Node node) throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
 		Tuple xmlPoint = null;
-		ArrayList<double[]> toolPath = new ArrayList<double[]>();
+		ArrayList<ToolPathPoint> toolPath = new ArrayList<ToolPathPoint>();
 		Tuple zLevel = null;
 		
 		for(int i = 0; i < children.getLength(); i++) {
@@ -208,7 +209,7 @@ public class Generator {
 		// add one whole step to endZ
 		zLevel.addValue(zLevel.getValue(1).abs().doubleValue());
 		
-		toolPath.add(new double[] { xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue() });
+		toolPath.add(new ToolPathPoint(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue(), "drill"));
 		
 		createGCode(toolPath, zLevel);
 		
@@ -232,7 +233,7 @@ public class Generator {
 	private void line(Node node) throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
 		ArrayList<Tuple> xmlPoints = new ArrayList<Tuple>();
-		ArrayList<double[]> toolPath = new ArrayList<double[]>();
+		ArrayList<ToolPathPoint> toolPath = new ArrayList<ToolPathPoint>();
 		Tuple zLevel = null;
 		
 		for(int i = 0; i < children.getLength(); i++) {
@@ -249,8 +250,8 @@ public class Generator {
 			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
 		}
 
-		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
-		toolPath.add(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() });
+		toolPath.add(new ToolPathPoint(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue(), "line"));
+		toolPath.add(new ToolPathPoint(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue(), "line"));
 		
 		createGCode(toolPath, zLevel);
 		
@@ -273,7 +274,7 @@ public class Generator {
 	private void polyline(Node node) throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
 		ArrayList<Tuple> xmlPoints = new ArrayList<Tuple>();
-		ArrayList<double[]> toolPath = new ArrayList<double[]>();
+		ArrayList<ToolPathPoint> toolPath = new ArrayList<ToolPathPoint>();
 		Tuple zLevel = null;
 
 		boolean pocket = false;
@@ -311,7 +312,7 @@ public class Generator {
 		// Create toolpath
 		for(int i = 0; i < xmlPoints.size(); i++) {
 			if(xmlPoints.get(i).getType() == Tuple.POINT) {
-				toolPath.add(new double[] {xmlPoints.get(i).getValue(0).doubleValue(), xmlPoints.get(i).getValue(1).doubleValue()});
+				toolPath.add(new ToolPathPoint(xmlPoints.get(i).getValue(0).doubleValue(), xmlPoints.get(i).getValue(1).doubleValue(), "polyline start"));
 				Main.log.log(Level.FINE, "Polyline element: line to (" + xmlPoints.get(i).getValue(0).doubleValue() + ", " + xmlPoints.get(i).getValue(1).doubleValue() + ")");
 			} else if(xmlPoints.get(i).getType() == Tuple.BEZIER) {
 				int n;
@@ -366,7 +367,7 @@ public class Generator {
 				
 				// insert last point of curve, because we do not add the last control point to the toolpath
 				if(points.get(3).getType() == Tuple.POINT) {
-					toolPath.add(new double[] {points.get(2).getValue(0).doubleValue(), points.get(2).getValue(1).doubleValue()});
+					toolPath.add(new ToolPathPoint(points.get(2).getValue(0).doubleValue(), points.get(2).getValue(1).doubleValue(), "polyline"));
 				}
 				
 				Main.log.log(Level.FINE, "Polyline element: spline to (" + points.get(points.size() - 2).getValue(0).doubleValue() + ", " + points.get(points.size() - 2).getValue(1).doubleValue() + ").");
@@ -393,7 +394,7 @@ public class Generator {
 	 * @param level The current level depth of recursive implementation. 
 	 * @return The x and y coordinates on the bezier 
 	 */
-	private void deCasteljau(ArrayList<Tuple> points, double t, ArrayList<double[]> toolPath, int level) {
+	private void deCasteljau(ArrayList<Tuple> points, double t, ArrayList<ToolPathPoint> toolPath, int level) {
 		int n = points.size();
 		ArrayList<Tuple> partCurvePointsLower = new ArrayList<Tuple>();
 		ArrayList<Tuple> partCurvePointsUpper = new ArrayList<Tuple>();
@@ -452,7 +453,7 @@ public class Generator {
 			deCasteljau(partCurvePointsUpper, 0.5, toolPath, level);	
 		} else {
 			for(int k = 0; k < n - 1; k++) {
-				toolPath.add(new double[] {bx[0][k], by[0][k]});
+				toolPath.add(new ToolPathPoint(bx[0][k], by[0][k], "deCasteljau"));
 			}
 		}
 	
@@ -463,7 +464,7 @@ public class Generator {
 	 * @param points b0 = point before start point, b1 start point, b2 end point, b3 point behind end point
 	 * @param t 0 <= tau <= 1
 	 */
-	private void calculatePoint(ArrayList<Tuple> points, double t, ArrayList<double[]> toolPath, int level) {
+	private void calculatePoint(ArrayList<Tuple> points, double t, ArrayList<ToolPathPoint> toolPath, int level) {
 		double dx1, dy1, dx2, dy2;
 		ArrayList<Tuple> pointList = new ArrayList<Tuple>();
 		double[] point = new double[2];
@@ -580,7 +581,7 @@ public class Generator {
 	 */
 	private void circle(Node node) throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
-		ArrayList<double[]> toolPath = new ArrayList<double[]>();
+		ArrayList<ToolPathPoint> toolPath = new ArrayList<ToolPathPoint>();
 		Tuple center = null, radius = null, zLevel = null, segments = null;
 		int resolution = 2; // mm
 		double phiStep = 0;
@@ -634,10 +635,10 @@ public class Generator {
 		}
 	
 		while(phi < 2 * Math.PI) {
-			toolPath.add(new double[] { xCenter + radiusv * Math.sin(phi), yCenter + radiusv * Math.cos(phi) });
+			toolPath.add(new ToolPathPoint(xCenter + radiusv * Math.sin(phi), yCenter + radiusv * Math.cos(phi), "circle"));
 			phi += phiStep;
 		}
-		toolPath.add(new double[] { xCenter + radiusv * Math.sin(0), yCenter + radiusv * Math.cos(0) });
+		toolPath.add(new ToolPathPoint(xCenter + radiusv * Math.sin(0), yCenter + radiusv * Math.cos(0),"circle end"));
 		
 		//create pockettoolpath
 		if(pocket) {
@@ -666,7 +667,7 @@ public class Generator {
 	private void rectangle(Node node) throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
 		ArrayList<Tuple> xmlPoints = new ArrayList<Tuple>();
-		ArrayList<double[]> toolPath = new ArrayList<double[]>();
+		ArrayList<ToolPathPoint> toolPath = new ArrayList<ToolPathPoint>();
 		Tuple zLevel = null;
 		
 		boolean pocket = false;
@@ -695,11 +696,11 @@ public class Generator {
 			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
 		}
 		
-		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
-		toolPath.add(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
-		toolPath.add(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() });
-		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() });
-		toolPath.add(new double[] { xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue() });
+		toolPath.add(new ToolPathPoint(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue(), "rectangle edge 0"));
+		toolPath.add(new ToolPathPoint(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue(), "rectangle edge 1"));
+		toolPath.add(new ToolPathPoint(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue(), "rectangle edge 2"));
+		toolPath.add(new ToolPathPoint(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue(), "rectangle edge 3"));
+		toolPath.add(new ToolPathPoint(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue(), "rectangle edge 0"));
 		
 		//create pockettoolpath
 		if(pocket) {
@@ -768,15 +769,15 @@ public class Generator {
 	 * @param toolPath the toolpath from the shape
 	 * @return
 	 */
-	private ArrayList<double[]> createPocket(ArrayList<double[]> toolPath) {
-		ArrayList<double[]> pocketToolPath = new ArrayList<double[]>();
+	private ArrayList<ToolPathPoint> createPocket(ArrayList<ToolPathPoint> toolPath) {
+		ArrayList<ToolPathPoint> pocketToolPath = new ArrayList<ToolPathPoint>();
 		this.tool = new Tool(2.0);
 		
 		//create polygon for the pocket boundaries
 		Path2D.Double polygon = new Path2D.Double();
-		polygon.moveTo(toolPath.get(0)[0], toolPath.get(0)[1]);
+		polygon.moveTo(toolPath.get(0).getX(), toolPath.get(0).getY());
 		for(int i = 1; i < toolPath.size(); i++) {
-			polygon.lineTo(toolPath.get(i)[0], toolPath.get(i)[1]);
+			polygon.lineTo(toolPath.get(i).getX(), toolPath.get(i).getY());
 		}
 		polygon.closePath();
 		
@@ -800,9 +801,8 @@ public class Generator {
 					if(inside) {
 						double endX = x - tool.getRadius();
 						inside = false;
-						pocketToolPath.add(new double[] { startX, y });
-						pocketToolPath.add(new double[] { endX, y });
-						System.out.println("y" + y);
+						pocketToolPath.add(new ToolPathPoint(startX, y, "Pocket"));
+						pocketToolPath.add(new ToolPathPoint(endX, y, "Pocket"));
 					}
 				}	
 			}	
@@ -816,7 +816,7 @@ public class Generator {
 	 * @param toolPath The toolpath
 	 * @param zLevel The milling depth (z-axis)
 	 */
-	private void createGCode(ArrayList<double[]> toolPath, Tuple zLevel) {
+	private void createGCode(ArrayList<ToolPathPoint> toolPath, Tuple zLevel) {
 		BigDecimal endZ = zLevel.getValue(1);
 		BigDecimal stepZ = zLevel.getValue(2);
 		boolean forward = true;
@@ -825,27 +825,27 @@ public class Generator {
 			throw new IllegalArgumentException("The Z step must be greater than 0");
 		}
 		
-		newX = new BigDecimal(toolPath.get(0)[0]);
-		newY = new BigDecimal(toolPath.get(0)[1]);
+		newX = new BigDecimal(toolPath.get(0).getX());
+		newY = new BigDecimal(toolPath.get(0).getY());
 		newZ = zLevel.getValue(0);
 		
-		go0(newX, newY, "Go to start position for element."); // go to start position
+		go0(newX, newY, "Go to start position for element " + toolPath.get(0).getComment()); // go to start position
 			
 		while(true) {
 			if(forward) {
 				go1(newX, newY, newZ);  // Z sink
 				for(int j = 1; j < toolPath.size(); j++) {
-					newX = new BigDecimal(toolPath.get(j)[0]);
-					newY = new BigDecimal(toolPath.get(j)[1]);
-					go1(newX, newY, newZ);  // X-Y move
+					newX = new BigDecimal(toolPath.get(j).getX());
+					newY = new BigDecimal(toolPath.get(j).getY());
+					go1(newX, newY, newZ, toolPath.get(j).getComment());  // X-Y move
 				}
 				forward = false;
 			} else {
 				go1(newX, newY, newZ);  // Z sink
 				for(int j = toolPath.size() - 2; j >= 0; j--) {
-					newX = new BigDecimal(toolPath.get(j)[0]);
-					newY = new BigDecimal(toolPath.get(j)[1]);
-					go1(newX, newY, newZ);  // X-Y move
+					newX = new BigDecimal(toolPath.get(j).getX());
+					newY = new BigDecimal(toolPath.get(j).getY());
+					go1(newX, newY, newZ, toolPath.get(j).getComment());  // X-Y move
 				}
 				forward = true;
 			}
@@ -940,6 +940,19 @@ public class Generator {
 	 */
 	private void go1(BigDecimal x, BigDecimal y, BigDecimal z) {
 		go1(x, y, z, null, null);
+	}
+	
+	/**
+	 * Performs a G1 move.
+	 * If new x, y or z is not different to the current x,y and z, the field will not displayed. I.e. move from (10,10,10) to (10,20,10) the output will be G1 Y20.
+	 * 
+	 * @param x The new x coordinate
+	 * @param y The new y coordinate
+	 * @param z The new z coordinate
+	 * @param comment The comment
+	 */
+	private void go1(BigDecimal x, BigDecimal y, BigDecimal z, String comment) {
+		go1(x, y, z, null, comment);
 	}
 	
 	/**
