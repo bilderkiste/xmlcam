@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * This class represents a point in the 2D toolpath. Every point must have x and y values and can have a comment.
+ */
+
 public class ToolPathPoint {
 	
 	private double x;

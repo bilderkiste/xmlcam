@@ -1,7 +1,14 @@
 package model;
 
+/**
+ * This class represents the milling tool and defines the properties of the tool. 
+ */
+
 public class Tool {
 
+	/**
+	 * The diameter of the milling tool.
+	 */
 	private double diameter;
 	
 	public Tool(double diameter) {
