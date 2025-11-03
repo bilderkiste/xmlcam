@@ -100,10 +100,10 @@ public class TableViewDummyModel extends AbstractTableModel implements ProgramMo
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		try {
 			if(columnIndex == getColumnCount() - 1) {
-				return programModel.getLine(rowIndex).getComment();
+				return programModel.getRow(rowIndex).getComment();
 			} else {
 				
-				return programModel.getLine(rowIndex).getField(columnIndex);
+				return programModel.getRow(rowIndex).getField(columnIndex);
 			}
 		} catch(IndexOutOfBoundsException e) {
 			return null;

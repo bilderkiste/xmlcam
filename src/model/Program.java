@@ -33,16 +33,16 @@ import view.ProgramModelListener;
 /**
  * This class represents the structure of the ProgramModel.
  * 
- * A program consists a various number of lines (0..n).
- * A line consists a various number of fields and could have a comment.
+ * A program consists a various number of rows (0..n).
+ * A row consists a various number of fields and could have a comment.
  * A field has always a letter and it could have a number (i.e. G0, X, Y-20.2039, F1000)
  * The comments start always with a semikolon.
  * <pre>
  * Programm		field_0	field_1	field_2	...	field_m	comment
- * line_0		G0 	X13.31	Y10	...		F30	;Move to position X 13.31 and Y 10 with a feed rate 30 mm/s. 
- * line_1		G0	Z0.5 
+ * row_0		G0 	X13.31	Y10	...		F30	;Move to position X 13.31 and Y 10 with a feed rate 30 mm/s. 
+ * row_1		G0	Z0.5 
  * ...
- * line_n								;End of program
+ * row_n								;End of program
  * </pre>
  * 
  * @author Christian Kirsch
@@ -50,124 +50,124 @@ import view.ProgramModelListener;
  */
 public class Program {
 
-	private ArrayList<Line> lines;
+	private ArrayList<Row> rows;
 	private ArrayList<ProgramModelListener> listener;
 
 	/**
 	 * Constructs a empty program.
 	 */
 	public Program() {
-		this.lines = new ArrayList<Line>();
+		this.rows = new ArrayList<Row>();
 		this.listener = new ArrayList<ProgramModelListener>();
 	}
 
 	/**
-	 * Adds a new line at the end of the program.
-	 * @param line The new Line object
+	 * Adds a new row at the end of the program.
+	 * @param row The new Row object
 	 */
-	public void addLine(Line line) {
-		lines.add(line);
+	public void addRow(Row row) {
+		rows.add(row);
 		fireModelChanged();
 	}
 	
 	/**
-	 * Adds a new line to the program after the specific position.
-	 * @param line The new Line object
+	 * Adds a new row to the program after the specific position.
+	 * @param row The new Row object
 	 * @param rowIndex The index where to insert
 	 */
-	public void addLine(Line line, int rowIndex) {
-		lines.add(rowIndex, line);
+	public void addRow(Row row, int rowIndex) {
+		rows.add(rowIndex, row);
 		fireModelChanged();
 	}
 	
 	/**
-	 * Get the program line from rowIndex.
-	 * @param rowIndex number of line
-	 * @return The Line object
+	 * Get the program row from rowIndex.
+	 * @param rowIndex Number of row
+	 * @return The Row object
 	 */
-	public Line getLine(int rowIndex) {
-		return lines.get(rowIndex);
+	public Row getRow(int rowIndex) {
+		return rows.get(rowIndex);
 	}
 	
 	/**
-	 * Replaces a Line object at rowIndex.
-	 * @param rowIndex Line number.
-	 * @param line The new Line object.
+	 * Replaces a row object at rowIndex.
+	 * @param rowIndex Row number.
+	 * @param row The new Row object.
 	 */
-	public void setLine(int rowIndex, Line line) {
-		lines.set(rowIndex, line);
+	public void setRow(int rowIndex, Row row) {
+		rows.set(rowIndex, row);
 		fireModelChanged();
 	}
 	
 	/**
-	 * Removes the Line Object at rowIndex.
+	 * Removes the Row Object at rowIndex.
 	 * @param rowIndex The index where to delete
 	 */
-	public void removeLine(int rowIndex) {
-		lines.remove(rowIndex);
+	public void removeRow(int rowIndex) {
+		rows.remove(rowIndex);
 		fireModelChanged();
 	}
 	
 	/**
-	 * Removes an amount of lines. First line to delete is rowIndex.
+	 * Removes an amount of rows. First row to delete is rowIndex.
 	 * @param rowIndex The row index
 	 * @param amount The amount
 	 */
-	public void removeLines(int rowIndex, int amount) {
+	public void removeRows(int rowIndex, int amount) {
 		for(int i = 0; i < amount; i++) {
-			lines.remove(rowIndex);
+			rows.remove(rowIndex);
 		}
 		fireModelChanged();
 	}
 	
 	/**
-	 * Removes all selected lines in the collection.
+	 * Removes all selected rows in the collection.
 	 * @param rowCollection Integer-array with all row numbers
 	 */
-	public void removeLines(int[] rowCollection) {
+	public void removeRows(int[] rowCollection) {
 		for(int i = rowCollection.length - 1; i >= 0; i--) {
-			lines.remove(rowCollection[i]);
+			rows.remove(rowCollection[i]);
 		}
 		fireModelChanged();
 	}
 	
 	/**
-	 * Sets a new Comment on Line Object at rowIndex
-	 * @param rowIndex Line number.
+	 * Sets a new Comment on Row Object at rowIndex
+	 * @param rowIndex Row number.
 	 * @param comment The new comment.
 	 */
 	public void setComment(int rowIndex, String comment) {
-		lines.get(rowIndex).setComment(comment);
+		rows.get(rowIndex).setComment(comment);
 		fireModelChanged();
 	}
 	
 	/**
 	 * Replaces the field at position rowIndex, columnIndex.
-	 * @param rowIndex line number
+	 * @param rowIndex Row number
 	 * @param columnIndex field number
 	 * @param field the new Field
 	 */
 	public void setField(int rowIndex, int columnIndex, Field field) {
-		lines.get(rowIndex).setField(columnIndex, field);
+		rows.get(rowIndex).setField(columnIndex, field);
 		fireModelChanged();
 	}
 	
 	/**
-	 * Adds a new field at Line rowIndex.
-	 * @param rowIndex Line number.
+	 * Adds a new field at Row rowIndex.
+	 * @param rowIndex Row number.
 	 * @param field The new Field.
 	 */
 	public void addField(int rowIndex, Field field) {
-		lines.get(rowIndex).addField(field);
+		rows.get(rowIndex).addField(field);
 		fireModelChanged();
 	}
 	
 	/**
-	 * Adds a new field at the last line of the program.
+	 * Adds a new field at the last row of the program.
 	 * @param field The new Field.
 	 */
 	public void addField(Field field) {
-		lines.get(lines.size() - 1).addField(field);
+		rows.get(rows.size() - 1).addField(field);
 		fireModelChanged();
 	}
 	
@@ -177,69 +177,69 @@ public class Program {
 	 * @param columnIndex
 	 */
 	public void removeField(int rowIndex, int columnIndex) {
-		lines.get(rowIndex).removeField(columnIndex);
+		rows.get(rowIndex).removeField(columnIndex);
 		fireModelChanged();
 	}
 	
 	/**
 	 * Sets a command of a field
-	 * @param rowIndex Line number.
+	 * @param rowIndex Row number.
 	 * @param columnIndex Field number.
 	 * @param letter The new command letter.
 	 */
 	public void setLetter(int rowIndex, int columnIndex, char letter) {
-		lines.get(rowIndex).getField(columnIndex).setLetter(letter);
+		rows.get(rowIndex).getField(columnIndex).setLetter(letter);
 		fireModelChanged();
 	}
 	
 	/**
 	 * Sets a number of a field
-	 * @param rowIndex Line number.
+	 * @param rowIndex Row number.
 	 * @param columnIndex Field number.
 	 * @param number The new command number.
 	 */
 	public void setNumber(int rowIndex, int columnIndex, BigDecimal number) {
-		lines.get(rowIndex).getField(columnIndex).setNumber(number);
+		rows.get(rowIndex).getField(columnIndex).setNumber(number);
 		fireModelChanged();
 	}
 	
 	/**
 	 * Removes the number of the field. Changes i.e. Z32.1 to Z.
-	 * @param rowIndex Line number.
+	 * @param rowIndex Row number.
 	 * @param columnIndex Field number.
 	 */
 	public void removeNumber(int rowIndex, int columnIndex) {
-		lines.get(rowIndex).getField(columnIndex).removeNumber();
+		rows.get(rowIndex).getField(columnIndex).removeNumber();
 		fireModelChanged();
 	}
 	
 	/**
-	 * Returns the maximum size of fields in a line in the program.
+	 * Returns the maximum size of fields in a row in the program.
 	 * @return maximum size;
 	 */
 	public int getMaxFieldSize() {
 		int maxSize = 0;
-		for(int i = 0; i < lines.size(); i++) {
-			if(lines.get(i).size() > maxSize) {
-				maxSize = lines.get(i).size();
+		for(int i = 0; i < rows.size(); i++) {
+			if(rows.get(i).size() > maxSize) {
+				maxSize = rows.get(i).size();
 			}
 		}
 		return maxSize;
 	}
 	
 	/**
-	 * Returns the amount of lines the program.
+	 * Returns the amount of rows the program.
 	 * @return the amount;
 	 */
 	public int size() {
-		return lines.size();
+		return rows.size();
 	}
 	
 	/**
 	 * Clears the whole program.
 	 */
 	public void clear() {
-		this.lines = new ArrayList<Line>();
+		this.rows = new ArrayList<Row>();
 		fireModelChanged();
 	}
 	
@@ -291,41 +291,41 @@ public class Program {
 	 */
 	public void readFromFile(File file) throws IOException {
 		Field field;
-		Line line;
-		String lineBuffer;
-		int index, lineIndex = 0;
+		Row row;
+		String rowBuffer;
+		int index, rowIndex = 0;
 		
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 		
-		while((lineBuffer = bufferedReader.readLine()) != null) {
+		while((rowBuffer = bufferedReader.readLine()) != null) {
 		
-			line = new Line();
+			row = new Row();
 			
 			// Read comments
-			index = lineBuffer.indexOf(';');
+			index = rowBuffer.indexOf(';');
 			if(index > -1) {      // Found a comment
-				line.setComment(lineBuffer.substring(index + 1).trim());
-				lineBuffer = lineBuffer.substring(0, index);   // Cut comment
+				row.setComment(rowBuffer.substring(index + 1).trim());
+				rowBuffer = rowBuffer.substring(0, index);   // Cut comment
 			}
 			
-			Scanner textLine = new Scanner(lineBuffer);    // Split into fields
+			Scanner textLine = new Scanner(rowBuffer);    // Split into fields
 			
 			while(textLine.hasNext()) {
 				String fieldBuffer = new String(textLine.next());
 				
 				try {						
 					field = GCodeHelpers.parseField(fieldBuffer);
-					line.addField(field);
+					row.addField(field);
 				} catch(NumberFormatException e) {
-					System.out.println("Line " + lineIndex + ": " + e + "; Could not read parameter. Field skipped.");
+					System.out.println("Row " + rowIndex + ": " + e + "; Could not read parameter. Field skipped.");
 				} catch(IllegalArgumentException e) {
-					System.out.println("Line " + lineIndex + ": " + e + "; Could not read parameter. Field skipped.");
+					System.out.println("Row " + rowIndex + ": " + e + "; Could not read parameter. Field skipped.");
 				}
 			}	
 		
-			this.addLine(line);
+			this.addRow(row);
 			textLine.close();
-			lineIndex++;
+			rowIndex++;
 		}
 		bufferedReader.close();
 		fireModelChanged();
@@ -345,8 +345,8 @@ public class Program {
 	 */
 	public String toString() {
 		String out = new String();
-		for(int i = 0; i < lines.size(); i++) {
-			out += lines.get(i) + "\n";
+		for(int i = 0; i < rows.size(); i++) {
+			out += rows.get(i) + "\n";
 		}
 		return out;
 	}

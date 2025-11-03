@@ -1,5 +1,5 @@
 /*********************************************************************\
- * Line.java - xmlCam G-Code Generator                               *
+ * Row.java - xmlCam G-Code Generator                               *
  * Copyright (C) 2020, Christian Kirsch                              *
  *                                                                   *
  * This program is free software; you can redistribute it and/or     *
@@ -22,13 +22,13 @@ package model;
 import java.util.ArrayList;
 
 /**
- * This class represents a line in a G-Code file.
+ * This class represents a line in a G-Code row.
  * That means that n fields part of the line. The last part is a comment represented by a String object.
  * @author Christian Kirsch
  *
  */
 
-public class Line {
+public class Row {
 
 	private ArrayList<Field> commands;
 	private String comment;
@@ -36,7 +36,7 @@ public class Line {
 	/**
 	 * Constructs a empty line.
 	 */
-	public Line() {
+	public Row() {
 		this.commands = new ArrayList<Field>();
 		this.comment = new String();
 	}
@@ -45,7 +45,7 @@ public class Line {
 	 * Constructs a line object adds a field.
 	 * @param field The field to be added
 	 */
-	public Line(Field field) {
+	public Row(Field field) {
 		this();
 		this.commands.add(field);
 	}

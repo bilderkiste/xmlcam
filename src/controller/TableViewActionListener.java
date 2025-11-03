@@ -26,7 +26,7 @@ import javax.swing.JButton;
 import javax.swing.JTable;
 
 import model.Field;
-import model.Line;
+import model.Row;
 import model.Program;
 
 /**
@@ -59,13 +59,13 @@ public class TableViewActionListener implements ActionListener {
 
 		if(actionButton.getActionCommand() == "add_line") {
 			if(selectedRowCollection.length > 0) {
-				programModel.addLine(new Line(), selectedRowCollection[0]);
+				programModel.addRow(new Row(), selectedRowCollection[0]);
 			} else {
-				programModel.addLine(new Line());
+				programModel.addRow(new Row());
 			}
 		} else if(actionButton.getActionCommand() == "remove_line") {
 			if(selectedRowCollection.length > 0) {
-				programModel.removeLines(selectedRowCollection);
+				programModel.removeRows(selectedRowCollection);
 			}
 		} else if(actionButton.getActionCommand() == "add_field") {
 			if(selectedRowCollection.length > 0) {

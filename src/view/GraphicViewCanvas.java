@@ -73,16 +73,16 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	// Paint all G0 and G1 moves
         for(int i = 0; i < programModel.size(); i++) {
         	draw = false;
-        	if(programModel.getLine(i).getField(0).toString().equals("G0")) {
+        	if(programModel.getRow(i).getField(0).toString().equals("G0")) {
 	        		
-        		index = programModel.getLine(i).getFieldIndex('X');
+        		index = programModel.getRow(i).getFieldIndex('X');
         		if(index > -1) {
-        			x2 = programModel.getLine(i).getField(index).getNumber().doubleValue();
+        			x2 = programModel.getRow(i).getField(index).getNumber().doubleValue();
         			draw = true;
         		}
-        		index = programModel.getLine(i).getFieldIndex('Y');
+        		index = programModel.getRow(i).getFieldIndex('Y');
         		if(index > -1) {
-        			y2 = programModel.getLine(i).getField(index).getNumber().doubleValue();
+        			y2 = programModel.getRow(i).getField(index).getNumber().doubleValue();
         			draw = true;
         		}
         		if(draw) {
@@ -97,15 +97,15 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
                 	y1 = y2;
         		}
         		
-        	} else if(programModel.getLine(i).getField(0).toString().equals("G1")) {
-        		index = programModel.getLine(i).getFieldIndex('X');
+        	} else if(programModel.getRow(i).getField(0).toString().equals("G1")) {
+        		index = programModel.getRow(i).getFieldIndex('X');
         		if(index > -1) {
-        			x2 = programModel.getLine(i).getField(index).getNumber().doubleValue();
+        			x2 = programModel.getRow(i).getField(index).getNumber().doubleValue();
         			draw = true;
         		}
-        		index = programModel.getLine(i).getFieldIndex('Y');
+        		index = programModel.getRow(i).getFieldIndex('Y');
         		if(index > -1) {
-        			y2 = programModel.getLine(i).getField(index).getNumber().doubleValue();
+        			y2 = programModel.getRow(i).getField(index).getNumber().doubleValue();
         			draw = true;
         		}
         		
@@ -128,7 +128,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
             		
             		// Draw the last point from G1 move but not the zero point
            			try {
-	            		if(pointVisible && !programModel.getLine(i + 1).getField(0).toString().equals("G1")) {
+	            		if(pointVisible && !programModel.getRow(i + 1).getField(0).toString().equals("G1")) {
 	    	        		g.setColor(Color.RED);
 	            			g.drawOval(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()) - 2, 
 	            						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()) - 2,
