@@ -27,7 +27,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
 
+import main.Main;
 import view.ProgramModelListener;
 
 /**
@@ -138,6 +140,15 @@ public class Program {
 	 */
 	public void setComment(int rowIndex, String comment) {
 		rows.get(rowIndex).setComment(comment);
+		fireModelChanged();
+	}
+	
+	/**
+	 * Sets a new Comment at the last Row Object
+	 * @param comment The new comment.
+	 */
+	public void setComment(String comment) {
+		rows.get(rows.size() - 1).setComment(comment);
 		fireModelChanged();
 	}
 	
@@ -317,9 +328,9 @@ public class Program {
 					field = GCodeHelpers.parseField(fieldBuffer);
 					row.addField(field);
 				} catch(NumberFormatException e) {
-					System.out.println("Row " + rowIndex + ": " + e + "; Could not read parameter. Field skipped.");
+					Main.log.log(Level.SEVERE, "Row " + rowIndex + ": " + e + "; Could not read parameter. Field skipped.");
 				} catch(IllegalArgumentException e) {
-					System.out.println("Row " + rowIndex + ": " + e + "; Could not read parameter. Field skipped.");
+					Main.log.log(Level.SEVERE, "Row " + rowIndex + ": " + e + "; Could not read parameter. Field skipped.");
 				}
 			}	
 		

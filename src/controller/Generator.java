@@ -186,6 +186,7 @@ public class Generator {
 		programModel.addRow(new Row());
 		programModel.addField(new Field('G', new BigDecimal(0)));
 		programModel.addField(new Field('F', feedrate.getValue(0)));
+		programModel.setComment(new String("Set feedrate to " + feedrate.getValue(0)));
 	}
 	
 	/**
