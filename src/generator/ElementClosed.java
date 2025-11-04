@@ -2,19 +2,17 @@ package generator;
 
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 
 import org.w3c.dom.Node;
 
 import controller.Generator;
 import model.Tool;
-import model.ToolPathPoint;
+import model.ToolPath;
 
 abstract class ElementClosed extends Element {
 
 	public ElementClosed(Node node, Generator gen) {
 		super(node, gen);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -22,15 +20,15 @@ abstract class ElementClosed extends Element {
 	 * @param toolPath the toolpath from the shape
 	 * @return
 	 */
-	protected ArrayList<ToolPathPoint> createPocket(ArrayList<ToolPathPoint> toolPath) {
-		ArrayList<ToolPathPoint> pocketToolPath = new ArrayList<ToolPathPoint>();
+	protected ToolPath createPocket(ToolPath toolPath) {
+		ToolPath pocketToolPath = new ToolPath("Pocket for " + toolPath.getName());
 		this.tool = new Tool(2.0);
 		
 		//create polygon for the pocket boundaries
 		Path2D.Double polygon = new Path2D.Double();
-		polygon.moveTo(toolPath.get(0).getX(), toolPath.get(0).getY());
+		polygon.moveTo(toolPath.getX(0).doubleValue(), toolPath.getY(0).doubleValue());
 		for(int i = 1; i < toolPath.size(); i++) {
-			polygon.lineTo(toolPath.get(i).getX(), toolPath.get(i).getY());
+			polygon.lineTo(toolPath.getX(i).doubleValue(), toolPath.getY(i).doubleValue());
 		}
 		polygon.closePath();
 		
@@ -54,8 +52,8 @@ abstract class ElementClosed extends Element {
 					if(inside) {
 						double endX = x - tool.getRadius();
 						inside = false;
-						pocketToolPath.add(new ToolPathPoint(startX, y, "Pocket"));
-						pocketToolPath.add(new ToolPathPoint(endX, y, "Pocket"));
+						pocketToolPath.addPoint(startX, y);
+						pocketToolPath.addPoint(endX, y);
 					}
 				}	
 			}	

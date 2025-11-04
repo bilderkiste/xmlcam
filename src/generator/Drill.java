@@ -6,9 +6,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import controller.Generator;
-import controller.Tuple;
 import main.Main;
-import model.ToolPathPoint;
+import model.Tuple;
 
 /**
  * Generate 2D coordinates for a drill.
@@ -61,7 +60,8 @@ public class Drill extends Element {
 
 	@Override
 	public void execute() {
-		toolPath.add(new ToolPathPoint(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue(), "drill"));
-		Main.log.log(Level.FINE, "Drill element: drill at (" + xmlPoint.getValue(0) + ", " + xmlPoint.getValue(1) + ").");			
+		addToolPath(new String("Drill at " + xmlPoint));
+		getToolPath(0).addPoint(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
+		Main.log.log(Level.FINE, "Drill element: drill at " + xmlPoint);			
 	}
 }

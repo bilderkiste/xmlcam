@@ -33,7 +33,15 @@
 		</xs:sequence>
 		<xs:attribute name="pocket" type="pockettype" />
 	</xs:complexType>
-	
+
+	<xs:complexType name="text">
+		<xs:sequence>
+			<xs:element name="p" type="pointtype" />				
+			<xs:element name="z" type="ztype3" />
+		</xs:sequence>
+		<xs:attribute name="pocket" type="pockettype" />
+	</xs:complexType>
+		
 	<xs:complexType name="polyline">
 		<xs:sequence>
 			<xs:element name="p" type="pointtype" />
@@ -60,6 +68,7 @@
 				<xs:element name="polyline" type="polyline" />
 				<xs:element name="circle" type="circle" />
 				<xs:element name="rectangle" type="rectangle" />
+				<xs:element name="text" type="text" />
 				<xs:element name="feedrate" type="xs:positiveInteger" />
 				<xs:element name="translate">
 					<xs:complexType>
@@ -69,6 +78,7 @@
 							<xs:element name="polyline" type="polyline" />
 							<xs:element name="circle" type="circle" />
 							<xs:element name="rectangle" type="rectangle" />
+							<xs:element name="text" type="text" />
 							<xs:element name="feedrate" type="xs:positiveInteger" />
 						</xs:choice>
 						<xs:attribute name="x" type="translationtype" />
@@ -109,7 +119,7 @@
 	    </xs:restriction>
 	</xs:simpleType>
 	
-		<xs:simpleType name="pockettype">
+	<xs:simpleType name="pockettype">
 	    <xs:restriction base="xs:string">
 	    	<xs:pattern value="parallel"/>
 	    </xs:restriction>

@@ -7,9 +7,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import controller.Generator;
-import controller.Tuple;
 import main.Main;
-import model.ToolPathPoint;
+import model.Tuple;
 
 /**
  * Generate 2D coordinates for a line.
@@ -56,11 +55,11 @@ public class Line extends Element {
 		for(int i = 0; i < xmlPoints.size(); i++) {
 			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
 		}
-
-		toolPath.add(new ToolPathPoint(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue(), "line"));
-		toolPath.add(new ToolPathPoint(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue(), "line"));
+		addToolPath(new String("Line from " + xmlPoints.get(0) + " to " + xmlPoints.get(1)));
+		getToolPath(0).addPoint(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
+		getToolPath(0).addPoint(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue());
 		
-		Main.log.log(Level.FINE, "Line element: line from (" + xmlPoints.get(0).getValue(0) + ", " + xmlPoints.get(0).getValue(1) + ") to (" + xmlPoints.get(1).getValue(0) + ", " + xmlPoints.get(1).getValue(1) + ").");
+		Main.log.log(Level.FINE, "Line element: line from (" + xmlPoints.get(0) + " to " + xmlPoints.get(1));
 	}
 
 }

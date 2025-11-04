@@ -41,12 +41,14 @@ import generator.Drill;
 import generator.Line;
 import generator.Polyline;
 import generator.Rectangle;
+import generator.Text;
 import main.Main;
 import misc.Settings;
 import model.Field;
 import model.Row;
+import model.ToolPath;
 import model.Program;
-import model.ToolPathPoint;
+import model.Tuple;
 import xml.XMLView;
 
 /**
@@ -96,27 +98,32 @@ public class Generator {
 				Drill item = new Drill(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
-				createGCode(item.getToolPath(), item.getZLevel());				//drill(commands.item(commandNumber));
+				createGCode(item.getToolPathes(), item.getZLevel());				//drill(commands.item(commandNumber));
 			} else if(commands.item(commandNumber).getNodeName() == "line") {
 				Line item = new Line(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
-				createGCode(item.getToolPath(), item.getZLevel());
+				createGCode(item.getToolPathes(), item.getZLevel());
 			} else if(commands.item(commandNumber).getNodeName() == "polyline") {
 				Polyline item = new Polyline(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
-				createGCode(item.getToolPath(), item.getZLevel());
+				createGCode(item.getToolPathes(), item.getZLevel());
 			} else if(commands.item(commandNumber).getNodeName() == "circle") {
 				Circle item = new Circle(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
-				createGCode(item.getToolPath(), item.getZLevel());
+				createGCode(item.getToolPathes(), item.getZLevel());
 			} else if(commands.item(commandNumber).getNodeName() == "rectangle") {
 				Rectangle item = new Rectangle(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
-				createGCode(item.getToolPath(), item.getZLevel());
+				createGCode(item.getToolPathes(), item.getZLevel());
+			} else if(commands.item(commandNumber).getNodeName() == "text") {
+				Text item = new Text(commands.item(commandNumber), this);
+				item.extract();
+				item.execute();
+				createGCode(item.getToolPathes(), item.getZLevel());
 			} else if(commands.item(commandNumber).getNodeName() == "feedrate") {
 				setFeedRate(commands.item(commandNumber));
 			} else if(commands.item(commandNumber).getNodeName() == "translate") {
@@ -227,7 +234,7 @@ public class Generator {
 	 * @param toolPath The toolpath
 	 * @param zLevel The milling depth (z-axis)
 	 */
-	private void createGCode(ArrayList<ToolPathPoint> toolPath, Tuple zLevel) {
+	private void createGCode(ArrayList<ToolPath> toolPathes, Tuple zLevel) {
 		BigDecimal endZ = zLevel.getValue(1);
 		BigDecimal stepZ = zLevel.getValue(2);
 		boolean forward = true;
@@ -236,43 +243,47 @@ public class Generator {
 			throw new IllegalArgumentException("The Z step must be greater than 0");
 		}
 		
-		newX = new BigDecimal(toolPath.get(0).getX());
-		newY = new BigDecimal(toolPath.get(0).getY());
-		newZ = zLevel.getValue(0);
-		
-		go0(newX, newY, "Go to start position for element " + toolPath.get(0).getComment()); // go to start position
+		// i is number of the toolpath
+		for(int i = 0; i < toolPathes.size(); i++) {
+			ToolPath toolPath = toolPathes.get(i);
+			newX = toolPath.getX(0);
+			newY = toolPath.getY(0);
+			newZ = zLevel.getValue(0);
 			
-		while(true) {
-			if(forward) {
-				go1(newX, newY, newZ);  // Z sink
-				for(int j = 1; j < toolPath.size(); j++) {
-					newX = new BigDecimal(toolPath.get(j).getX());
-					newY = new BigDecimal(toolPath.get(j).getY());
-					go1(newX, newY, newZ, toolPath.get(j).getComment());  // X-Y move
+			go0(newX, newY, "Go to start position for element " + toolPath.getName()); // go to start position
+				
+			while(true) {
+				if(forward) {
+					go1(newX, newY, newZ);  // Z sink
+					for(int j = 1; j < toolPath.size(); j++) {
+						newX = toolPath.getX(j);
+						newY = toolPath.getY(j);
+						go1(newX, newY, newZ, toolPath.getName());  // X-Y move
+					}
+					forward = false;
+				} else {
+					go1(newX, newY, newZ);  // Z sink
+					for(int j = toolPath.size() - 2; j >= 0; j--) {
+						newX = toolPath.getX(j);
+						newY = toolPath.getY(j);
+						go1(newX, newY, newZ, toolPath.getName());  // X-Y move
+					}
+					forward = true;
 				}
-				forward = false;
-			} else {
-				go1(newX, newY, newZ);  // Z sink
-				for(int j = toolPath.size() - 2; j >= 0; j--) {
-					newX = new BigDecimal(toolPath.get(j).getX());
-					newY = new BigDecimal(toolPath.get(j).getY());
-					go1(newX, newY, newZ, toolPath.get(j).getComment());  // X-Y move
+				// If last zLevel was cutted, break
+				if(newZ.doubleValue() == endZ.doubleValue()) {
+					break;
 				}
-				forward = true;
+				
+				newZ = newZ.subtract(stepZ);
+				
+				// If last zLevel is < endLevel cut the last zLevel with endZ value
+				if(newZ.doubleValue() < endZ.doubleValue()) {
+					newZ = new BigDecimal(endZ.doubleValue());
+				}
 			}
-			// If last zLevel was cutted, break
-			if(newZ.doubleValue() == endZ.doubleValue()) {
-				break;
-			}
-			
-			newZ = newZ.subtract(stepZ);
-			
-			// If last zLevel is < endLevel cut the last zLevel with endZ value
-			if(newZ.doubleValue() < endZ.doubleValue()) {
-				newZ = new BigDecimal(endZ.doubleValue());
-			}
+			go0(currentX, currentY, "End element " + toolPath.getName() + " Lift up at current position.");
 		}
-		go0(currentX, currentY, "End element; Lift up at current position.");	
 	}
 	
 	/**

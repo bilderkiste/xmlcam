@@ -7,9 +7,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import controller.Generator;
-import controller.Tuple;
 import main.Main;
-import model.ToolPathPoint;
+import model.Tuple;
 
 /**
  * Generate 2D coordinates for a circle.
@@ -20,6 +19,7 @@ import model.ToolPathPoint;
  * <circle>
  * 		<p>200,200</p>
  * 		<rad>75</rad>
+ * 		<seg>5</seg>
  *		<z>0,-1,0.1</z>
  * </circle>
  * }</pre>
@@ -77,6 +77,7 @@ public class Circle extends ElementClosed {
 
 	@Override
 	public void execute() {
+		addToolPath(new String("Circle at " + center + " with radius " + radius));
 		double phi = 0;
 		float xCenter = center.getValue(0).floatValue();
 		float yCenter = center.getValue(1).floatValue();
@@ -96,14 +97,14 @@ public class Circle extends ElementClosed {
 		}
 	
 		while(phi < 2 * Math.PI) {
-			toolPath.add(new ToolPathPoint(xCenter + radiusv * Math.sin(phi), yCenter + radiusv * Math.cos(phi), "circle"));
+			getToolPath(0).addPoint(xCenter + radiusv * Math.sin(phi), yCenter + radiusv * Math.cos(phi));
 			phi += phiStep;
 		}
-		toolPath.add(new ToolPathPoint(xCenter + radiusv * Math.sin(0), yCenter + radiusv * Math.cos(0),"circle end"));
+		getToolPath(0).addPoint(xCenter + radiusv * Math.sin(0), yCenter + radiusv * Math.cos(0));
 		
 		//create pockettoolpath
 		if(pocket) {
-			toolPath.addAll(createPocket(toolPath));
+			addToolPath(createPocket(getToolPath(0)));
 		}
 		
 		Main.log.log(Level.FINE, "Circle element: circle at (" + center.getValue(0) + "," + center.getValue(1) + ") with " + (int)(((Math.PI * 2) / phiStep) + 1) + " points. Step for phi is " + phiStep + ".");	

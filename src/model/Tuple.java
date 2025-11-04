@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package controller;
+package model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class Tuple {
 
 	public static final int POINT = 0;
 	public static final int BEZIER = 1;
-	public static final int SPLINE = 2; 
+	public static final int SPLINE = 2;
 	
 	private ArrayList<Double> values;
 	private int type;
@@ -109,6 +109,7 @@ public class Tuple {
 	
 	/**
 	 * Sets one value in the tuple at index.
+	 * (x, y, new, z)
 	 * @param index The index
 	 * @param value The value
 	 */
@@ -118,6 +119,7 @@ public class Tuple {
 	
 	/**
 	 * Add a value add the end of the tuple.
+	 * (x, y, new)
 	 * @param value The value
 	 */
 	public void addValue(double value) {
