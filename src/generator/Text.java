@@ -9,6 +9,7 @@ import java.awt.geom.PathIterator;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -22,10 +23,15 @@ public class Text extends ElementClosed {
 	private String content;
 	private Font font;
 	private double flatness;
+	private boolean pocket;
 
 	public Text(Node node, Generator gen) {
 		super(node, gen);
 		xmlPoint = null;
+		content = null;
+		font = null;
+		flatness = 0.5;
+		pocket = false;
 	}
 
 	@Override
@@ -39,6 +45,16 @@ public class Text extends ElementClosed {
 		styleMap.put("BOLD", 1);
 		styleMap.put("ITALIC", 2);
 		styleMap.put("BOLDITALIC", 3);
+		
+		NamedNodeMap map = node.getAttributes();
+
+		try {
+			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
+				pocket = true;
+			}
+		} catch(NullPointerException e) {
+		
+		} 
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
@@ -111,6 +127,15 @@ public class Text extends ElementClosed {
             //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
             pi.next();
         }
+        
+		//create pockettoolpath
+		if(pocket) {
+			int numToolPathes = getToolPathSize();
+			for(int i = 0; i < numToolPathes; i++) {
+				addToolPath(createPocket(getToolPath(i)));
+			}
+		}
+        
         Main.log.log(Level.FINE, "Text element: text '" + content + "' at " + xmlPoint + " with type " + font.getFontName() + " size " + font.getSize() + " and flatness " + flatness);
 	}
 
