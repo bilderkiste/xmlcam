@@ -75,6 +75,22 @@ The z-depth must be defined by the &lt;z&gt; tag.
 	&lt;p&gt;150,150&lt;&#x2F;p&gt;
 	&lt;z&gt;0,-1,0.1&lt;&#x2F;z&gt;
 &lt;&#x2F;rectangle&gt;</pre>
+<h3>Text Element</h3>
+Generates 2D coordinates for a text.
+A text must defined by a start point bottom left determined through a <p> tag.vThe Text must defined by the <content> tag. The z-depth must be defined by the <z> tag.
+Optional tags are <size> for font size in point, <type> for font family, <style> for bold or italic styles and flatness for accuracy. 
+An code example snippet:
+<pre>&lt;text&gt;
+	&lt;content&gt;Ein toller Tag&lt;/content&gt;
+	&lt;p&gt;20,20&lt;/p&gt;
+	&lt;size&gt;10&lt;/size&gt;
+	&lt;type&gt;Calibri&lt;/type&gt;
+	&lt;style&gt;plain&lt;/style&gt;
+	&lt;flatness&gt;0.1&lt;/flatness&gt;
+	&lt;z&gt;0,-1,1&lt;/z&gt;
+&lt;/text&gt;
+ </pre>
+
 <h3>Feedrate Element</h3>
 <p>This element sets the feedrate in mm/min for all subsequent G-Code.</p>
 <pre>&lt;feedrate&gt;200&lt;/feedrate&gt;</pre>
