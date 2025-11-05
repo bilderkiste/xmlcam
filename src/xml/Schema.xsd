@@ -40,7 +40,7 @@
 			<xs:element name="p" type="pointtype" />					
 			<xs:element name="size" type="posinttype" minOccurs="0" maxOccurs="1" />
 			<xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1" />
-			<xs:element name="style" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="style" type="styletype" minOccurs="0" maxOccurs="1" />
 			<xs:element name="flatness" type="posdoubletype" minOccurs="0" maxOccurs="1" />
 			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
@@ -115,6 +115,12 @@
 	<xs:simpleType name="ztype2">
 	    <xs:restriction base="xs:string">
 	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?,-[0-9]+(\.[0-9]+)?"/>
+	    </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="styletype">
+	    <xs:restriction base="xs:string">
+	    	<xs:pattern value="plain|bold|italic|bolditalic?"/>
 	    </xs:restriction>
 	</xs:simpleType>
 	

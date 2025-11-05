@@ -21,13 +21,15 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
+import java.net.URL;
 import java.util.logging.Level;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -93,6 +95,13 @@ public class MainWindow extends JFrame {
 		this.add(createTabbedPane());
 		
 		this.setJMenuBar(createMenuBar());
+		
+		URL iconURL = getClass().getResource("/xmlCAM_icon.png");
+        if (iconURL != null) {
+            Image icon = new ImageIcon(iconURL).getImage();
+            this.setIconImage(icon);
+            
+        }
 		
 		this.pack();
 		this.setVisible(true);

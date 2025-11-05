@@ -68,15 +68,19 @@ public class Text extends ElementClosed {
 		if(size < 1) {
 			size = 10;
 		}
-		if(style == null) {
+		if(style ==  null) {
 			style = "PLAIN";
 		}
 		if(flatness < 0.01) {
 			flatness = 0.5;
 		}
 			
-		font = new Font(type, styleMap.get(style), size);
-		
+		try {
+			font = new Font(type, styleMap.get(style), size);
+		} catch(NullPointerException e) {
+			throw new IllegalArgumentException("Invalid argments in text element.");
+			
+		}
 	
 	}
 
