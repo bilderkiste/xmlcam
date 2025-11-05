@@ -41,6 +41,7 @@
 			<xs:element name="size" type="posinttype" minOccurs="0" maxOccurs="1" />
 			<xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1" />
 			<xs:element name="style" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="flatness" type="posdoubletype" minOccurs="0" maxOccurs="1" />
 			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 		<xs:attribute name="pocket" type="pockettype" />
@@ -118,6 +119,12 @@
 	</xs:simpleType>
 	
 	<xs:simpleType name="posinttype">
+	    <xs:restriction base="xs:string">
+	    	<xs:pattern value="[0-9]+"/>
+	    </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="posdoubletype">
 	    <xs:restriction base="xs:string">
 	    	<xs:pattern value="[0-9]+(\.[0-9]+)?"/>
 	    </xs:restriction>

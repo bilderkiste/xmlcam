@@ -6,6 +6,7 @@
 		<size>80</size>
 		<type>Calibri</type>
 		<style>plain</style>
+		<flatness>1.0</flatness>
 		<z>0,-1,1</z>
 	</text>
 	<translate x="-10" y="100">

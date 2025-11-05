@@ -60,15 +60,24 @@ public class Text extends ElementClosed {
 			if(item.getNodeName() == "style") {
 				style = new String(item.getTextContent().toUpperCase()); 
 			}
+			if(item.getNodeName() == "flatness") {
+				flatness = Double.parseDouble(item.getTextContent()); 
+			}
 		}
 		
 		if(size < 1) {
 			size = 10;
 		}
+		if(style == null) {
+			style = "PLAIN";
+		}
+		if(flatness < 0.01) {
+			flatness = 0.5;
+		}
 			
 		font = new Font(type, styleMap.get(style), size);
 		
-		flatness = 0.5;
+	
 	}
 
 	@Override
@@ -98,7 +107,7 @@ public class Text extends ElementClosed {
             //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
             pi.next();
         }
-        Main.log.log(Level.FINE, "Text element: text '" + content + "' at " + xmlPoint + " with type " + font.getFontName() + " size " + font.getSize());
+        Main.log.log(Level.FINE, "Text element: text '" + content + "' at " + xmlPoint + " with type " + font.getFontName() + " size " + font.getSize() + " and flatness " + flatness);
 	}
 
 }
