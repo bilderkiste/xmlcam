@@ -17,6 +17,25 @@ import controller.Generator;
 import main.Main;
 import model.Tuple;
 
+/**
+ * Generate 2D coordinates for a text.
+ * A text must defined by a start point bottom left determined through a <p> tag.
+ * The Text must defined by the <content> tag.
+ * The z-depth must be defined by the <z> tag.
+ * Optional tags are <size> for font size in point, <type> for font family, <style> for bold or italic styles and flatness for accuracy. 
+ * An code example snippet:
+ * <pre>{@code
+	<text>
+		<content>Ein toller Tag</content>
+		<p>20,20</p>
+		<size>10</size>
+		<type>Calibri</type>
+		<style>plain</style>
+		<flatness>0.1</flatness>
+		<z>0,-1,1</z>
+	</text>
+ * }</pre>
+ */
 public class Text extends ElementClosed {
 	
 	private Tuple xmlPoint;
