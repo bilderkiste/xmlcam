@@ -1,7 +1,11 @@
 <?xml version="1.0"?>
-<program>
+<program>	
 	<text>
+		<content>Ein toller Tag</content>
 		<p>20,20</p>
+		<size>80</size>
+		<type>Calibri</type>
+		<style>plain</style>
 		<z>0,-1,1</z>
 	</text>
 	<translate x="-10" y="100">

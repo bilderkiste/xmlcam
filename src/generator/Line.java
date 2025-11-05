@@ -59,7 +59,7 @@ public class Line extends Element {
 		getToolPath(0).addPoint(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
 		getToolPath(0).addPoint(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue());
 		
-		Main.log.log(Level.FINE, "Line element: line from (" + xmlPoints.get(0) + " to " + xmlPoints.get(1));
+		Main.log.log(Level.FINE, "Line element: line from " + xmlPoints.get(0) + " to " + xmlPoints.get(1));
 	}
 
 }

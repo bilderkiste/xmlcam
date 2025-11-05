@@ -6,17 +6,20 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
+import java.util.HashMap;
+import java.util.logging.Level;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import controller.Generator;
+import main.Main;
 import model.Tuple;
 
 public class Text extends ElementClosed {
 	
 	private Tuple xmlPoint;
-	private String text;
+	private String content;
 	private Font font;
 	private double flatness;
 
@@ -28,27 +31,51 @@ public class Text extends ElementClosed {
 	@Override
 	public void extract() throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
+		int size = 0;
+		String type = null;
+		String style = null;
+		HashMap<String, Integer> styleMap = new HashMap<>();
+		styleMap.put("PLAIN", 0);
+		styleMap.put("BOLD", 1);
+		styleMap.put("ITALIC", 2);
+		styleMap.put("BOLDITALIC", 3);
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
+			if(item.getNodeName() == "content") {
+				content = item.getTextContent();
+			}
 			if(item.getNodeName() == "p") {
 				xmlPoint = addTranslation(new Tuple(item));
 			}
 			if(item.getNodeName() == "z") {
 				zLevel = new Tuple(item);
 			}
+			if(item.getNodeName() == "size") {
+				size = Integer.parseInt(item.getTextContent());
+			}
+			if(item.getNodeName() == "type") {
+				type = new String(item.getTextContent());
+			}
+			if(item.getNodeName() == "style") {
+				style = new String(item.getTextContent().toUpperCase()); 
+			}
 		}
 		
-		font = new Font("Arial", Font.PLAIN, 10);
-		text = "Ja va";
-		flatness = 0.2;
+		if(size < 1) {
+			size = 10;
+		}
+			
+		font = new Font(type, styleMap.get(style), size);
+		
+		flatness = 0.5;
 	}
 
 	@Override
 	public void execute() {
 		// Holt die Vektor-Umrisse für den gesamten Text
         FontRenderContext frc = new FontRenderContext(null, true, true);
-        GlyphVector glyphVector = font.createGlyphVector(frc, text);
+        GlyphVector glyphVector = font.createGlyphVector(frc, content);
         Shape textShape = glyphVector.getOutline();
         
         // Transformation, um den Text an die Startposition (startX, startY) zu verschieben
@@ -58,19 +85,20 @@ public class Text extends ElementClosed {
         // Der PathIterator, der Kurven in flache Liniensegmente umwandelt
         PathIterator pi = textShape.getPathIterator(at, flatness);
 
-        double[] coords = new double[6]; // Speichert Koordinaten vom PathIterator
+        double[] coords = new double[2]; // Speichert Koordinaten vom PathIterator
         
-        /*while (!pi.isDone()) {
+        while (!pi.isDone()) {
         	int segmentType = pi.currentSegment(coords);
         	if(segmentType == 0) {
         		addToolPath(new String("Text"));
         	}
         		
-        	//getToolPath(getToolPathSize()).addPoint(coords[0], coords[1]);
+        	getToolPath(getToolPathSize() - 1).addPoint(coords[0], coords[1]);
         
-            System.out.println(segmentType + " - " + coords[0] + " " + coords[1] +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
+            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
             pi.next();
-        }*/
+        }
+        Main.log.log(Level.FINE, "Text element: text '" + content + "' at " + xmlPoint + " with type " + font.getFontName() + " size " + font.getSize());
 	}
 
 }
