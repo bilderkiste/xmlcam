@@ -1,6 +1,5 @@
 package generator;
 
-import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 
 import org.w3c.dom.Node;
@@ -23,17 +22,11 @@ abstract class ElementClosed extends Element {
 	protected ToolPath createPocket(ToolPath toolPath) {
 		ToolPath pocketToolPath = new ToolPath("Pocket for " + toolPath.getName());
 		this.tool = new Tool(2.0);
-		
-		//create polygon for the pocket boundaries
-		Path2D.Double polygon = new Path2D.Double();
-		polygon.moveTo(toolPath.getX(0).doubleValue(), toolPath.getY(0).doubleValue());
-		for(int i = 1; i < toolPath.size(); i++) {
-			polygon.lineTo(toolPath.getX(i).doubleValue(), toolPath.getY(i).doubleValue());
-		}
-		polygon.closePath();
+	
+		toolPath.closePath();
 		
 		// Begrenzungsrechteck berechnen
-		Rectangle2D bounds= polygon.getBounds2D();
+		Rectangle2D bounds= toolPath.getBounds2D();
 		double xMin = bounds.getMinX();
 		double xMax = bounds.getMaxX();
 		double yMin = bounds.getMinY();
@@ -43,7 +36,7 @@ abstract class ElementClosed extends Element {
 			boolean inside = false;
 			double startX = 0;
 			for(double x = xMin - 0.2; x <= xMax + 0.2; x += 0.1) {
-				if(polygon.contains(x, y)) {
+				if(toolPath.contains(x, y)) {
 					if(!inside) {
 						startX = x + tool.getRadius();
 						inside = true;
