@@ -77,8 +77,8 @@ The z-depth must be defined by the &lt;z&gt; tag.
 &lt;&#x2F;rectangle&gt;</pre>
 <h3>Text Element</h3>
 Generates 2D coordinates for a text.
-A text must defined by a start point bottom left determined through a <p> tag.vThe Text must defined by the <content> tag. The z-depth must be defined by the <z> tag.
-Optional tags are <size> for font size in point, <type> for font family, <style> for bold or italic styles and flatness for accuracy. 
+A text must defined by a start point bottom left determined through a &lt;p&gt; tag.The Text must defined by the &lt;content&gt; tag. The z-depth must be defined by the &lt;z&gt; tag.
+Optional tags are &lt;size&gt; for font size in point, &lt;type&gt; for font family, &lt;style&gt; for bold or italic styles and flatness for accuracy. 
 An code example snippet:
 <pre>&lt;text&gt;
 	&lt;content&gt;Ein toller Tag&lt;/content&gt;
