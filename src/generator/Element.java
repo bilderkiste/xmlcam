@@ -1,5 +1,9 @@
 package generator;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 import org.w3c.dom.Node;
@@ -15,10 +19,12 @@ abstract class Element {
 	
 	protected Generator gen;
 	protected Node node;
+	protected String name;
 	/**
 	 * Arraylist with one or more toolpathes.
 	 */
 	protected ArrayList<ToolPath> toolPathes;
+	protected Path2D.Double shape; 
 	protected Tuple zLevel;
 	protected Tool tool;
 	
@@ -27,6 +33,7 @@ abstract class Element {
 		this.node = node;
 		this.gen = gen;
 		this.tool = null;
+		this.shape = null;
 	}
 	
 	public abstract void extract() throws IllegalArgumentException;
@@ -95,6 +102,25 @@ abstract class Element {
 		point.setValue(0, point.getValue(0).doubleValue() + gen.getTranslateX().doubleValue());
 		point.setValue(1, point.getValue(1).doubleValue() + gen.getTranslateY().doubleValue());
 		return point;
+	}
+	
+	public void getVerticesFromPath(Path2D.Double path, AffineTransform at, double flatness) {	        
+	    PathIterator pi = path.getPathIterator(at, flatness); 
+	    
+	    double[] coords = new double[2];
+	
+	    while (!pi.isDone()) {
+	    	
+        	int segmentType = pi.currentSegment(coords);
+        	if(segmentType == PathIterator.SEG_MOVETO) {
+        		toolPathes.add(new ToolPath("Text"));
+        	}
+        		
+        	getToolPath(getToolPathSize() - 1).addPoint(coords[0], coords[1]);
+        
+            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
+            pi.next();
+	    }	    
 	}
 
 }

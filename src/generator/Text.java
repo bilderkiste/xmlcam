@@ -5,6 +5,7 @@ import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -51,6 +52,7 @@ public class Text extends ElementClosed {
 		font = null;
 		flatness = 0.5;
 		pocket = false;
+		name = "Text";
 	}
 
 	@Override
@@ -81,7 +83,7 @@ public class Text extends ElementClosed {
 				content = item.getTextContent();
 			}
 			if(item.getNodeName() == "p") {
-				xmlPoint = addTranslation(new Tuple(item));
+				xmlPoint = new Tuple(item);
 			}
 			if(item.getNodeName() == "z") {
 				zLevel = new Tuple(item);
@@ -116,6 +118,8 @@ public class Text extends ElementClosed {
 			throw new IllegalArgumentException("Invalid argments in text element.");
 			
 		}
+		
+		name = new String("Text " + content);
 	
 	}
 
@@ -124,34 +128,23 @@ public class Text extends ElementClosed {
 		// Holt die Vektor-Umrisse für den gesamten Text
         FontRenderContext frc = new FontRenderContext(null, true, true);
         GlyphVector glyphVector = font.createGlyphVector(frc, content);
-        Shape textShape = glyphVector.getOutline();
+        shape = new Path2D.Double(glyphVector.getOutline());
         
+    	xmlPoint = addTranslation(xmlPoint);
+    	
         // Transformation, um den Text an die Startposition (startX, startY) zu verschieben
-        AffineTransform at = AffineTransform.getTranslateInstance(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
+        AffineTransform at = new AffineTransform();
+        at.translate(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
         at.scale(1.0, -1.0);
         
-        // Der PathIterator, der Kurven in flache Liniensegmente umwandelt
-        PathIterator pi = textShape.getPathIterator(at, flatness);
+        this.getVerticesFromPath(shape, at, flatness);
 
-        double[] coords = new double[2]; // Speichert Koordinaten vom PathIterator
-        
-        while (!pi.isDone()) {
-        	int segmentType = pi.currentSegment(coords);
-        	if(segmentType == 0) {
-        		addToolPath(new String("Text"));
-        	}
-        		
-        	getToolPath(getToolPathSize() - 1).addPoint(coords[0], coords[1]);
-        
-            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
-            pi.next();
-        }
         
 		//create pockettoolpath
 		if(pocket) {
 			int numToolPathes = getToolPathSize();
 			for(int i = 0; i < numToolPathes; i++) {
-				addToolPath(createPocket(getToolPath(i)));
+				addToolPath(createPocket(shape));
 			}
 		}
         
