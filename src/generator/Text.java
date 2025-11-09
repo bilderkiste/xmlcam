@@ -142,7 +142,7 @@ public class Text extends ElementClosed {
         
 		//create pockettoolpath
 		if(pocket) {
-			addToolPath(createPocket(shape));
+			addToolPath(createPocket(new Path2D.Double(shape.createTransformedShape(at))));
 		}
         
         Main.log.log(Level.FINE, "Text element: text '" + content + "' at " + xmlPoint + " with type " + font.getFontName() + " size " + font.getSize() + " and flatness " + flatness);
