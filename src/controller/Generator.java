@@ -105,10 +105,10 @@ public class Generator {
 				item.execute();
 				createGCode(item.getToolPathes(), item.getZLevel());
 			} else if(commands.item(commandNumber).getNodeName() == "polyline") {
-				//Polyline item = new Polyline(commands.item(commandNumber), this);
-				//item.extract();
-				//item.execute();
-				//createGCode(item.getToolPathes(), item.getZLevel());
+				Polyline item = new Polyline(commands.item(commandNumber), this);
+				item.extract();
+				item.execute();
+				createGCode(item.getToolPathes(), item.getZLevel());
 			} else if(commands.item(commandNumber).getNodeName() == "circle") {
 				Circle item = new Circle(commands.item(commandNumber), this);
 				item.extract();

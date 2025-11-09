@@ -1,5 +1,6 @@
 package generator;
 
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -81,7 +82,11 @@ public class Polyline extends ElementClosed {
 		// Create toolpath
 		for(int i = 0; i < xmlPoints.size(); i++) {
 			if(xmlPoints.get(i).getType() == Tuple.POINT) {
-				getToolPath(0).addPoint(xmlPoints.get(i).getValue(0).doubleValue(), xmlPoints.get(i).getValue(1).doubleValue());
+				if(i == 0) {
+					shape.moveTo(xmlPoints.get(i).getValue(0).doubleValue(), xmlPoints.get(i).getValue(1).doubleValue());
+				} else {
+					shape.lineTo(xmlPoints.get(i).getValue(0).doubleValue(), xmlPoints.get(i).getValue(1).doubleValue());
+				}
 				Main.log.log(Level.FINE, "Polyline element: line to (" + xmlPoints.get(i));
 			} else if(xmlPoints.get(i).getType() == Tuple.BEZIER) {
 				int n;
@@ -94,7 +99,7 @@ public class Polyline extends ElementClosed {
 				}
 				b.add(xmlPoints.get(i + n)); // Add the last control point bn
 
-				deCasteljau(b, 0.5, getToolPath(0), 4);
+				deCasteljau(b, 0.5, shape, 4);
 		
 				i += n - 1; 			// Skip the next inner control points (b1 - bn-1)
 				Main.log.log(Level.FINE, "Polyline element: bezier curve grade " + (n + 1) + " to (" + b.get(b.size() - 1).getValue(0).doubleValue() + ", " + b.get(b.size() - 1).getValue(1).doubleValue() + ").");
@@ -132,22 +137,25 @@ public class Polyline extends ElementClosed {
 					Main.log.log(Level.FINER, stringBuffer.toString());
 				}
 			
-				calculatePoint(points, 0.5, getToolPath(0), 5);
+				calculatePoint(points, 0.5, shape, 5);
 				
 				// insert last point of curve, because we do not add the last control point to the toolpath
 				if(points.get(3).getType() == Tuple.POINT) {
-					getToolPath(0).addPoint(points.get(2).getValue(0).doubleValue(), points.get(2).getValue(1).doubleValue());
+					shape.lineTo(points.get(2).getValue(0).doubleValue(), points.get(2).getValue(1).doubleValue());
 				}
 				
-				addToolPath(new String("Polyline"));
 				Main.log.log(Level.FINE, "Polyline element: spline to (" + points.get(points.size() - 2).getValue(0).doubleValue() + ", " + points.get(points.size() - 2).getValue(1).doubleValue() + ").");
 			}
 		}
+		
+		AffineTransform at = new AffineTransform();
+		
+		addToolPath(shape, at, 0.1, new String("Polyline"));
 
 		//create pockettoolpath
-		if(pocket) {
+		/*if(pocket) {
 			addToolPath(createPocket(shape));
-		}
+		}*/
 		
 		Main.log.log(Level.FINE, "Generated polyline element with " + getToolPath(0).size() + " points.");
 	}
@@ -158,11 +166,11 @@ public class Polyline extends ElementClosed {
 	 * 
 	 * @param points The ControlPoints b0,...,bn
 	 * @param t The tau value 0 <= t <= 1
-	 * @param toolPath The tool path where to insert the curve points
+	 * @param shape The path where to insert the curve points
 	 * @param level The current level depth of recursive implementation. 
 	 * @return The x and y coordinates on the bezier 
 	 */
-	private void deCasteljau(ArrayList<Tuple> points, double t, ToolPath toolPath, int level) {
+	private void deCasteljau(ArrayList<Tuple> points, double t, Path2D.Double shape, int level) {
 		int n = points.size();
 		ArrayList<Tuple> partCurvePointsLower = new ArrayList<Tuple>();
 		ArrayList<Tuple> partCurvePointsUpper = new ArrayList<Tuple>();
@@ -217,11 +225,11 @@ public class Polyline extends ElementClosed {
 	
 		if(level > 0) {
 			level--;
-			deCasteljau(partCurvePointsLower, 0.5, toolPath, level);
-			deCasteljau(partCurvePointsUpper, 0.5, toolPath, level);	
+			deCasteljau(partCurvePointsLower, 0.5, shape, level);
+			deCasteljau(partCurvePointsUpper, 0.5, shape, level);	
 		} else {
 			for(int k = 0; k < n - 1; k++) {
-				getToolPath(0).addPoint(bx[0][k], by[0][k]);
+				shape.lineTo(bx[0][k], by[0][k]);
 			}
 		}
 	
@@ -232,7 +240,7 @@ public class Polyline extends ElementClosed {
 	 * @param points b0 = point before start point, b1 start point, b2 end point, b3 point behind end point
 	 * @param t 0 <= tau <= 1
 	 */
-	private void calculatePoint(ArrayList<Tuple> points, double t, ToolPath toolPath, int level) {
+	private void calculatePoint(ArrayList<Tuple> points, double t, Path2D.Double shape, int level) {
 		double dx1, dy1, dx2, dy2;
 		ArrayList<Tuple> pointList = new ArrayList<Tuple>();
 		double[] point = new double[2];
@@ -283,7 +291,7 @@ public class Polyline extends ElementClosed {
 			Main.log.log(Level.FINER, stringBuffer.toString());
 		}
 		
-		deCasteljau(pointList, t, toolPath, level);
+		deCasteljau(pointList, t, shape, level);
 	}
 	
 	/**
