@@ -98,11 +98,11 @@ abstract class Element {
 	 * @param pint The point.
 	 * @return The point translated.
 	 */
-	protected Tuple addTranslation(Tuple point) {
+	/*protected Tuple addTranslation(Tuple point) {
 		point.setValue(0, point.getValue(0).doubleValue() + gen.getTranslateX().doubleValue());
 		point.setValue(1, point.getValue(1).doubleValue() + gen.getTranslateY().doubleValue());
 		return point;
-	}
+	}*/
 	
 	/**
 	 * Generates the ToolPath (ArrayList with Point2D) with the Flattening PathIterator from the Path2D.
@@ -129,7 +129,7 @@ abstract class Element {
         		getToolPath(getNumberOfToolPathes() - 1).addPoint(startCoords.getX(), startCoords.getY());
         	} 
         
-            System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
+            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
             pi.next();
 	    }	    
 	}

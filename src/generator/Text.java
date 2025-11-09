@@ -130,11 +130,12 @@ public class Text extends ElementClosed {
         GlyphVector glyphVector = font.createGlyphVector(frc, content);
         shape = new Path2D.Double(glyphVector.getOutline());
         
-    	xmlPoint = addTranslation(xmlPoint);
+    	//xmlPoint = addTranslation(xmlPoint);
     	
         // Transformation, um den Text an die Startposition (startX, startY) zu verschieben
         AffineTransform at = new AffineTransform();
         at.translate(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
+        at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
         at.scale(1.0, -1.0);
         
         addToolPath(shape, at, flatness, new String("Text: " + content));

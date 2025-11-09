@@ -68,11 +68,9 @@ public class Rectangle extends ElementClosed {
 	public void execute() {
 		shape = new Path2D.Double();
 		
-		for(int i = 0; i < xmlPoints.size(); i++) {
+		/*for(int i = 0; i < xmlPoints.size(); i++) {
 			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
-		}
-		
-
+		}*/
 		
 		shape.moveTo(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
 		shape.lineTo(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
@@ -81,6 +79,7 @@ public class Rectangle extends ElementClosed {
 		shape.closePath();
 		
 		AffineTransform at = new AffineTransform();
+		at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
 		
 		addToolPath(shape, at, 0.1, new String("Rectangle from " + xmlPoints.get(0) + " to " + xmlPoints.get(1)));
 		

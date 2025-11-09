@@ -62,7 +62,7 @@ public class Circle extends ElementClosed {
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
 			if(item.getNodeName() == "p") {
-				center = addTranslation(new Tuple(item));
+				center = new Tuple(item);
 			}
 			if(item.getNodeName() == "rad") {
 				radius = new Tuple(item);
@@ -84,7 +84,7 @@ public class Circle extends ElementClosed {
 
 		float radiusv = radius.getValue(0).floatValue();;
 		
-		center = addTranslation(center);
+		//center = addTranslation(center);
 		
 		if(segments == null) { 
 			// Determine phiStep. If the circle is very small, the step should be < 0.5 (that means more G points on the circle
@@ -111,7 +111,8 @@ public class Circle extends ElementClosed {
 		
         AffineTransform at = new AffineTransform();
         at.translate(center.getValue(0).doubleValue(), center.getValue(1).doubleValue());
-		
+        at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
+        
 		addToolPath(shape, at, 0.1, new String("Circle at " + center + " with radius " + radius));
 		
 		//create pockettoolpath

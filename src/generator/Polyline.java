@@ -75,9 +75,9 @@ public class Polyline extends ElementClosed {
 	public void execute() {
 		shape = new Path2D.Double();
 		
-		for(int i = 0; i < xmlPoints.size(); i++) {
+		/*for(int i = 0; i < xmlPoints.size(); i++) {
 			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
-		}
+		}*/
 		
 		// Create toolpath
 		for(int i = 0; i < xmlPoints.size(); i++) {
@@ -149,6 +149,7 @@ public class Polyline extends ElementClosed {
 		}
 		
 		AffineTransform at = new AffineTransform();
+		at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
 		
 		addToolPath(shape, at, 0.1, new String("Polyline starting from " + xmlPoints.get(0) + " to " + xmlPoints.get(xmlPoints.size() - 1)));
 

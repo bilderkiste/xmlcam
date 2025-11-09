@@ -64,11 +64,12 @@ public class Drill extends Element {
 	public void execute() {
 		shape = new Path2D.Double();
 		
-		xmlPoint = addTranslation(xmlPoint);
+		//xmlPoint = addTranslation(xmlPoint);
 		
 		shape.moveTo(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
 		
 		AffineTransform at = new AffineTransform();
+		at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
 		
 		addToolPath(shape, at, 0.1, new String("Drill at " + xmlPoint));
 		getToolPath(0).addPoint(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
