@@ -137,16 +137,13 @@ public class Text extends ElementClosed {
         at.translate(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
         at.scale(1.0, -1.0);
         
-        addToolPath(shape, at, flatness, new String("Text" + content));
+        addToolPath(shape, at, flatness, new String("Text: " + content));
 
         
 		//create pockettoolpath
-		/*if(pocket) {
-			int numToolPathes = getToolPathSize();
-			for(int i = 0; i < numToolPathes; i++) {
-				addToolPath(createPocket(shape));
-			}
-		}*/
+		if(pocket) {
+			addToolPath(createPocket(shape));
+		}
         
         Main.log.log(Level.FINE, "Text element: text '" + content + "' at " + xmlPoint + " with type " + font.getFontName() + " size " + font.getSize() + " and flatness " + flatness);
 	}

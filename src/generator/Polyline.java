@@ -150,12 +150,12 @@ public class Polyline extends ElementClosed {
 		
 		AffineTransform at = new AffineTransform();
 		
-		addToolPath(shape, at, 0.1, new String("Polyline"));
+		addToolPath(shape, at, 0.1, new String("Polyline starting from " + xmlPoints.get(0) + " to " + xmlPoints.get(xmlPoints.size() - 1)));
 
 		//create pockettoolpath
-		/*if(pocket) {
+		if(pocket) {
 			addToolPath(createPocket(shape));
-		}*/
+		}
 		
 		Main.log.log(Level.FINE, "Generated polyline element with " + getToolPath(0).size() + " points.");
 	}

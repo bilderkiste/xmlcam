@@ -115,9 +115,9 @@ public class Circle extends ElementClosed {
 		addToolPath(shape, at, 0.1, new String("Circle at " + center + " with radius " + radius));
 		
 		//create pockettoolpath
-		/*if(pocket) {
+		if(pocket) {
 			addToolPath(createPocket(shape));
-		}*/
+		}
 		
 		Main.log.log(Level.FINE, "Circle element: circle at (" + center.getValue(0) + "," + center.getValue(1) + ") with " + (int)(((Math.PI * 2) / phiStep) + 1) + " points. Step for phi is " + phiStep + ".");	
 	}

@@ -73,15 +73,15 @@ abstract class Element {
 	 * The name will occur in the G-Code comments to refer the point/G-Code command to an object.
 	 * @param toolPath The toolpath
 	 */
-	/*public void addToolPath(ToolPath toolPath) {
+	public void addToolPath(ToolPath toolPath) {
 		toolPathes.add(toolPath);
-	}*/
+	}
 	
 	/**
 	 * Determine the number of current toolPathes in the Element.
 	 * @return The number
 	 */
-	public int getToolPathSize() {
+	public int getNumberOfToolPathes() {
 		return toolPathes.size();
 	}
 	
@@ -104,6 +104,13 @@ abstract class Element {
 		return point;
 	}
 	
+	/**
+	 * Generates the ToolPath (ArrayList with Point2D) with the Flattening PathIterator from the Path2D.
+	 * @param path The Path2D object.
+	 * @param at The transformation.
+	 * @param flatness The flatness
+	 * @param name The name of the ToolPath
+	 */
 	public void addToolPath(Path2D.Double path, AffineTransform at, double flatness, String name) {	        
 	    PathIterator pi = path.getPathIterator(at, flatness); 
 	    Point2D.Double startCoords = new Point2D.Double();
@@ -115,11 +122,11 @@ abstract class Element {
         	if(segmentType == PathIterator.SEG_MOVETO) {
         		addToolPath(name);
         		startCoords.setLocation(coords[0], coords[1]);
-        		getToolPath(getToolPathSize() - 1).addPoint(coords[0], coords[1]);
+        		getToolPath(getNumberOfToolPathes() - 1).addPoint(coords[0], coords[1]);
         	} else if(segmentType == PathIterator.SEG_LINETO) {
-        		getToolPath(getToolPathSize() - 1).addPoint(coords[0], coords[1]);
+        		getToolPath(getNumberOfToolPathes() - 1).addPoint(coords[0], coords[1]);
         	} else if(segmentType == PathIterator.SEG_CLOSE) {
-        		getToolPath(getToolPathSize() - 1).addPoint(startCoords.getX(), startCoords.getY());
+        		getToolPath(getNumberOfToolPathes() - 1).addPoint(startCoords.getX(), startCoords.getY());
         	} 
         
             System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);

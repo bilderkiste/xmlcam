@@ -10,11 +10,11 @@
 		<z>0,-1,1</z>
 	</text>
 	<translate x="-10" y="100">
-		<line>
+		<rectangle pocket="parallel">
 			<p>100,100</p>
-			<p>100,200</p>
+			<p>150,130</p>
 			<z>0,-1,0.1</z>
-		</line>
+		</rectangle>
 	</translate>
 	<line>
 		<p>100,100</p>

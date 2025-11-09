@@ -17,8 +17,8 @@ abstract class ElementClosed extends Element {
 
 	/**
 	 * Creates a pocket toolpath for the shape given by the toolPath. The pocket will milled by parallel moves in x direction.
-	 * @param toolPath the toolpath from the shape
-	 * @return
+	 * @param shape The path from the shape
+	 * @return The ToolPath
 	 */
 	protected ToolPath createPocket(Path2D.Double shape) {
 		ToolPath pocketToolPath = new ToolPath("Pocket for " + name);
