@@ -1,5 +1,7 @@
 package generator;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.util.logging.Level;
 
 import org.w3c.dom.Node;
@@ -41,7 +43,7 @@ public class Drill extends Element {
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
 			if(item.getNodeName() == "p") {
-				xmlPoint = addTranslation(new Tuple(item));
+				xmlPoint = new Tuple(item);
 			}
 			if(item.getNodeName() == "z") {
 				zLevel = new Tuple(item);
@@ -60,7 +62,15 @@ public class Drill extends Element {
 
 	@Override
 	public void execute() {
-		addToolPath(new String("Drill at " + xmlPoint));
+		shape = new Path2D.Double();
+		
+		xmlPoint = addTranslation(xmlPoint);
+		
+		shape.moveTo(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
+		
+		AffineTransform at = new AffineTransform();
+		
+		addToolPath(shape, at, 0.1, new String("Drill at " + xmlPoint));
 		getToolPath(0).addPoint(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
 		Main.log.log(Level.FINE, "Drill element: drill at " + xmlPoint);			
 	}

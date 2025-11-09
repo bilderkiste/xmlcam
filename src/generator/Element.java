@@ -64,7 +64,7 @@ abstract class Element {
 	 * The name will occur in the G-Code comments to refer the point/G-Code command to an object.
 	 * @param name The name of the toolpath
 	 */
-	public void addToolPath(String name) {
+	private void addToolPath(String name) {
 		toolPathes.add(new ToolPath(name));
 	}
 	
@@ -73,9 +73,9 @@ abstract class Element {
 	 * The name will occur in the G-Code comments to refer the point/G-Code command to an object.
 	 * @param toolPath The toolpath
 	 */
-	public void addToolPath(ToolPath toolPath) {
+	/*public void addToolPath(ToolPath toolPath) {
 		toolPathes.add(toolPath);
-	}
+	}*/
 	
 	/**
 	 * Determine the number of current toolPathes in the Element.
@@ -104,21 +104,25 @@ abstract class Element {
 		return point;
 	}
 	
-	public void getVerticesFromPath(Path2D.Double path, AffineTransform at, double flatness) {	        
+	public void addToolPath(Path2D.Double path, AffineTransform at, double flatness, String name) {	        
 	    PathIterator pi = path.getPathIterator(at, flatness); 
+	    Point2D.Double startCoords = new Point2D.Double();
 	    
 	    double[] coords = new double[2];
 	
 	    while (!pi.isDone()) {
-	    	
         	int segmentType = pi.currentSegment(coords);
         	if(segmentType == PathIterator.SEG_MOVETO) {
-        		toolPathes.add(new ToolPath("Text"));
-        	}
-        		
-        	getToolPath(getToolPathSize() - 1).addPoint(coords[0], coords[1]);
+        		addToolPath(name);
+        		startCoords.setLocation(coords[0], coords[1]);
+        		getToolPath(getToolPathSize() - 1).addPoint(coords[0], coords[1]);
+        	} else if(segmentType == PathIterator.SEG_LINETO) {
+        		getToolPath(getToolPathSize() - 1).addPoint(coords[0], coords[1]);
+        	} else if(segmentType == PathIterator.SEG_CLOSE) {
+        		getToolPath(getToolPathSize() - 1).addPoint(startCoords.getX(), startCoords.getY());
+        	} 
         
-            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
+            System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
             pi.next();
 	    }	    
 	}

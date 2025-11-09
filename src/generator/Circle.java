@@ -1,5 +1,7 @@
 package generator;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.util.logging.Level;
 
 import org.w3c.dom.NamedNodeMap;
@@ -77,11 +79,12 @@ public class Circle extends ElementClosed {
 
 	@Override
 	public void execute() {
-		addToolPath(new String("Circle at " + center + " with radius " + radius));
+		shape = new Path2D.Double();
 		double phi = 0;
-		float xCenter = center.getValue(0).floatValue();
-		float yCenter = center.getValue(1).floatValue();
+
 		float radiusv = radius.getValue(0).floatValue();;
+		
+		center = addTranslation(center);
 		
 		if(segments == null) { 
 			// Determine phiStep. If the circle is very small, the step should be < 0.5 (that means more G points on the circle
@@ -97,15 +100,24 @@ public class Circle extends ElementClosed {
 		}
 	
 		while(phi < 2 * Math.PI) {
-			getToolPath(0).addPoint(xCenter + radiusv * Math.sin(phi), yCenter + radiusv * Math.cos(phi));
+			if(phi == 0) {
+				shape.moveTo(radiusv * Math.sin(phi), radiusv * Math.cos(phi));
+			} else {
+				shape.lineTo(radiusv * Math.sin(phi), radiusv * Math.cos(phi));
+			}
 			phi += phiStep;
 		}
-		getToolPath(0).addPoint(xCenter + radiusv * Math.sin(0), yCenter + radiusv * Math.cos(0));
+		shape.closePath();
+		
+        AffineTransform at = new AffineTransform();
+        at.translate(center.getValue(0).doubleValue(), center.getValue(1).doubleValue());
+		
+		addToolPath(shape, at, 0.1, new String("Circle at " + center + " with radius " + radius));
 		
 		//create pockettoolpath
-		if(pocket) {
+		/*if(pocket) {
 			addToolPath(createPocket(shape));
-		}
+		}*/
 		
 		Main.log.log(Level.FINE, "Circle element: circle at (" + center.getValue(0) + "," + center.getValue(1) + ") with " + (int)(((Math.PI * 2) / phiStep) + 1) + " points. Step for phi is " + phiStep + ".");	
 	}

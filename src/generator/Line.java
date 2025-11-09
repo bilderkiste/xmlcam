@@ -1,5 +1,7 @@
 package generator;
 
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
@@ -52,12 +54,18 @@ public class Line extends Element {
 	
 	@Override
 	public void execute() {
+		shape = new Path2D.Double();
+		
 		for(int i = 0; i < xmlPoints.size(); i++) {
 			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
 		}
-		addToolPath(new String("Line from " + xmlPoints.get(0) + " to " + xmlPoints.get(1)));
-		getToolPath(0).addPoint(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
-		getToolPath(0).addPoint(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue());
+		
+		shape.moveTo(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
+		shape.lineTo(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue());
+		
+        AffineTransform at = new AffineTransform();
+        
+        addToolPath(shape, at, 0.1, new String("Line from " + xmlPoints.get(0) + " to " + xmlPoints.get(1)));
 		
 		Main.log.log(Level.FINE, "Line element: line from " + xmlPoints.get(0) + " to " + xmlPoints.get(1));
 	}

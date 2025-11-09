@@ -1,5 +1,6 @@
 package generator;
 
+import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
@@ -71,11 +72,11 @@ public class Polyline extends ElementClosed {
 
 	@Override
 	public void execute() {
+		shape = new Path2D.Double();
+		
 		for(int i = 0; i < xmlPoints.size(); i++) {
 			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
 		}
-		
-		addToolPath(new String("Polyline"));
 		
 		// Create toolpath
 		for(int i = 0; i < xmlPoints.size(); i++) {
@@ -138,6 +139,7 @@ public class Polyline extends ElementClosed {
 					getToolPath(0).addPoint(points.get(2).getValue(0).doubleValue(), points.get(2).getValue(1).doubleValue());
 				}
 				
+				addToolPath(new String("Polyline"));
 				Main.log.log(Level.FINE, "Polyline element: spline to (" + points.get(points.size() - 2).getValue(0).doubleValue() + ", " + points.get(points.size() - 2).getValue(1).doubleValue() + ").");
 			}
 		}
