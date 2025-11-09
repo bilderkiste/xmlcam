@@ -60,16 +60,16 @@ abstract class Element {
 	
 	
 	/**
-	 * Adds an new toolPath with the name (i.e. circle or rectangle) to the list.
+	 * Adds an new empty toolPath with the name (i.e. circle or rectangle) to the toolPathes ArrayList.
 	 * The name will occur in the G-Code comments to refer the point/G-Code command to an object.
 	 * @param name The name of the toolpath
 	 */
-	private void addToolPath(String name) {
+	/*private void addToolPath(String name) {
 		toolPathes.add(new ToolPath(name));
-	}
+	}*/
 	
 	/**
-	 * Adds an existing toolPath to the list.
+	 * Adds an existing toolPath to the toolPathes ArrayList.
 	 * The name will occur in the G-Code comments to refer the point/G-Code command to an object.
 	 * @param toolPath The toolpath
 	 */
@@ -120,7 +120,7 @@ abstract class Element {
 	    while (!pi.isDone()) {
         	int segmentType = pi.currentSegment(coords);
         	if(segmentType == PathIterator.SEG_MOVETO) {
-        		addToolPath(name);
+        		toolPathes.add(new ToolPath(name)); // Create new empty ToolPath and add it to the toolPathes ArrayList
         		startCoords.setLocation(coords[0], coords[1]);
         		getToolPath(getNumberOfToolPathes() - 1).addPoint(coords[0], coords[1]);
         	} else if(segmentType == PathIterator.SEG_LINETO) {
@@ -134,4 +134,7 @@ abstract class Element {
 	    }	    
 	}
 
+
+	
+	
 }

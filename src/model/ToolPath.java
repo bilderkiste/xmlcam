@@ -48,9 +48,14 @@ public class ToolPath extends ArrayList<Point2D.Double> {
 		return name;
 	}
 	
-	public int sze() {
-		System.out.println(size());
-		return 0;
+	/**
+	 * Concatenates a ToolPath with this ToolPath.
+	 * @param toolPath The ToolPath to concatenate
+	 */
+	public void concatToolPathes(ToolPath toolPath) {
+		for(int i = 0; i < toolPath.size(); i++) {
+			this.add(toolPath.get(i));
+		}
 	}
 	
 }
