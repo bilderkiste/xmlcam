@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <program>	
-	<text>
+	<text pocket="parallel">
 		<content>Ein toller Tag</content>
 		<p>20,20</p>
 		<size>80</size>
@@ -35,7 +35,7 @@
 			<rad>30</rad>
 			<z>0,-1,0.1</z>
 		</circle>
-		<polyline>
+		<polyline  pocket="parallel">
 			<p>0,00</p>
 			<spl>50,200</spl>
 			<p>120,250</p>

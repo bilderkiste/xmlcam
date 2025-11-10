@@ -134,7 +134,52 @@ abstract class Element {
 	    }	    
 	}
 
+	/**
+	 * Split an Path2D.Double with more than one shapes into subpathes.
+	 * I.e. A text shape "Bit" will be splitted into the four subshapes 'B t . i (whitout point) 
+	 * @param shape
+	 * @return
+	 */
+	public ArrayList<Path2D.Double> splitIntoSubpaths(Path2D.Double shape) {
+        ArrayList<Path2D.Double> subpaths = new ArrayList<Path2D.Double>();
+        PathIterator it = shape.getPathIterator(null);
+        Path2D.Double current = null;
+        double[] coords = new double[6];
 
+        while (!it.isDone()) {
+            int segType = it.currentSegment(coords);
+            switch (segType) {
+                case PathIterator.SEG_MOVETO:
+                    // Neuer Teilpfad beginnt
+                    if (current != null && !current.getBounds2D().isEmpty()) {
+                        subpaths.add(current);
+                    }
+                    current = new Path2D.Double();
+                    current.moveTo(coords[0], coords[1]);
+                    break;
+                case PathIterator.SEG_LINETO:
+                    current.lineTo(coords[0], coords[1]);
+                    break;
+                case PathIterator.SEG_QUADTO:
+                    current.quadTo(coords[0], coords[1], coords[2], coords[3]);
+                    break;
+                case PathIterator.SEG_CUBICTO:
+                    current.curveTo(coords[0], coords[1], coords[2], coords[3],
+                                    coords[4], coords[5]);
+                    break;
+                case PathIterator.SEG_CLOSE:
+                    current.closePath();
+                    break;
+            }
+            it.next();
+        }
+
+        if (current != null && !current.getBounds2D().isEmpty()) {
+            subpaths.add(current);
+        }
+
+        return subpaths;
+    }
 	
 	
 }

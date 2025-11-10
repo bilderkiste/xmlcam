@@ -7,6 +7,7 @@ import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -138,13 +139,18 @@ public class Text extends ElementClosed {
         at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
         at.scale(1.0, -1.0);
         
-        addToolPath(shape, at, flatness, new String("Text: " + content));
+        ArrayList<Path2D.Double> subShapes = splitIntoSubpaths(shape);
+        for(int i = 0; i < subShapes.size(); i++) {
+        	addToolPath(subShapes.get(i), at, flatness, new String("Text: " + content));
+    		if(pocket) {
+    			getToolPath(i).concatToolPathes(createPocket(subShapes.get(i), at));
+    		}
+        }
+        
 
         
 		//create pockettoolpath
-		if(pocket) {
-			addToolPath(createPocket(new Path2D.Double(shape.createTransformedShape(at))));
-		}
+
         
         Main.log.log(Level.FINE, "Text element: text '" + content + "' at " + xmlPoint + " with type " + font.getFontName() + " size " + font.getSize() + " and flatness " + flatness);
 	}
