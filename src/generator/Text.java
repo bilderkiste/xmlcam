@@ -139,8 +139,8 @@ public class Text extends ElementClosed {
         at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
         at.scale(1.0, -1.0);
         
-        ArrayList<Path2D.Double> subShapes = splitIntoSubpaths(shape);
-        for(int i = 0; i < subShapes.size(); i++) {
+        ArrayList<Path2D.Double> subShapes = mergeContainedPaths(splitIntoSubpaths(shape));
+        for(int i = 0; i < 3; i++) {
         	addToolPath(subShapes.get(i), at, flatness, new String("Text: " + content));
     		if(pocket) {
     			getToolPath(i).concatToolPathes(createPocket(subShapes.get(i), at));

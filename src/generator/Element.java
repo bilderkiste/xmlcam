@@ -1,9 +1,11 @@
 package generator;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 import org.w3c.dom.Node;
@@ -136,9 +138,9 @@ abstract class Element {
 
 	/**
 	 * Split an Path2D.Double with more than one shapes into subpathes.
-	 * I.e. A text shape "Bit" will be splitted into the four subshapes 'B t . i (whitout point) 
-	 * @param shape
-	 * @return
+	 * I.e. A text shape "Bit" will be splitted into six subshapes. 
+	 * @param shape The shape
+	 * @return The ArrayList with the subShapes
 	 */
 	public ArrayList<Path2D.Double> splitIntoSubpaths(Path2D.Double shape) {
         ArrayList<Path2D.Double> subpaths = new ArrayList<Path2D.Double>();
@@ -179,6 +181,46 @@ abstract class Element {
         }
 
         return subpaths;
+    }
+	
+	/**
+	 * Check if one subShape contains other subShapes and merge it to one subShape.
+	 * I.e. the word Bob has five subShapes. Output are the three subShapes 'B o b'
+	 * @param parts The ArrayList with subShapes
+	 * @return The ArrayList merged subShapes 
+	 */
+    public ArrayList<Path2D.Double> mergeContainedPaths(ArrayList<Path2D.Double> parts) {
+        ArrayList<Path2D.Double> merged = new ArrayList<>();
+        boolean[] used = new boolean[parts.size()];
+
+        for (int i = 0; i < parts.size(); i++) {
+            if (used[i]) continue;
+
+            Path2D.Double a = parts.get(i);
+            Area areaA = new Area(a);
+
+            Path2D.Double combined = new Path2D.Double();
+            combined.append(a, false);
+            used[i] = true;
+
+            Rectangle2D boundsA = areaA.getBounds2D();
+
+            for (int j = i + 1; j < parts.size(); j++) {
+                if (used[j]) continue;
+                Path2D.Double b = parts.get(j);
+                Area areaB = new Area(b);
+
+                // Prüfe: liegt B vollständig innerhalb von A?
+                if (boundsA.contains(areaB.getBounds2D())) {
+                    combined.append(b, false);
+                    used[j] = true;
+                }
+            }
+
+            merged.add(combined);
+        }
+
+        return merged;
     }
 	
 	
