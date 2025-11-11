@@ -17,6 +17,7 @@ import org.w3c.dom.NodeList;
 
 import controller.Generator;
 import main.Main;
+import model.Tool;
 import model.Tuple;
 
 /**
@@ -140,10 +141,12 @@ public class Text extends ElementClosed {
         at.scale(1.0, -1.0);
         
         ArrayList<Path2D.Double> subShapes = mergeContainedPaths(splitIntoSubpaths(shape));
-        for(int i = 0; i < 3; i++) {
+        for(int i = 0; i < subShapes.size(); i++) {
         	addToolPath(subShapes.get(i), at, flatness, new String("Text: " + content));
     		if(pocket) {
-    			getToolPath(i).concatToolPathes(createPocket(subShapes.get(i), at));
+    			//getToolPath(i).concatToolPathes(createPocket(subShapes.get(i), at, new Tool(2)));
+    			toolPathes.clear();
+    			toolPathes.add(createPocket(subShapes.get(i), at, new Tool(2)));
     		}
         }
         

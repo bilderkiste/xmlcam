@@ -25,11 +25,9 @@ abstract class ElementClosed extends Element {
 	 * @param shape The path from the shape
 	 * @return The ToolPath
 	 */
-	protected ToolPath createPocket(Path2D.Double shape, AffineTransform at) {
+	protected ToolPath createPocket(Path2D.Double shape, AffineTransform at, Tool toll) {
 		ToolPath pocketToolPath = new ToolPath("Pocket for " + name);
 		this.tool = new Tool(2.0);
-		
-		double stepover = 2.0;
 	
 		shape.closePath();
 		
@@ -44,7 +42,7 @@ abstract class ElementClosed extends Element {
         boolean directionLeftToRight = true;
 		
         // Loop von unten nach oben mit der Schrittweite (stepover)
-        for(double y = bounds.getMinY(); y <= bounds.getMaxY(); y += stepover) {
+        for(double y = bounds.getMinY() + tool.getRadius(); y <= bounds.getMaxY() - tool.getRadius(); y += tool.getDiameter()) {
 		
         	// 6. Erstelle eine dünne horizontale "Scan-Area"
             Rectangle2D.Double scanRect = new Rectangle2D.Double(
@@ -66,7 +64,7 @@ abstract class ElementClosed extends Element {
 
             while (!pi.isDone()) {
                 int segmentType = pi.currentSegment(coords);
-                if (segmentType == PathIterator.SEG_MOVETO || segmentType == PathIterator.SEG_LINETO) {
+                if (segmentType == PathIterator.SEG_MOVETO || segmentType == PathIterator.SEG_CLOSE) {
                     lineSegments.add(coords[0]); // Füge die X-Koordinate hinzu
                 }
                 pi.next();
@@ -75,23 +73,34 @@ abstract class ElementClosed extends Element {
             // Sortiere die X-Koordinaten (Start, Ende, Start, Ende, ...)
             Collections.sort(lineSegments);
             
+            for(int i = 0; i < lineSegments.size(); i++) {
+            	System.out.println(i + "->" + y + "->"+ lineSegments.get(i));
+            }
+            
+            /*if(lineSegments.size() % 2 == 1) {
+            	lineSegments.remove(lineSegments.size() - 1);
+            }*/
+            
             // 9. G-Code für Zick-Zack-Bewegung erzeugen
             
             if (directionLeftToRight) {
 	            // Fahre von Links nach Rechts
-	            for (int i = 0; i < lineSegments.size(); i += 2) {
-	            	double xStart = lineSegments.get(i);
-	                double xEnd = (i + 1 < lineSegments.size()) ? lineSegments.get(i + 1) : xStart;
-	                pocketToolPath.addPoint(xStart + 2, y);
-	                pocketToolPath.addPoint(xEnd - 2, y);
+	            for (int i = 0; i < 2; i += 2) {
+	            	double xStart, xEnd;
+	        		xStart = lineSegments.get(i);
+	        		xEnd = lineSegments.get(i + 1);
+	        		pocketToolPath.addPoint(xStart + tool.getRadius(), y);
+	                pocketToolPath.addPoint(xEnd - tool.getRadius(), y);
 	            }
 	        } else {
-	        	for (int i = lineSegments.size() - 2; i >= 0; i -= 2) {
-                    double xStart = lineSegments.get(i);
-                    double xEnd = (i + 1 < lineSegments.size()) ? lineSegments.get(i + 1) : xStart;
-                    pocketToolPath.addPoint(xStart, y);
-	                pocketToolPath.addPoint(xEnd, y);
-	        	}
+	        	 // Fahre von Rechts nach Links
+	            for (int i = 0; i < 2; i += 2) {
+	            	double xStart, xEnd;
+	        		xStart = lineSegments.get(i + 1);
+	        		xEnd = lineSegments.get(i);
+	        		pocketToolPath.addPoint(xStart - tool.getRadius(), y);
+	                pocketToolPath.addPoint(xEnd + tool.getRadius(), y);
+	            }
 	        }
 	            	
             directionLeftToRight = !directionLeftToRight;

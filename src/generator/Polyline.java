@@ -11,6 +11,7 @@ import org.w3c.dom.NodeList;
 
 import controller.Generator;
 import main.Main;
+import model.Tool;
 import model.ToolPath;
 import model.Tuple;
 
@@ -155,7 +156,7 @@ public class Polyline extends ElementClosed {
 
 		//create pockettoolpath
 		if(pocket) {
-			getToolPath(0).concatToolPathes(createPocket(shape, at));
+			getToolPath(0).concatToolPathes(createPocket(shape, at, new Tool(2)));
 		}
 		
 		Main.log.log(Level.FINE, "Generated polyline element with " + getToolPath(0).size() + " points.");

@@ -11,6 +11,7 @@ import org.w3c.dom.NodeList;
 
 import controller.Generator;
 import main.Main;
+import model.Tool;
 import model.Tuple;
 
 /**
@@ -85,7 +86,7 @@ public class Rectangle extends ElementClosed {
 		
 		//create pockettoolpath
 		if(pocket) {
-			getToolPath(0).concatToolPathes(createPocket(shape, at));
+			getToolPath(0).concatToolPathes(createPocket(shape, at, new Tool(2)));
 		}
 		
 		Main.log.log(Level.FINE, "Rectangle element: rectangle from (" + xmlPoints.get(0).getValue(0) + ", " + xmlPoints.get(0).getValue(1) + ") to (" + xmlPoints.get(1).getValue(0) + ", " + xmlPoints.get(1).getValue(1) + ").");	
