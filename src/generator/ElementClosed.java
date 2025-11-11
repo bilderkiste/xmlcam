@@ -25,7 +25,7 @@ abstract class ElementClosed extends Element {
 	 * @param shape The path from the shape
 	 * @return The ToolPath
 	 */
-	protected ToolPath createPocket(Path2D.Double shape, AffineTransform at, Tool toll) {
+	protected ToolPath createPocket(Path2D.Double shape, AffineTransform at, Tool tool) {
 		ToolPath pocketToolPath = new ToolPath("Pocket for " + name);
 		this.tool = new Tool(2.0);
 	

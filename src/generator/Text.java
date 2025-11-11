@@ -144,9 +144,9 @@ public class Text extends ElementClosed {
         for(int i = 0; i < subShapes.size(); i++) {
         	addToolPath(subShapes.get(i), at, flatness, new String("Text: " + content));
     		if(pocket) {
-    			//getToolPath(i).concatToolPathes(createPocket(subShapes.get(i), at, new Tool(2)));
-    			toolPathes.clear();
-    			toolPathes.add(createPocket(subShapes.get(i), at, new Tool(2)));
+    			addToolPath(createPocket(subShapes.get(i), at, new Tool(2)));
+    			//toolPathes.clear();
+    			//toolPathes.add(createPocket(subShapes.get(i), at, new Tool(2)));
     		}
         }
         
