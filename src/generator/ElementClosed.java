@@ -27,40 +27,40 @@ abstract class ElementClosed extends Element {
 	 */
 	protected ArrayList<ToolPath> createPocket(Path2D.Double shape, AffineTransform at, Tool tool) {
 		ArrayList<ToolPath> pocketToolPathes = new ArrayList<ToolPath>();
-				new ToolPath("Pocket for " + name);
+	
 		this.tool = new Tool(2.0);
 		
 		ArrayList<LineSegment> lineSegments = new ArrayList<LineSegment>();
 	
 		shape.closePath();
 		
-		// 3. Wandle die transformierte Shape in eine Area um
+		// Wandle die transformierte Shape in eine Area um
         Area area = new Area(at.createTransformedShape(shape));
         
-        // 4. Hole die Bounding Box der gesamten Form
+        // Hole die Bounding Box der gesamten Form
         Rectangle2D bounds = area.getBounds2D();
     
-        // 5. Beginne den Scanline (Hatching) Prozess
+        // Beginne den Scanline (Hatching) Prozess
         double[] coords = new double[6];
         boolean directionLeftToRight = true;
 		
-        // Sammele linesegmente des Shapes und für Sie lineSegments hinzu
+        // Sammele Linesegmente des Shapes und füge diese für jede Zeile dem lineSegments hinzu
         for(double y = bounds.getMinY() + tool.getRadius(); y <= bounds.getMaxY() - tool.getRadius(); y += tool.getDiameter()) {
 		
-        	// 6. Erstelle eine dünne horizontale "Scan-Area"
+        	// Erstelle eine dünne horizontale "Scan-Area"
             Rectangle2D.Double scanRect = new Rectangle2D.Double(
                 bounds.getMinX() - 1, y, bounds.getWidth() + 2, 0.001
             );
             Area scanArea = new Area(scanRect);
 
-            // 7. Finde die SCHNITTMENGE (Intersection) zwischen Buchstaben und Scanline
+            // Finde die SCHNITTMENGE (Intersection) zwischen Buchstaben und Scanline
             scanArea.intersect(area);
 
             if (scanArea.isEmpty()) {
                 continue; // Nichts in dieser Zeile
             }
 
-            // 8. Extrahiere alle Segmente aus der Schnittmenge
+            // Extrahiere alle Segmente aus der Schnittmenge
             // (Für ein 'H' wären dies z.B. zwei getrennte Segmente)
             LineSegment ls = new LineSegment(y);
             PathIterator pi = scanArea.getPathIterator(null, 1);
@@ -85,7 +85,7 @@ abstract class ElementClosed extends Element {
         int stage = 0;
         int j = 0;
         ToolPath ptp = new ToolPath("Pocket part " + stage++);
-        // 9. G-Code für Zick-Zack-Bewegung erzeugen
+        // Toolpath für Zick-Zack-Bewegung erzeugen
         while(!lineSegments.isEmpty()) {
         	LineSegment ls = lineSegments.get(j);
         	System.out.println(ls.getY() + " -> " + ls);
