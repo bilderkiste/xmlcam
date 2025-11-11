@@ -144,16 +144,13 @@ public class Text extends ElementClosed {
         for(int i = 0; i < subShapes.size(); i++) {
         	addToolPath(subShapes.get(i), at, flatness, new String("Text: " + content));
     		if(pocket) {
-    			addToolPath(createPocket(subShapes.get(i), at, new Tool(2)));
+    			addToolPathes(createPocket(subShapes.get(i), at, new Tool(2)));
     			//toolPathes.clear();
     			//toolPathes.add(createPocket(subShapes.get(i), at, new Tool(2)));
     		}
         }
-        
-
-        
+       
 		//create pockettoolpath
-
         
         Main.log.log(Level.FINE, "Text element: text '" + content + "' at " + xmlPoint + " with type " + font.getFontName() + " size " + font.getSize() + " and flatness " + flatness);
 	}

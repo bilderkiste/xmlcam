@@ -96,6 +96,15 @@ abstract class Element {
 	}
 	
 	/**
+	 * Adds an collection of ToolPathes to the Element.
+	 * @param toolPathes The collection of ToolPathes
+	 */
+	public ArrayList<ToolPath> addToolPathes(ArrayList<ToolPath> tp) {
+		toolPathes.addAll(tp);
+		return toolPathes;
+	}
+	
+	/**
 	 * Adds the translation to the x and y values of a point.
 	 * @param pint The point.
 	 * @return The point translated.

@@ -25,9 +25,12 @@ abstract class ElementClosed extends Element {
 	 * @param shape The path from the shape
 	 * @return The ToolPath
 	 */
-	protected ToolPath createPocket(Path2D.Double shape, AffineTransform at, Tool tool) {
-		ToolPath pocketToolPath = new ToolPath("Pocket for " + name);
+	protected ArrayList<ToolPath> createPocket(Path2D.Double shape, AffineTransform at, Tool tool) {
+		ArrayList<ToolPath> pocketToolPathes = new ArrayList<ToolPath>();
+				new ToolPath("Pocket for " + name);
 		this.tool = new Tool(2.0);
+		
+		ArrayList<LineSegment> lineSegments = new ArrayList<LineSegment>();
 	
 		shape.closePath();
 		
@@ -41,7 +44,7 @@ abstract class ElementClosed extends Element {
         double[] coords = new double[6];
         boolean directionLeftToRight = true;
 		
-        // Loop von unten nach oben mit der Schrittweite (stepover)
+        // Sammele linesegmente des Shapes und für Sie lineSegments hinzu
         for(double y = bounds.getMinY() + tool.getRadius(); y <= bounds.getMaxY() - tool.getRadius(); y += tool.getDiameter()) {
 		
         	// 6. Erstelle eine dünne horizontale "Scan-Area"
@@ -59,55 +62,82 @@ abstract class ElementClosed extends Element {
 
             // 8. Extrahiere alle Segmente aus der Schnittmenge
             // (Für ein 'H' wären dies z.B. zwei getrennte Segmente)
-            ArrayList<Double> lineSegments = new ArrayList<Double>();
+            LineSegment ls = new LineSegment(y);
             PathIterator pi = scanArea.getPathIterator(null, 1);
-
             while (!pi.isDone()) {
                 int segmentType = pi.currentSegment(coords);
                 if (segmentType == PathIterator.SEG_MOVETO || segmentType == PathIterator.SEG_CLOSE) {
-                    lineSegments.add(coords[0]); // Füge die X-Koordinate hinzu
+                    ls.add(coords[0]); // Füge die X-Koordinate hinzu
                 }
                 pi.next();
             }
             
             // Sortiere die X-Koordinaten (Start, Ende, Start, Ende, ...)
-            Collections.sort(lineSegments);
+            Collections.sort(ls);
             
-            for(int i = 0; i < lineSegments.size(); i++) {
-            	System.out.println(i + "->" + y + "->"+ lineSegments.get(i));
+            for(int i = 0; i < ls.size(); i++) {
+            	System.out.println(i + "->" + y + "->"+ ls.get(i));
             }
             
-            /*if(lineSegments.size() % 2 == 1) {
-            	lineSegments.remove(lineSegments.size() - 1);
-            }*/
-            
-            // 9. G-Code für Zick-Zack-Bewegung erzeugen
-            
-            if (directionLeftToRight) {
+            lineSegments.add(ls);
+        }
+        
+        int stage = 0;
+        int j = 0;
+        ToolPath ptp = new ToolPath("Pocket part " + stage++);
+        // 9. G-Code für Zick-Zack-Bewegung erzeugen
+        while(!lineSegments.isEmpty()) {
+        	LineSegment ls = lineSegments.get(j);
+        	System.out.println(ls.getY() + " -> " + ls);
+        	double xStart, xEnd;
+    		xStart = ls.get(0);
+    		xEnd = ls.get(1);
+        	if (directionLeftToRight) {
 	            // Fahre von Links nach Rechts
-	            for (int i = 0; i < 2; i += 2) {
-	            	double xStart, xEnd;
-	        		xStart = lineSegments.get(i);
-	        		xEnd = lineSegments.get(i + 1);
-	        		pocketToolPath.addPoint(xStart + tool.getRadius(), y);
-	                pocketToolPath.addPoint(xEnd - tool.getRadius(), y);
-	            }
+        		ptp.addPoint(xStart + tool.getRadius(), ls.getY());
+                ptp.addPoint(xEnd - tool.getRadius(), ls.getY());
 	        } else {
 	        	 // Fahre von Rechts nach Links
-	            for (int i = 0; i < 2; i += 2) {
-	            	double xStart, xEnd;
-	        		xStart = lineSegments.get(i + 1);
-	        		xEnd = lineSegments.get(i);
-	        		pocketToolPath.addPoint(xStart - tool.getRadius(), y);
-	                pocketToolPath.addPoint(xEnd + tool.getRadius(), y);
-	            }
+	        	ptp.addPoint(xEnd - tool.getRadius(), ls.getY());
+        		ptp.addPoint(xStart + tool.getRadius(), ls.getY());
 	        }
-	            	
+        	
+        	//Lösche gefahrenen Start- und Endpunkt
+            ls.remove(0);
+            ls.remove(0);
+            // Wenn keine Punkte mehr in der Linie, dann lösche das Liniensegment
+            if(ls.isEmpty()) {
+            	lineSegments.remove(j);
+            } else {
+            	j++; //ansonsten stehen lassen für spätere Bearbeitung und weitergehen
+            }
             directionLeftToRight = !directionLeftToRight;
+             
+            if(j >= lineSegments.size()) {
+            	j = 0;
+            	pocketToolPathes.add(ptp);
+            	ptp = new ToolPath("Pocket part " + stage++);
+            	System.out.println("===========");
+            }
+            
             
         }
             
-		return pocketToolPath;
+		return pocketToolPathes;
 	}
 
+	class LineSegment extends ArrayList<Double> {
+		
+		private static final long serialVersionUID = 1L;
+		private double y;
+		
+		public LineSegment(double y) {
+			this.y = y;
+		}
+		
+		public double getY() {
+			return y;
+		}
+	}
+		
 }
