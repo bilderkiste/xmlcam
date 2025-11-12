@@ -19,6 +19,7 @@
 
 package controller;
 
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -61,7 +62,7 @@ public class Generator {
 	private Program programModel;
 	private XMLView xmlEditorPane;
 	private BigDecimal currentX, currentY, currentZ, newX, newY, newZ;
-	private BigDecimal translateX, translateY;
+	private Point2D.Double translation;
 	
 	/**
 	 * Constructs a new G-Code Generator.
@@ -77,8 +78,7 @@ public class Generator {
 		this.newX = new BigDecimal(0);
 		this.newY = new BigDecimal(0);
 		this.newZ = new BigDecimal(0);
-		this.translateX = new BigDecimal(0);
-		this.translateY = new BigDecimal(0);
+		this.translation = new Point2D.Double(0,0);
 	}
 	
 	/**
@@ -130,8 +130,7 @@ public class Generator {
 				setTranslation(commands.item(commandNumber));
 				getChildNodes(commands.item(commandNumber));
 				// Translate tag closed. Reset translate values
-				this.translateX = new BigDecimal(0);
-				this.translateY = new BigDecimal(0);
+				this.translation.setLocation(0, 0);
 			}
 		}
 	}
@@ -210,8 +209,9 @@ public class Generator {
 	
 	private void setTranslation(Node node) throws IllegalArgumentException {
 		NamedNodeMap map = node.getAttributes();
+		double x = 0, y = 0;
 		try {
-			this.translateX = new BigDecimal(map.getNamedItem("x").getTextContent());
+			x = new BigDecimal(map.getNamedItem("x").getTextContent()).doubleValue();
 		} catch(NullPointerException e) {
 			Main.log.log(Level.WARNING, "Missing translation parameter(s); " + e);
 		} catch(NumberFormatException e) {
@@ -219,12 +219,13 @@ public class Generator {
 		}	
 		
 		try {
-			this.translateY = new BigDecimal(map.getNamedItem("y").getTextContent());
+			y = new BigDecimal(map.getNamedItem("y").getTextContent()).doubleValue();
 		} catch(NullPointerException e) {
 			Main.log.log(Level.WARNING, "Missing translation parameter(s); " + e);
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
-		}	
+		}
+		translation.setLocation(x, y);
 	}
 	
 
@@ -422,12 +423,8 @@ public class Generator {
 
 	}
 		
-	public BigDecimal getTranslateX() {
-		return translateX;
-	}
-
-	public BigDecimal getTranslateY() {
-		return translateY;
+	public Point2D.Double getTranslation() {
+		return translation;
 	}
 
 }

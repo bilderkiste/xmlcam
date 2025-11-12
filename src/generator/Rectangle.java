@@ -80,7 +80,7 @@ public class Rectangle extends ElementClosed {
 		shape.closePath();
 		
 		AffineTransform at = new AffineTransform();
-		at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
+		at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
 		
 		addToolPathes(generateToolPathes(shape, at, 0.1, new String("Rectangle from " + xmlPoints.get(0) + " to " + xmlPoints.get(1))));
 		
@@ -89,7 +89,7 @@ public class Rectangle extends ElementClosed {
 			addToolPathes(createPocket(shape, at, new Tool(2)));
 		}
 		
-		Main.log.log(Level.FINE, "Rectangle element: rectangle from (" + xmlPoints.get(0).getValue(0) + ", " + xmlPoints.get(0).getValue(1) + ") to (" + xmlPoints.get(1).getValue(0) + ", " + xmlPoints.get(1).getValue(1) + ").");	
+		Main.log.log(Level.FINE, "Rectangle element: rectangle from {0} to {1} with translation {2}.", new Object[] { xmlPoints.get(0), xmlPoints.get(1), gen.getTranslation() } );	
 	}
 
 }

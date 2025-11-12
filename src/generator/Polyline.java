@@ -150,7 +150,7 @@ public class Polyline extends ElementClosed {
 		}
 		
 		AffineTransform at = new AffineTransform();
-		at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
+		at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
 		
 		addToolPathes(generateToolPathes(shape, at, 0.1, new String("Polyline starting from " + xmlPoints.get(0) + " to " + xmlPoints.get(xmlPoints.size() - 1))));
 
@@ -159,7 +159,7 @@ public class Polyline extends ElementClosed {
 			addToolPathes(createPocket(shape, at, new Tool(2)));
 		}
 		
-		Main.log.log(Level.FINE, "Generated polyline element with " + getToolPath(0).size() + " points.");
+		Main.log.log(Level.FINE, "Generated polyline element from {0} with translation {1} with {2} points.", new Object[] { xmlPoints.get(0), gen.getTranslation(), getToolPath(0).size() });
 	}
 	
 	/**

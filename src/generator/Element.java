@@ -127,7 +127,6 @@ abstract class Element {
 	    PathIterator pi = path.getPathIterator(at, flatness); 
 	    Point2D.Double startCoords = new Point2D.Double();
 	    ArrayList<ToolPath> tpl = new ArrayList<ToolPath>();
-	    int i = 0;
 	    
 	    double[] coords = new double[2];
 	

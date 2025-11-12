@@ -112,7 +112,7 @@ public class Circle extends ElementClosed {
 		
         AffineTransform at = new AffineTransform();
         at.translate(center.getValue(0).doubleValue(), center.getValue(1).doubleValue());
-        at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
+        at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
         
         addToolPathes(generateToolPathes(shape, at, 0.1, new String("Circle at " + center + " with radius " + radius)));
 		
@@ -121,7 +121,7 @@ public class Circle extends ElementClosed {
 			addToolPathes(createPocket(shape, at, new Tool(2)));
 		}
 		
-		Main.log.log(Level.FINE, "Circle element: circle at (" + center.getValue(0) + "," + center.getValue(1) + ") with " + (int)(((Math.PI * 2) / phiStep) + 1) + " points. Step for phi is " + phiStep + ".");	
+		Main.log.log(Level.FINE, "Circle element: circle at {0} with translation {1} and radius {2} with {3} points. Step for phi is {4}.", new Object[] { center, gen.getTranslation(), radius, getToolPath(0).size(), phi });	
 	}
 
 }

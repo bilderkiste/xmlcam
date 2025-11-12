@@ -132,13 +132,11 @@ public class Text extends ElementClosed {
         FontRenderContext frc = new FontRenderContext(null, true, true);
         GlyphVector glyphVector = font.createGlyphVector(frc, content);
         shape = new Path2D.Double(glyphVector.getOutline());
-        
-    	//xmlPoint = addTranslation(xmlPoint);
     	
         // Transformation, um den Text an die Startposition (startX, startY) zu verschieben
         AffineTransform at = new AffineTransform();
         at.translate(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
-        at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
+        at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
         at.scale(1.0, -1.0);
         
         ArrayList<Path2D.Double> subShapes = mergeContainedPaths(splitIntoSubpaths(shape));
@@ -163,7 +161,7 @@ public class Text extends ElementClosed {
 			System.out.println(toolPathes.get(i).getName() + " " + toolPathes.get(i));
 		}*/
         
-        Main.log.log(Level.FINE, "Text element: text '" + content + "' at " + xmlPoint + " with type " + font.getFontName() + " size " + font.getSize() + " and flatness " + flatness);
+        Main.log.log(Level.FINE, "Text element: text {0} at {1} and translation {2} with type {3} size {4} and flatness {5}" , new Object[] { content, xmlPoint, gen.getTranslation(), font.getFontName(), font.getSize(), flatness } );
 	}
 
 }
