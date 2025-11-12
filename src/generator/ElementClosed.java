@@ -1,5 +1,7 @@
 package generator;
 
+import java.awt.BasicStroke;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
@@ -22,14 +24,30 @@ abstract class ElementClosed extends Element {
 	}
 
 	/**
+	 * Creates an inset area with a stroke. 
+	 * @param originalArea The original area
+	 * @param insetAmount The inset between original shape an inset shape
+	 * @return The inset shape
+	 */
+    public Area createInsetShape(Area originalArea, float insetAmount) {
+        float strokeWidth = insetAmount * 2.0f;
+        BasicStroke stroke = new BasicStroke(strokeWidth, 
+                                             BasicStroke.CAP_BUTT, 
+                                             BasicStroke.JOIN_MITER);
+        Area strokeArea = new Area(stroke.createStrokedShape(originalArea));
+        Area insetArea = new Area(originalArea);
+        insetArea.subtract(strokeArea);
+        return insetArea;
+    }
+	
+	/**
 	 * Creates a pocket toolpath for the shape given by the toolPath. The pocket will milled by parallel moves in x direction.
 	 * @param shape The path from the shape
 	 * @return The ToolPath
 	 */
 	protected ArrayList<ToolPath> createPocket(Path2D.Double shape, AffineTransform at, Tool tool) {
 		ArrayList<ToolPath> pocketToolPathes = new ArrayList<ToolPath>();
-	
-		this.tool = new Tool(2.0);
+		double overlap = 0.8;
 		
 		ArrayList<LineSegment> lineSegments = new ArrayList<LineSegment>();
 	
@@ -38,6 +56,9 @@ abstract class ElementClosed extends Element {
 		// Wandle die transformierte Shape in eine Area um
         Area area = new Area(at.createTransformedShape(shape));
         
+        // Erzeuge mit einem inset eine kleinere Kontur
+        area = createInsetShape(area, (float) (tool.getRadius() * overlap));
+                   
         // Hole die Bounding Box der gesamten Form
         Rectangle2D bounds = area.getBounds2D();
     
@@ -46,7 +67,7 @@ abstract class ElementClosed extends Element {
         boolean directionLeftToRight = true;
 		
         // Sammele Linesegmente des Shapes und füge diese für jede Zeile dem lineSegments hinzu
-        for(double y = bounds.getMinY() + tool.getRadius(); y <= bounds.getMaxY() - tool.getRadius(); y += tool.getDiameter()) {
+        for(double y = bounds.getMinY(); y <= bounds.getMaxY() + tool.getDiameter() * overlap; y += tool.getDiameter()) {
 		
         	// Erstelle eine dünne horizontale "Scan-Area"
             Rectangle2D.Double scanRect = new Rectangle2D.Double(
@@ -85,45 +106,42 @@ abstract class ElementClosed extends Element {
         
         int stage = 0;
         int j = 0;
-        //Point2D.Double old = new Point2D.Double(lineSegments.get(0).get(0), lineSegments.get(0).getY());
+
         Point2D.Double start, end;
-        double xStart, xEnd;
         ToolPath ptp = new ToolPath("Pocket part " + stage++);
         // Toolpath für Zick-Zack-Bewegung erzeugen
         while(!lineSegments.isEmpty()) {
         	LineSegment ls = lineSegments.get(j);
-        	//System.out.println(ls.getY() + " -> " + ls);
-    		xStart = ls.get(0) + tool.getRadius();
-    		xEnd = ls.get(1) - tool.getRadius();
-    		start = new Point2D.Double(xStart, ls.getY());
-    		end = new Point2D.Double(xEnd, ls.getY());
-    		if(xEnd - xStart > tool.getDiameter()) { //Prüfen, ob das Segment nicht zu kurz
-	        	if(directionLeftToRight) {
-	        		/*if(old.distance(start) > 10) {
-		        		toolPathes.add(ptp);
-		        		ptp = new ToolPath("Pocket part " + stage++);
-		        		System.out.println("=x=========");
-		        	}*/
-	        		//System.out.println("LnR " + old + "->" + start + "->Dist: "+ old.distance(start));
-		            // Fahre von Links nach Rechts
-	        		ptp.addPoint(start);
-	                ptp.addPoint(end);
-	                //System.out.println(ptp);
-	                //old.setLocation(end);
-		        } else {
-		        	 // Fahre von Rechts nach Links
-		        	/*if(old.distance(end) > 10) {
-		        		toolPathes.add(ptp);
-		        		ptp = new ToolPath("Pocket part " + stage++);
-		        		System.out.println("=xx=========");
-		        	}*/
-		        	//System.out.println("RnL " + old + "->" + start + "->Dist: "+ old.distance(end));
-		        	ptp.addPoint(end);
-	        		ptp.addPoint(start);
-	        		//System.out.println(ptp);
-	        		//old.setLocation(start);
-		        }
-    		}
+        	//System.out.println(j + "-" + ls.getY() + " -> " + ls);
+    		start = new Point2D.Double(ls.get(0), ls.getY());
+    		end = new Point2D.Double(ls.get(1), ls.getY());
+    		//if(xEnd - xStart > tool.getDiameter()) { //Prüfen, ob das Segment nicht zu kurz
+        	if(directionLeftToRight) {
+        		/*if(old.distance(start) > 10) {
+	        		toolPathes.add(ptp);
+	        		ptp = new ToolPath("Pocket part " + stage++);
+	        		System.out.println("=x=========");
+	        	}*/
+        		//System.out.println("LnR " + old + "->" + start + "->Dist: "+ old.distance(start));
+	            // Fahre von Links nach Rechts
+        		ptp.addPoint(start);
+                ptp.addPoint(end);
+                //System.out.println(ptp);
+                //old.setLocation(end);
+	        } else {
+	        	 // Fahre von Rechts nach Links
+	        	/*if(old.distance(end) > 10) {
+	        		toolPathes.add(ptp);
+	        		ptp = new ToolPath("Pocket part " + stage++);
+	        		System.out.println("=xx=========");
+	        	}*/
+	        	//System.out.println("RnL " + old + "->" + start + "->Dist: "+ old.distance(end));
+	        	ptp.addPoint(end);
+        		ptp.addPoint(start);
+        		//System.out.println(ptp);
+        		//old.setLocation(start);
+	        }
+    		
         	
         	//Lösche gefahrenen Start- und Endpunkt
             ls.remove(0);

@@ -238,7 +238,7 @@ public class Generator {
 	private void createGCode(ArrayList<ToolPath> toolPathes, Tuple zLevel) {
 		BigDecimal endZ = zLevel.getValue(1);
 		BigDecimal stepZ = zLevel.getValue(2);
-		boolean forward = true;
+		
 				
 		if(stepZ.doubleValue() <= 0) {
 			throw new IllegalArgumentException("The Z step must be greater than 0");
@@ -250,6 +250,7 @@ public class Generator {
 			newX = toolPath.getX(0);
 			newY = toolPath.getY(0);
 			newZ = zLevel.getValue(0);
+			boolean forward = true;
 			
 			go0(newX, newY, "Go to start position for element " + toolPath.getName()); // go to start position
 				

@@ -56,10 +56,6 @@ public class Line extends Element {
 	public void execute() {
 		shape = new Path2D.Double();
 		
-		/*for(int i = 0; i < xmlPoints.size(); i++) {
-			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
-		}*/
-		
 		shape.moveTo(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
 		shape.lineTo(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue());
 		
