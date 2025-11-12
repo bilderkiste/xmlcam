@@ -18,6 +18,7 @@ import org.w3c.dom.NodeList;
 import controller.Generator;
 import main.Main;
 import model.Tool;
+import model.ToolPath;
 import model.Tuple;
 
 /**
@@ -144,13 +145,23 @@ public class Text extends ElementClosed {
         for(int i = 0; i < subShapes.size(); i++) {
         	addToolPath(subShapes.get(i), at, flatness, new String("Text: " + content));
     		if(pocket) {
-    			addToolPathes(createPocket(subShapes.get(i), at, new Tool(2)));
+    			ArrayList<ToolPath> pockets = createPocket(subShapes.get(i), at, new Tool(2));
+    			//prüfen ob leere ToolPath vorhanden sind um (tmp)
+    			for(int j = 0; j < pockets.size(); j++) {
+    				if(pockets.get(j).size() == 0) {
+    					pockets.remove(j);
+    					j--;
+    				}
+    			}
+    			addToolPathes(pockets);
     			//toolPathes.clear();
     			//toolPathes.add(createPocket(subShapes.get(i), at, new Tool(2)));
     		}
         }
        
-		//create pockettoolpath
+		/*for(int i = 0; i < toolPathes.size(); i++) {
+			System.out.println(toolPathes.get(i).getName() + " " + toolPathes.get(i));
+		}*/
         
         Main.log.log(Level.FINE, "Text element: text '" + content + "' at " + xmlPoint + " with type " + font.getFontName() + " size " + font.getSize() + " and flatness " + flatness);
 	}

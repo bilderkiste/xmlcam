@@ -4,6 +4,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,32 +76,54 @@ abstract class ElementClosed extends Element {
             // Sortiere die X-Koordinaten (Start, Ende, Start, Ende, ...)
             Collections.sort(ls);
             
-            for(int i = 0; i < ls.size(); i++) {
+            /*for(int i = 0; i < ls.size(); i++) {
             	System.out.println(i + "->" + y + "->"+ ls.get(i));
-            }
+            }*/
             
             lineSegments.add(ls);
         }
         
         int stage = 0;
         int j = 0;
+        //Point2D.Double old = new Point2D.Double(lineSegments.get(0).get(0), lineSegments.get(0).getY());
+        Point2D.Double start, end;
+        double xStart, xEnd;
         ToolPath ptp = new ToolPath("Pocket part " + stage++);
         // Toolpath für Zick-Zack-Bewegung erzeugen
         while(!lineSegments.isEmpty()) {
         	LineSegment ls = lineSegments.get(j);
-        	System.out.println(ls.getY() + " -> " + ls);
-        	double xStart, xEnd;
-    		xStart = ls.get(0);
-    		xEnd = ls.get(1);
-        	if (directionLeftToRight) {
-	            // Fahre von Links nach Rechts
-        		ptp.addPoint(xStart + tool.getRadius(), ls.getY());
-                ptp.addPoint(xEnd - tool.getRadius(), ls.getY());
-	        } else {
-	        	 // Fahre von Rechts nach Links
-	        	ptp.addPoint(xEnd - tool.getRadius(), ls.getY());
-        		ptp.addPoint(xStart + tool.getRadius(), ls.getY());
-	        }
+        	//System.out.println(ls.getY() + " -> " + ls);
+    		xStart = ls.get(0) + tool.getRadius();
+    		xEnd = ls.get(1) - tool.getRadius();
+    		start = new Point2D.Double(xStart, ls.getY());
+    		end = new Point2D.Double(xEnd, ls.getY());
+    		if(xEnd - xStart > tool.getDiameter()) { //Prüfen, ob das Segment nicht zu kurz
+	        	if(directionLeftToRight) {
+	        		/*if(old.distance(start) > 10) {
+		        		toolPathes.add(ptp);
+		        		ptp = new ToolPath("Pocket part " + stage++);
+		        		System.out.println("=x=========");
+		        	}*/
+	        		//System.out.println("LnR " + old + "->" + start + "->Dist: "+ old.distance(start));
+		            // Fahre von Links nach Rechts
+	        		ptp.addPoint(start);
+	                ptp.addPoint(end);
+	                //System.out.println(ptp);
+	                //old.setLocation(end);
+		        } else {
+		        	 // Fahre von Rechts nach Links
+		        	/*if(old.distance(end) > 10) {
+		        		toolPathes.add(ptp);
+		        		ptp = new ToolPath("Pocket part " + stage++);
+		        		System.out.println("=xx=========");
+		        	}*/
+		        	//System.out.println("RnL " + old + "->" + start + "->Dist: "+ old.distance(end));
+		        	ptp.addPoint(end);
+	        		ptp.addPoint(start);
+	        		//System.out.println(ptp);
+	        		//old.setLocation(start);
+		        }
+    		}
         	
         	//Lösche gefahrenen Start- und Endpunkt
             ls.remove(0);
@@ -117,7 +140,7 @@ abstract class ElementClosed extends Element {
             	j = 0;
             	pocketToolPathes.add(ptp);
             	ptp = new ToolPath("Pocket part " + stage++);
-            	System.out.println("===========");
+            	//System.out.println("===========");
             }
             
             

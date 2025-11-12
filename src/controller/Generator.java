@@ -166,7 +166,7 @@ public class Generator {
 			//e.printStackTrace();
 		} catch(NullPointerException | IndexOutOfBoundsException e) {
 			Main.log.log(Level.SEVERE, "Missing parameter(s); " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
 			//e.printStackTrace();

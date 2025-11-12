@@ -23,6 +23,14 @@ public class ToolPath extends ArrayList<Point2D.Double> {
 	}
 	
 	/**
+	 * Adds a new coordinate to the toolPath.
+	 * @param coords The new coordinates.
+	 */
+	public void addPoint(Point2D.Double point) {
+		add(point);
+	}
+	
+	/**
 	 * Returns the x value of the coordinate at the index of the toolPath.
 	 * @param index The index
 	 * @return The x value
