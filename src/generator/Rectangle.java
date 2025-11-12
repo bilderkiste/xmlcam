@@ -82,7 +82,7 @@ public class Rectangle extends ElementClosed {
 		AffineTransform at = new AffineTransform();
 		at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
 		
-		addToolPath(shape, at, 0.1, new String("Rectangle from " + xmlPoints.get(0) + " to " + xmlPoints.get(1)));
+		addToolPathes(generateToolPathes(shape, at, 0.1, new String("Rectangle from " + xmlPoints.get(0) + " to " + xmlPoints.get(1))));
 		
 		//create pockettoolpath
 		if(pocket) {

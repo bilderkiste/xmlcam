@@ -143,7 +143,7 @@ public class Text extends ElementClosed {
         
         ArrayList<Path2D.Double> subShapes = mergeContainedPaths(splitIntoSubpaths(shape));
         for(int i = 0; i < subShapes.size(); i++) {
-        	addToolPath(subShapes.get(i), at, flatness, new String("Text: " + content));
+        	addToolPathes(generateToolPathes(subShapes.get(i), at, flatness, new String("Text: " + content)));
     		if(pocket) {
     			ArrayList<ToolPath> pockets = createPocket(subShapes.get(i), at, new Tool(2));
     			//prüfen ob leere ToolPath vorhanden sind um (tmp)

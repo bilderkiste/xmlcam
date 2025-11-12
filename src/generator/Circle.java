@@ -114,7 +114,7 @@ public class Circle extends ElementClosed {
         at.translate(center.getValue(0).doubleValue(), center.getValue(1).doubleValue());
         at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
         
-		addToolPath(shape, at, 0.1, new String("Circle at " + center + " with radius " + radius));
+        addToolPathes(generateToolPathes(shape, at, 0.1, new String("Circle at " + center + " with radius " + radius)));
 		
 		//create pockettoolpath
 		if(pocket) {

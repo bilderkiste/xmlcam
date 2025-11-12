@@ -116,33 +116,37 @@ abstract class Element {
 	}*/
 	
 	/**
-	 * Generates the ToolPath (ArrayList with Point2D) with the Flattening PathIterator from the Path2D.
+	 * Generates the ToolPathes (ArrayList with Point2D) with the Flattening PathIterator from the Path2D.
 	 * @param path The Path2D object.
 	 * @param at The transformation.
 	 * @param flatness The flatness
 	 * @param name The name of the ToolPath
+	 * @return The List with the ToolPathes
 	 */
-	public void addToolPath(Path2D.Double path, AffineTransform at, double flatness, String name) {	        
+	public ArrayList<ToolPath> generateToolPathes(Path2D.Double path, AffineTransform at, double flatness, String name) {	        
 	    PathIterator pi = path.getPathIterator(at, flatness); 
 	    Point2D.Double startCoords = new Point2D.Double();
+	    ArrayList<ToolPath> tpl = new ArrayList<ToolPath>();
+	    int i = 0;
 	    
 	    double[] coords = new double[2];
 	
 	    while (!pi.isDone()) {
         	int segmentType = pi.currentSegment(coords);
         	if(segmentType == PathIterator.SEG_MOVETO) {
-        		toolPathes.add(new ToolPath(name)); // Create new empty ToolPath and add it to the toolPathes ArrayList
+        		tpl.add(new ToolPath(name)); // Create new empty ToolPath and add it to the toolPathes ArrayList
         		startCoords.setLocation(coords[0], coords[1]);
-        		getToolPath(getNumberOfToolPathes() - 1).addPoint(coords[0], coords[1]);
+        		tpl.get(tpl.size() - 1).addPoint(coords[0], coords[1]);
         	} else if(segmentType == PathIterator.SEG_LINETO) {
-        		getToolPath(getNumberOfToolPathes() - 1).addPoint(coords[0], coords[1]);
+        		tpl.get(tpl.size() - 1).addPoint(coords[0], coords[1]);
         	} else if(segmentType == PathIterator.SEG_CLOSE) {
-        		getToolPath(getNumberOfToolPathes() - 1).addPoint(startCoords.getX(), startCoords.getY());
+        		tpl.get(tpl.size() - 1).addPoint(startCoords.getX(), startCoords.getY());
         	} 
         
             //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
             pi.next();
-	    }	    
+	    }
+	    return tpl;
 	}
 
 	/**

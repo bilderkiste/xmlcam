@@ -71,8 +71,8 @@ public class Drill extends Element {
 		AffineTransform at = new AffineTransform();
 		at.translate(gen.getTranslateX().doubleValue(), gen.getTranslateY().doubleValue()); //Translation from translation tag
 		
-		addToolPath(shape, at, 0.1, new String("Drill at " + xmlPoint));
-		getToolPath(0).addPoint(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
+		addToolPathes(generateToolPathes(shape, at, 0.1, new String("Drill at " + xmlPoint)));
+
 		Main.log.log(Level.FINE, "Drill element: drill at " + xmlPoint);			
 	}
 }
