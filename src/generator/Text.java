@@ -5,6 +5,7 @@ import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
@@ -76,6 +77,13 @@ public class Text extends ElementClosed {
 			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
 				pocket = true;
 			}
+			if(map.getNamedItem("path").getTextContent().equals("engraving")) {
+				path = ElementClosed.ENGRAVING;
+			} else if(map.getNamedItem("path").getTextContent().equals("inset")) {
+				path = ElementClosed.INSET;
+			} else if(map.getNamedItem("path").getTextContent().equals("outset")) {
+				path = ElementClosed.OUTSET;
+			}
 		} catch(NullPointerException e) {
 		
 		} 
@@ -139,7 +147,19 @@ public class Text extends ElementClosed {
         at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
         at.scale(1.0, -1.0);
         
-        ArrayList<Path2D.Double> subShapes = mergeContainedPaths(splitIntoSubpaths(shape));
+        Path2D.Double pathShape = null;
+        
+        if(path == ElementClosed.ENGRAVING) {
+        	pathShape = shape;
+        } else if(path == ElementClosed.INSET) {
+        	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) gen.getTool().getRadius()));
+        	System.out.println("in");
+        } else if(path == ElementClosed.OUTSET) {
+        	System.out.println("out");
+        	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) gen.getTool().getRadius()));
+        }
+        
+        /*ArrayList<Path2D.Double> subShapes = mergeContainedPaths(splitIntoSubpaths(pathShape));
         for(int i = 0; i < subShapes.size(); i++) {
         	addToolPathes(generateToolPathes(subShapes.get(i), at, flatness, new String("Text: " + content)));
     		if(pocket) {
@@ -155,7 +175,9 @@ public class Text extends ElementClosed {
     			//toolPathes.clear();
     			//toolPathes.add(createPocket(subShapes.get(i), at, new Tool(2)));
     		}
-        }
+        }*/
+        
+        addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("test")));
        
 		/*for(int i = 0; i < toolPathes.size(); i++) {
 			System.out.println(toolPathes.get(i).getName() + " " + toolPathes.get(i));

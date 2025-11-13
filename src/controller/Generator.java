@@ -169,10 +169,10 @@ public class Generator {
 			//e.printStackTrace();
 		} catch(NullPointerException | IndexOutOfBoundsException e) {
 			Main.log.log(Level.SEVERE, "Missing parameter(s); " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch(IllegalArgumentException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
 			//e.printStackTrace();
@@ -201,6 +201,7 @@ public class Generator {
 	
 	/**
 	 * Sets the milling tool.
+	 * A tool changing G-Code will be inserted from the second tool tag.
 	 * @param node The node with the diameter and name
 	 */
 	private void setTool(Node node) throws IllegalArgumentException {

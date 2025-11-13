@@ -1,6 +1,7 @@
 package generator;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -65,6 +66,13 @@ public class Polyline extends ElementClosed {
 		try {
 			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
 				pocket = true;
+			}
+			if(map.getNamedItem("path").getTextContent().equals("engraving")) {
+				path = ElementClosed.ENGRAVING;
+			} else if(map.getNamedItem("path").getTextContent().equals("inset")) {
+				path = ElementClosed.INSET;
+			} else if(map.getNamedItem("path").getTextContent().equals("outset")) {
+				path = ElementClosed.OUTSET;
 			}
 		} catch(NullPointerException e) {
 		
@@ -152,11 +160,21 @@ public class Polyline extends ElementClosed {
 		AffineTransform at = new AffineTransform();
 		at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
 		
-		addToolPathes(generateToolPathes(shape, at, 0.1, new String("Polyline starting from " + xmlPoints.get(0) + " to " + xmlPoints.get(xmlPoints.size() - 1))));
+        Path2D.Double pathShape = null;
+        
+        if(path == ElementClosed.ENGRAVING) {
+        	pathShape = shape;
+        } else if(path == ElementClosed.INSET) {
+        	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) gen.getTool().getRadius()));
+        } else if(path == ElementClosed.OUTSET) {
+        	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) gen.getTool().getRadius()));
+        }
+		
+		addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("Polyline starting from " + xmlPoints.get(0) + " to " + xmlPoints.get(xmlPoints.size() - 1))));
 
 		//create pockettoolpath
 		if(pocket) {
-			addToolPathes(createPocket(shape, at, gen.getTool()));
+			addToolPathes(createPocket(pathShape, at, gen.getTool()));
 		}
 		
 		Main.log.log(Level.FINE, "Generated polyline element from {0} with translation {1} with {2} points.", new Object[] { xmlPoints.get(0), gen.getTranslation(), getToolPath(0).size() });

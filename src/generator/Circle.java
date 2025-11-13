@@ -1,6 +1,7 @@
 package generator;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.util.logging.Level;
 
@@ -10,7 +11,6 @@ import org.w3c.dom.NodeList;
 
 import controller.Generator;
 import main.Main;
-import model.Tool;
 import model.Tuple;
 
 /**
@@ -55,6 +55,13 @@ public class Circle extends ElementClosed {
 		try {
 			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
 				pocket = true;
+			}
+			if(map.getNamedItem("path").getTextContent().equals("engraving")) {
+				path = ElementClosed.ENGRAVING;
+			} else if(map.getNamedItem("path").getTextContent().equals("inset")) {
+				path = ElementClosed.INSET;
+			} else if(map.getNamedItem("path").getTextContent().equals("outset")) {
+				path = ElementClosed.OUTSET;
 			}
 		} catch(NullPointerException e) {
 		
@@ -114,11 +121,21 @@ public class Circle extends ElementClosed {
         at.translate(center.getValue(0).doubleValue(), center.getValue(1).doubleValue());
         at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
         
-        addToolPathes(generateToolPathes(shape, at, 0.1, new String("Circle at " + center + " with radius " + radius)));
+        Path2D.Double pathShape = null;
+        
+        if(path == ElementClosed.ENGRAVING) {
+        	pathShape = shape;
+        } else if(path == ElementClosed.INSET) {
+        	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) gen.getTool().getRadius()));
+        } else if(path == ElementClosed.OUTSET) {
+        	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) gen.getTool().getRadius()));
+        }
+        
+        addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("Circle at " + center + " with radius " + radius)));
 		
 		//create pockettoolpath
 		if(pocket) {
-			addToolPathes(createPocket(shape, at, gen.getTool()));
+			addToolPathes(createPocket(pathShape, at, gen.getTool()));
 		}
 		
 		Main.log.log(Level.FINE, "Circle element: circle at {0} with translation {1} and radius {2} with {3} points. Step for phi is {4}.", new Object[] { center, gen.getTranslation(), radius, getToolPath(0).size(), phi });	

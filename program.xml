@@ -1,52 +1,51 @@
 <?xml version="1.0"?>
 <program>
 	<tool>
-		<diameter>2.3</diameter>
-		<name>Flachfraeser</name>
+		<diameter>0.2</diameter>
+		<name>Kugelfräser</name>
 	</tool>	
-	<text pocket="parallel">
+	<text  pocket="parallel">
 		<content>Ein toller Tag</content>
-		<p>20,20</p>
-		<size>80</size>
+		<p>20,50</p>
+		<size>10</size>
 		<type>Calibri</type>
-		<style>plain</style>
-		<flatness>1.0</flatness>
+		<style>italic</style>
+		<flatness>0.2</flatness>
 		<z>0,-1,1</z>
 	</text>
-	<translate x="-10" y="100">
+	<tool>
+		<diameter>2</diameter>
+	</tool>	
+	<translate x="20" y="10">
 		<rectangle pocket="parallel">
-			<p>100,100</p>
-			<p>150,130</p>
+			<p>0,0</p>
+			<p>30,20</p>
 			<z>0,-1,0.1</z>
 		</rectangle>
+		<circle path="inset" pocket="parallel">
+			<p>40,10</p>
+			<rad>15</rad>
+			<z>0,-1,0.1</z>
+		</circle>
 	</translate>
 	<line>
-		<p>100,100</p>
-		<p>100,200</p>
+		<p>10,60</p>
+		<p>50,60</p>
 		<z>0,-1,0.1</z>
 	</line>
-	<translate x="20" y="20">
+
+	<translate x="-10" y="100">
 		<drill>
 			<p>15,15</p>
 			<z>0,-1</z>
 		</drill>
 	</translate>
-	<tool>
-		<diameter>1.0</diameter>
-		<name>Kugelfraeser</name>
-	</tool>	
+
 	<feedrate>200</feedrate>
-	<translate x="34" y="23">
-		<circle pocket="parallel">
-			<p>44,66</p>
-			<rad>20</rad>
-			<z>0,-1,0.1</z>
-		</circle>
-		<polyline>
-			<p>100,130</p>
-			<spl>50,200</spl>
-			<p>120,250</p>
-			<z>0,-1,0.1</z>
-		</polyline>
-	</translate>
+	<polyline>
+		<p>10,5</p>
+		<spl>5,40</spl>
+		<p>40,45</p>
+		<z>0,-1,0.1</z>
+	</polyline>
 </program>

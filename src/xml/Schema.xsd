@@ -22,6 +22,7 @@
 			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 		<xs:attribute name="pocket" type="pockettype" />
+		<xs:attribute name="path" type="pathtype" />
 	</xs:complexType>
 		
 	<xs:complexType name="circle">
@@ -32,6 +33,7 @@
 			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 		<xs:attribute name="pocket" type="pockettype" />
+		<xs:attribute name="path" type="pathtype" />
 	</xs:complexType>
 
 	<xs:complexType name="text">
@@ -45,6 +47,7 @@
 			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 		<xs:attribute name="pocket" type="pockettype" />
+		<xs:attribute name="path" type="pathtype" />
 	</xs:complexType>
 		
 	<xs:complexType name="polyline">
@@ -63,6 +66,7 @@
 			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 		<xs:attribute name="pocket" type="pockettype" />
+		<xs:attribute name="path" type="pathtype" />
 	</xs:complexType>
 	
 	<xs:complexType name="tool">
@@ -135,6 +139,12 @@
 	<xs:simpleType name="styletype">
 	    <xs:restriction base="xs:string">
 	    	<xs:pattern value="plain|bold|italic|bolditalic?"/>
+	    </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="pathtype">
+	    <xs:restriction base="xs:string">
+	    	<xs:pattern value="engraving|inset|outset?"/>
 	    </xs:restriction>
 	</xs:simpleType>
 	

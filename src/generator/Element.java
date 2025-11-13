@@ -28,13 +28,11 @@ abstract class Element {
 	protected ArrayList<ToolPath> toolPathes;
 	protected Path2D.Double shape; 
 	protected Tuple zLevel;
-	protected Tool tool;
 	
 	public Element(Node node, Generator gen) {
 		toolPathes = new ArrayList<ToolPath>();
 		this.node = node;
 		this.gen = gen;
-		this.tool = null;
 		this.shape = null;
 	}
 	

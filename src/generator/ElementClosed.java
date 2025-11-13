@@ -18,18 +18,56 @@ import model.Tool;
 import model.ToolPath;
 
 abstract class ElementClosed extends Element {
+	
+	public static final int ENGRAVING = 0;
+	public static final int INSET = 1;
+	public static final int OUTSET = 2;
+	
+	protected int path;
 
 	public ElementClosed(Node node, Generator gen) {
 		super(node, gen);
 	}
 
+
+    public Path2D.Double AreaToPath(Area area) {
+        Path2D.Double path = new Path2D.Double();
+
+        PathIterator iterator = area.getPathIterator(null);
+        double[] coords = new double[6];
+
+        while (!iterator.isDone()) {
+            int type = iterator.currentSegment(coords);
+            switch (type) {
+                case PathIterator.SEG_MOVETO:
+                    path.moveTo(coords[0], coords[1]);
+                    break;
+                case PathIterator.SEG_LINETO:
+                    path.lineTo(coords[0], coords[1]);
+                    break;
+                case PathIterator.SEG_QUADTO:
+                    path.quadTo(coords[0], coords[1], coords[2], coords[3]);
+                    break;
+                case PathIterator.SEG_CUBICTO:
+                    path.curveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+                    break;
+                case PathIterator.SEG_CLOSE:
+                    path.closePath();
+                    break;
+            }
+            iterator.next();
+        }
+        
+        return path;
+    }
+	
 	/**
 	 * Creates an inset area with a stroke. 
 	 * @param originalArea The original area
 	 * @param insetAmount The inset between original shape an inset shape
 	 * @return The inset shape
 	 */
-    public Area createInsetShape(Area originalArea, float insetAmount) {
+    public Area createInsetArea(Area originalArea, float insetAmount) {
         float strokeWidth = insetAmount * 2.0f;
         BasicStroke stroke = new BasicStroke(strokeWidth, 
                                              BasicStroke.CAP_BUTT, 
@@ -38,6 +76,23 @@ abstract class ElementClosed extends Element {
         Area insetArea = new Area(originalArea);
         insetArea.subtract(strokeArea);
         return insetArea;
+    }
+    
+	/**
+	 * Creates an outset area with a stroke. 
+	 * @param originalArea The original area
+	 * @param outsetAmount The outset between original shape an outset shape
+	 * @return The outset shape
+	 */
+    public Area createOutsetArea(Area originalArea, float outsetAmount) {
+        float strokeWidth = outsetAmount * 2.0f;
+        BasicStroke stroke = new BasicStroke(strokeWidth, 
+                                             BasicStroke.CAP_BUTT, 
+                                             BasicStroke.JOIN_MITER);
+        Area strokeArea = new Area(stroke.createStrokedShape(originalArea));
+        Area outsetArea = new Area(originalArea);
+        outsetArea.add(strokeArea);
+        return outsetArea;
     }
 	
 	/**
@@ -57,7 +112,7 @@ abstract class ElementClosed extends Element {
         Area area = new Area(at.createTransformedShape(shape));
         
         // Erzeuge mit einem inset eine kleinere Kontur
-        area = createInsetShape(area, (float) (tool.getRadius() * overlap));
+        area = createInsetArea(area, (float) (tool.getRadius() * overlap));
                    
         // Hole die Bounding Box der gesamten Form
         Rectangle2D bounds = area.getBounds2D();
