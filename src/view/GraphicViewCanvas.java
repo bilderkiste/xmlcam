@@ -78,8 +78,9 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	// Transform for elements and workbench
 		AffineTransform paintAt = new AffineTransform();
 		paintAt.scale(graphicView.getScale(), graphicView.getScale());
-		paintAt.translate(0 - (graphicView.getxBar().getValue() / graphicView.getScale()), (graphicView.getyBar().getValue() / graphicView.getScale()));
-		System.out.println(graphicView.getxBar().getValue() + " - " +graphicView.getyBar().getValue());
+		paintAt.translate(0 - (graphicView.getxBar().getValue() / graphicView.getScale()), 
+				(graphicView.getyBar().getMaximum() - graphicView.getyBar().getVisibleAmount() - graphicView.getyBar().getValue())  / -graphicView.getScale());
+		//System.out.println(graphicView.getxBar().getValue() + " - " +graphicView.getyBar().getValue());
 		
 		// Canvas Transform
     	g2.translate(0, this.getHeight());
