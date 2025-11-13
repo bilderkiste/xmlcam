@@ -85,7 +85,7 @@ public class TableViewDummyModel extends AbstractTableModel implements ProgramMo
 	 */
 	@Override
 	public int getRowCount() {
-		return programModel.size();
+		return programModel.sizeRow();
 	}
 
 	/**

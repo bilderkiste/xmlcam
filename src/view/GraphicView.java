@@ -92,7 +92,7 @@ public class GraphicView extends JPanel {
 		
 		GraphicViewAdjustmentListener adjustmentListener = new GraphicViewAdjustmentListener(this);
 		
-		xBar = new JScrollBar(JScrollBar.HORIZONTAL, 0, Settings.workbench.getXDimension(), 0, Settings.workbench.getXDimension());
+		xBar = new JScrollBar(JScrollBar.HORIZONTAL, 0, 1, 0, Settings.workbench.getXDimension());
 		xBar.setPreferredSize(new Dimension(Settings.workbench.getXDimension(), 16));
 		xBar.addAdjustmentListener(adjustmentListener);
 		constraints.gridx = 1;
@@ -101,7 +101,7 @@ public class GraphicView extends JPanel {
 		constraints.weighty = 0;
 		this.add(xBar, constraints);
 		
-		yBar = new JScrollBar(JScrollBar.VERTICAL, Settings.workbench.getYDimension() * -1, Settings.workbench.getYDimension(), Settings.workbench.getYDimension() * -1, 0);
+		yBar = new JScrollBar(JScrollBar.VERTICAL, 0, 1, 0, Settings.workbench.getYDimension());
 		yBar.setPreferredSize(new Dimension(16, Settings.workbench.getYDimension()));
 		yBar.addAdjustmentListener(adjustmentListener);
 

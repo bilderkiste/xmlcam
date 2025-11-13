@@ -142,7 +142,7 @@ public class Text extends ElementClosed {
         shape = new Path2D.Double(glyphVector.getOutline());
     	
         // Transformation, um den Text an die Startposition (startX, startY) zu verschieben
-        AffineTransform at = new AffineTransform();
+        at = new AffineTransform();
         at.translate(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
         at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
         at.scale(1.0, -1.0);

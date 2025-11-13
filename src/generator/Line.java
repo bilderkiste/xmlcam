@@ -59,7 +59,7 @@ public class Line extends Element {
 		shape.moveTo(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
 		shape.lineTo(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue());
 		
-        AffineTransform at = new AffineTransform();
+        at = new AffineTransform();
         at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
         
         addToolPathes(generateToolPathes(shape, at, 0.1, new String("Line from " + xmlPoints.get(0) + " to " + xmlPoints.get(1))));

@@ -157,7 +157,7 @@ public class Polyline extends ElementClosed {
 			}
 		}
 		
-		AffineTransform at = new AffineTransform();
+		at = new AffineTransform();
 		at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
 		
         Path2D.Double pathShape = null;

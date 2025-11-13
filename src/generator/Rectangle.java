@@ -87,7 +87,7 @@ public class Rectangle extends ElementClosed {
 		shape.lineTo(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue());
 		shape.closePath();
 		
-		AffineTransform at = new AffineTransform();
+		at = new AffineTransform();
 		at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
 		
         Path2D.Double pathShape = null;

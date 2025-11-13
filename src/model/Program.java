@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 
+import generator.Element;
 import main.Main;
 import view.ProgramModelListener;
 
@@ -54,6 +55,7 @@ public class Program {
 
 	private ArrayList<Row> rows;
 	private ArrayList<ProgramModelListener> listener;
+	private ArrayList<Element> elementList;
 
 	/**
 	 * Constructs a empty program.
@@ -61,6 +63,7 @@ public class Program {
 	public Program() {
 		this.rows = new ArrayList<Row>();
 		this.listener = new ArrayList<ProgramModelListener>();
+		this.elementList = new ArrayList<Element>();
 	}
 
 	/**
@@ -242,15 +245,44 @@ public class Program {
 	 * Returns the amount of rows the program.
 	 * @return the amount;
 	 */
-	public int size() {
+	public int sizeRow() {
 		return rows.size();
+	}
+	
+	/**
+	 * Returns the amount of elements.
+	 * @return the amount;
+	 */
+	public int sizeElements() {
+		return elementList.size();
+	}
+	
+	/**
+	 * Adds an element to the model.
+	 * The element includes shapes and toolPathes derived from the shapes.
+	 * @param element The element to be added.
+	 */
+	public void addElement(Element element) {
+		elementList.add(element);
+		fireModelChanged();
+	}
+	
+	/**
+	 * Return an element at index.
+	 * The element includes shapes and toolPathes derived from the shapes.
+	 * @param index The index
+	 * @return The element at index
+	 */
+	public Element getElement(int index) {
+		return elementList.get(index);
 	}
 	
 	/**
 	 * Clears the whole program.
 	 */
 	public void clear() {
-		this.rows = new ArrayList<Row>();
+		this.rows.clear();
+		this.elementList.clear();
 		fireModelChanged();
 	}
 	

@@ -17,7 +17,7 @@ import model.Tuple;
 /**
  * This abstract class represents an element, which can generate or consist of one ore more toolPathes.
  */
-abstract class Element {
+public abstract class Element {
 	
 	protected Generator gen;
 	protected Node node;
@@ -27,6 +27,7 @@ abstract class Element {
 	 */
 	protected ArrayList<ToolPath> toolPathes;
 	protected Path2D.Double shape; 
+	protected AffineTransform at;
 	protected Tuple zLevel;
 	
 	public Element(Node node, Generator gen) {
@@ -34,6 +35,7 @@ abstract class Element {
 		this.node = node;
 		this.gen = gen;
 		this.shape = null;
+		this.at = null;
 	}
 	
 	public abstract void extract() throws IllegalArgumentException;
@@ -58,6 +60,21 @@ abstract class Element {
 		return toolPathes;
 	}
 	
+	/**
+	 * Returns the shape of the element.
+	 * @return The shape
+	 */
+	public Path2D.Double getShape() {
+		return shape;
+	}
+	
+	/**
+	 * Returns the transformation of the shape.
+	 * @return The transformation
+	 */
+	public AffineTransform getTransform() {
+		return at;
+	}
 	
 	/**
 	 * Adds an new empty toolPath with the name (i.e. circle or rectangle) to the toolPathes ArrayList.

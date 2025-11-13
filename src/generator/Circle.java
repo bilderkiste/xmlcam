@@ -117,7 +117,7 @@ public class Circle extends ElementClosed {
 		}
 		shape.closePath();
 		
-        AffineTransform at = new AffineTransform();
+        at = new AffineTransform();
         at.translate(center.getValue(0).doubleValue(), center.getValue(1).doubleValue());
         at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
         

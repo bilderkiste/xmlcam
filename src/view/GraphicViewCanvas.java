@@ -21,6 +21,12 @@ package view;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
@@ -35,7 +41,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	
 	private static final long serialVersionUID = 1L;
 	private Program programModel;
-	private boolean gridVisible, g0lineVisible, g1lineVisible, pointVisible;
+	private boolean gridVisible, g0lineVisible, g1lineVisible, pointVisible, shapeVisible;
 	private GraphicView graphicView;
 	
 	/**
@@ -50,6 +56,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 		this.g0lineVisible = true;
 		this.g1lineVisible = true;
 		this.pointVisible = true;
+		this.shapeVisible = true;
 		
 		GraphicViewDragListener dragger = new GraphicViewDragListener(graphicView);
 		this.addMouseListener(dragger);
@@ -60,18 +67,51 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	 * Paints the canvas.
 	 */
 	@Override
-    public void paint(Graphics g){
+    public void paintComponent(Graphics g){
     	double x1 = Settings.workbench.getXMin(), y1 = Settings.workbench.getYMin(), x2 = 0, y2 = 0;
     	int index = -1;
     	boolean draw; // check if a line draw is needed for x and y. (i.e. a G0 Z6 does not need a draw)
-    	super.paint(g);
+    	super.paintComponent(g);
+    	
+    	Graphics2D g2 = (Graphics2D) g;
+    	
+    	// Transform for elements and workbench
+		AffineTransform paintAt = new AffineTransform();
+		paintAt.scale(graphicView.getScale(), graphicView.getScale());
+		paintAt.translate(0 - (graphicView.getxBar().getValue() / graphicView.getScale()), (graphicView.getyBar().getValue() / graphicView.getScale()));
+		System.out.println(graphicView.getxBar().getValue() + " - " +graphicView.getyBar().getValue());
+		
+		// Canvas Transform
+    	g2.translate(0, this.getHeight());
+    	g2.scale(1,-1);
+    	// Antialiasing aktivieren
+        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
     	
     	// Paint workbench rectangle
-    	g.setColor(Color.WHITE);
-    	g.fillRect(0, this.getHeight() - Settings.workbench.getYDimension() * graphicView.getScale() - (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()), (Settings.workbench.getXDimension() * graphicView.getScale()) - graphicView.getxBar().getValue(), Settings.workbench.getYDimension() * graphicView.getScale());
+    	g2.setColor(Color.WHITE);
+    	Rectangle2D workbench = new Rectangle2D.Double(0, 0, Settings.workbench.getXDimension(), Settings.workbench.getYDimension());
+    	Shape transformedWorkbench = paintAt.createTransformedShape(workbench);
+    	g2.fill(transformedWorkbench);
+    	
+    	// Paint shapes
+    	if(shapeVisible) {
+    		for(int i = 0; i < programModel.sizeElements(); i++) {
+    			g2.setColor(Color.BLUE);
+    			AffineTransform originalAt = programModel.getElement(i).getTransform();
+
+    			Path2D.Double shape = new Path2D.Double(programModel.getElement(i).getShape(), originalAt);
+    			shape.transform(paintAt);
+    			g2.draw(shape);
+    		}
+    	}
+    	
+   
+       
+        //g2.translate(y2, index);
     	
     	// Paint all G0 and G1 moves
-        for(int i = 0; i < programModel.size(); i++) {
+        for(int i = 0; i < programModel.sizeRow(); i++) {
         	draw = false;
         	if(programModel.getRow(i).getField(0).toString().equals("G0")) {
 	        		

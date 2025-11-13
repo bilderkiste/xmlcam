@@ -100,32 +100,38 @@ public class Generator {
 				Drill item = new Drill(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
-				createGCode(item.getToolPathes(), item.getZLevel());				//drill(commands.item(commandNumber));
+				createGCode(item.getToolPathes(), item.getZLevel());
+				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "line") {
 				Line item = new Line(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
 				createGCode(item.getToolPathes(), item.getZLevel());
+				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "polyline") {
 				Polyline item = new Polyline(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
 				createGCode(item.getToolPathes(), item.getZLevel());
+				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "circle") {
 				Circle item = new Circle(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
 				createGCode(item.getToolPathes(), item.getZLevel());
+				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "rectangle") {
 				Rectangle item = new Rectangle(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
 				createGCode(item.getToolPathes(), item.getZLevel());
+				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "text") {
 				Text item = new Text(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
 				createGCode(item.getToolPathes(), item.getZLevel());
+				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "feedrate") {
 				setFeedRate(commands.item(commandNumber));
 			} else if(commands.item(commandNumber).getNodeName() == "tool") {
@@ -372,7 +378,7 @@ public class Generator {
 		programModel.addRow(new Row());
 		
 		if(comment != null) {
-			programModel.setComment(programModel.size() - 1, comment);
+			programModel.setComment(programModel.sizeRow() - 1, comment);
 		}
 		
 		programModel.addField(new Field('G', new BigDecimal(0)));
@@ -438,7 +444,7 @@ public class Generator {
 		programModel.addRow(new Row());
 		
 		if(comment != null) {
-			programModel.setComment(programModel.size() - 1, comment);
+			programModel.setComment(programModel.sizeRow() - 1, comment);
 		}
 		
 		programModel.addField(new Field('G', new BigDecimal(1)));
