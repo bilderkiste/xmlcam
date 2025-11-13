@@ -112,7 +112,7 @@ public class Row {
 	 * Sets the comment for the line.
 	 * @param comment The comment to be set
 	 */
-	protected void setComment(String comment) {
+	public void setComment(String comment) {
 		this.comment = comment;
 	}
 	

@@ -86,9 +86,9 @@ public class Rectangle extends ElementClosed {
 		
 		//create pockettoolpath
 		if(pocket) {
-			addToolPathes(createPocket(shape, at, new Tool(2)));
+			addToolPathes(createPocket(shape, at, gen.getTool()));
 		}
-		
+
 		Main.log.log(Level.FINE, "Rectangle element: rectangle from {0} to {1} with translation {2}.", new Object[] { xmlPoints.get(0), xmlPoints.get(1), gen.getTranslation() } );	
 	}
 

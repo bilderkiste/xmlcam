@@ -118,7 +118,7 @@ public class Circle extends ElementClosed {
 		
 		//create pockettoolpath
 		if(pocket) {
-			addToolPathes(createPocket(shape, at, new Tool(2)));
+			addToolPathes(createPocket(shape, at, gen.getTool()));
 		}
 		
 		Main.log.log(Level.FINE, "Circle element: circle at {0} with translation {1} and radius {2} with {3} points. Step for phi is {4}.", new Object[] { center, gen.getTranslation(), radius, getToolPath(0).size(), phi });	

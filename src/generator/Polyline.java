@@ -156,7 +156,7 @@ public class Polyline extends ElementClosed {
 
 		//create pockettoolpath
 		if(pocket) {
-			addToolPathes(createPocket(shape, at, new Tool(2)));
+			addToolPathes(createPocket(shape, at, gen.getTool()));
 		}
 		
 		Main.log.log(Level.FINE, "Generated polyline element from {0} with translation {1} with {2} points.", new Object[] { xmlPoints.get(0), gen.getTranslation(), getToolPath(0).size() });

@@ -47,6 +47,7 @@ import main.Main;
 import misc.Settings;
 import model.Field;
 import model.Row;
+import model.Tool;
 import model.ToolPath;
 import model.Program;
 import model.Tuple;
@@ -63,6 +64,7 @@ public class Generator {
 	private XMLView xmlEditorPane;
 	private BigDecimal currentX, currentY, currentZ, newX, newY, newZ;
 	private Point2D.Double translation;
+	private Tool tool;
 	
 	/**
 	 * Constructs a new G-Code Generator.
@@ -85,7 +87,7 @@ public class Generator {
 	 * Goes through the DOM recursively. Needed if translation tag is used.
 	 * @param node the
 	 */
-	private void getChildNodes(Node node) {
+	private void getChildNodes(Node node) throws IllegalArgumentException {
 		NodeList commands = null;
 		commands = node.getChildNodes();
 		int commandNumber = 0;
@@ -126,6 +128,8 @@ public class Generator {
 				createGCode(item.getToolPathes(), item.getZLevel());
 			} else if(commands.item(commandNumber).getNodeName() == "feedrate") {
 				setFeedRate(commands.item(commandNumber));
+			} else if(commands.item(commandNumber).getNodeName() == "tool") {
+				setTool(commands.item(commandNumber));
 			} else if(commands.item(commandNumber).getNodeName() == "translate") {
 				setTranslation(commands.item(commandNumber));
 				getChildNodes(commands.item(commandNumber));
@@ -165,10 +169,10 @@ public class Generator {
 			//e.printStackTrace();
 		} catch(NullPointerException | IndexOutOfBoundsException e) {
 			Main.log.log(Level.SEVERE, "Missing parameter(s); " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
-			//e.printStackTrace();
+			e.printStackTrace();
 		} catch(IllegalArgumentException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
 			//e.printStackTrace();
@@ -196,6 +200,48 @@ public class Generator {
 	}
 	
 	/**
+	 * Sets the milling tool.
+	 * @param node The node with the diameter and name
+	 */
+	private void setTool(Node node) throws IllegalArgumentException {
+		NodeList children = node.getChildNodes();
+		
+		double diameter = 0;
+		String name = null;
+		
+		
+		for(int i = 0; i < children.getLength(); i++) {
+			Node item = children.item(i);
+			if(item.getNodeName() == "diameter") {
+				diameter = Double.parseDouble(item.getTextContent());
+				if(diameter < 0.05) {
+					throw new IllegalArgumentException("Diameter must be greater or equal 0.05.");
+				}
+			}
+			if(item.getNodeName() == "name") {
+				name = item.getTextContent();
+			}
+		}
+		
+		if(tool != null) {
+			// Add G-Code for tool change
+			Row row = new Row(new Field('M', new BigDecimal(6)));
+			row.setComment("Tool change");
+			programModel.addRow(row);
+		}
+		
+		tool = new Tool(diameter, name);
+	}
+	
+	/**
+	 * Returns the current tool.
+	 * @return
+	 */
+	public Tool getTool() {
+		return tool;
+	}
+	
+	/**
 	 * Sets the translation for x and y coordinates within the translation tag.
 	 * 	An code example snippet:
 	 * <pre>{@code
@@ -206,7 +252,6 @@ public class Generator {
 	 * @param node
 	 * @throws IllegalArgumentException
 	 */
-	
 	private void setTranslation(Node node) throws IllegalArgumentException {
 		NamedNodeMap map = node.getAttributes();
 		double x = 0, y = 0;
@@ -226,8 +271,7 @@ public class Generator {
 			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
 		}
 		translation.setLocation(x, y);
-	}
-	
+	}	
 
 	/**
 	 * This method creates the G-Code for the toolpath.

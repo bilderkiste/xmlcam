@@ -64,33 +64,47 @@
 		</xs:sequence>
 		<xs:attribute name="pocket" type="pockettype" />
 	</xs:complexType>
+	
+	<xs:complexType name="tool">
+		<xs:sequence>
+			<xs:element name="diameter" type="posdoubletype" />
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" /> 	
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
 
 	<xs:element name="program">
 		<xs:complexType>
-			<xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="drill" type="drill" />
-				<xs:element name="line" type="line" />
-				<xs:element name="polyline" type="polyline" />
-				<xs:element name="circle" type="circle" />
-				<xs:element name="rectangle" type="rectangle" />
-				<xs:element name="text" type="text" />
-				<xs:element name="feedrate" type="xs:positiveInteger" />
-				<xs:element name="translate">
-					<xs:complexType>
-						<xs:choice minOccurs="1" maxOccurs="unbounded">
-							<xs:element name="drill" type="drill" />
-							<xs:element name="line" type="line" />
-							<xs:element name="polyline" type="polyline" />
-							<xs:element name="circle" type="circle" />
-							<xs:element name="rectangle" type="rectangle" />
-							<xs:element name="text" type="text" />
-							<xs:element name="feedrate" type="xs:positiveInteger" />
-						</xs:choice>
-						<xs:attribute name="x" type="translationtype" />
-						<xs:attribute name="y" type="translationtype" />
-					</xs:complexType>
-				</xs:element>
-			</xs:choice>
+			<xs:sequence>
+				<xs:element name="tool" type="tool" />
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="drill" type="drill" />
+					<xs:element name="line" type="line" />
+					<xs:element name="polyline" type="polyline" />
+					<xs:element name="circle" type="circle" />
+					<xs:element name="rectangle" type="rectangle" />
+					<xs:element name="text" type="text" />
+					<xs:element name="feedrate" type="xs:positiveInteger" />
+					<xs:element name="tool" type="tool" />
+					<xs:element name="translate">
+						<xs:complexType>
+							<xs:choice minOccurs="1" maxOccurs="unbounded">
+								<xs:element name="drill" type="drill" />
+								<xs:element name="line" type="line" />
+								<xs:element name="polyline" type="polyline" />
+								<xs:element name="circle" type="circle" />
+								<xs:element name="rectangle" type="rectangle" />
+								<xs:element name="text" type="text" />
+								<xs:element name="feedrate" type="xs:positiveInteger" />
+								<xs:element name="tool" type="tool" />
+							</xs:choice>
+							<xs:attribute name="x" type="translationtype" />
+							<xs:attribute name="y" type="translationtype" />
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
 	

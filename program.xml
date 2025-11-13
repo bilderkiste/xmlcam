@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
-<program>	
+<program>
+	<tool>
+		<diameter>2.3</diameter>
+		<name>Flachfraeser</name>
+	</tool>	
 	<text pocket="parallel">
 		<content>Ein toller Tag</content>
 		<p>20,20</p>
@@ -27,7 +31,10 @@
 			<z>0,-1</z>
 		</drill>
 	</translate>
-
+	<tool>
+		<diameter>1.0</diameter>
+		<name>Kugelfraeser</name>
+	</tool>	
 	<feedrate>200</feedrate>
 	<translate x="34" y="23">
 		<circle pocket="parallel">

@@ -143,7 +143,7 @@ public class Text extends ElementClosed {
         for(int i = 0; i < subShapes.size(); i++) {
         	addToolPathes(generateToolPathes(subShapes.get(i), at, flatness, new String("Text: " + content)));
     		if(pocket) {
-    			ArrayList<ToolPath> pockets = createPocket(subShapes.get(i), at, new Tool(2));
+    			ArrayList<ToolPath> pockets = createPocket(subShapes.get(i), at, gen.getTool());
     			//prüfen ob leere ToolPath vorhanden sind um (tmp)
     			for(int j = 0; j < pockets.size(); j++) {
     				if(pockets.get(j).size() == 0) {
