@@ -75,20 +75,20 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	
     	Graphics2D g2 = (Graphics2D) g;
     	
+    	// Canvas Transform
+    	g2.translate(0, this.getHeight());
+    	g2.scale(1,-1);
+    	
     	// Transform for elements and workbench
 		AffineTransform paintAt = new AffineTransform();
 		paintAt.scale(graphicView.getScale(), graphicView.getScale());
 		int yScrollBarValueInv = graphicView.getyBar().getMaximum() - graphicView.getyBar().getVisibleAmount() - graphicView.getyBar().getValue();
 		paintAt.translate(0 - (graphicView.getxBar().getValue() / graphicView.getScale()), yScrollBarValueInv  / -graphicView.getScale());
-		System.out.println(graphicView.getxBar().getValue() + " - " + yScrollBarValueInv);
+		//System.out.println(graphicView.getxBar().getValue() + " - " + yScrollBarValueInv);
 		
-		// Canvas Transform
-    	g2.translate(0, this.getHeight());
-    	g2.scale(1,-1);
-    	// Antialiasing aktivieren
-        //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		// Antialiasing aktivieren
+		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-    	
     	// Paint workbench rectangle
     	g2.setColor(Color.WHITE);
     	Rectangle2D workbench = new Rectangle2D.Double(0, 0, Settings.workbench.getXDimension(), Settings.workbench.getYDimension());
@@ -124,11 +124,11 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         		}
         		if(draw) {
         			if(g0lineVisible ) {
-        				g.setColor(Color.GREEN);
-        				g.drawLine((int)(x1 + graphicView.getxBar().getValue()) * graphicView.getScale(), 
-        						(int)(y1 + yScrollBarValueInv) * graphicView.getScale(), 
-        						(int)(x2 + graphicView.getxBar().getValue()) * graphicView.getScale(), 
-        						(int)(y2 + yScrollBarValueInv) * graphicView.getScale());
+        				g2.setColor(Color.GREEN);
+        				g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue()), 
+        						(int)(y1 * graphicView.getScale() - yScrollBarValueInv), 
+        						(int)(x2 * graphicView.getScale() - graphicView.getxBar().getValue()) , 
+        						(int)(y2 * graphicView.getScale() - yScrollBarValueInv));
         			}
         			x1 = x2;
                 	y1 = y2;
@@ -147,24 +147,23 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         		}
         		
     			if(pointVisible) {
-	        		g.setColor(Color.RED);
-        			g.drawOval(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()) - 2, 
-        						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()) - 2,
-        						4, 4);
+	        		g2.setColor(Color.RED);
+        			g2.drawOval((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue()) - 2, 
+    						(int)(y1 * graphicView.getScale() - yScrollBarValueInv) - 2, 4, 4);
     			}
         		if(draw) {
         			if(g1lineVisible) {
-        				g.setColor(Color.BLACK);
-	        			g.drawLine(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()),
-	        						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()),
-	    							GraphicViewHelpers.convertX(x2, graphicView.getScale(), graphicView.getxBar()),
-	    							GraphicViewHelpers.convertY(y2, this.getHeight(), graphicView.getScale(), graphicView.getyBar()));
+        				g2.setColor(Color.BLACK);
+        				g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue()), 
+        						(int)(y1 * graphicView.getScale() - yScrollBarValueInv), 
+        						(int)(x2 * graphicView.getScale() - graphicView.getxBar().getValue()) , 
+        						(int)(y2 * graphicView.getScale() - yScrollBarValueInv));
         			}
         			x1 = x2;
             		y1 = y2;
             		
             		// Draw the last point from G1 move but not the zero point
-           			try {
+           			/*try {
 	            		if(pointVisible && !programModel.getRow(i + 1).getField(0).toString().equals("G1")) {
 	    	        		g.setColor(Color.RED);
 	            			g.drawOval(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()) - 2, 
@@ -176,7 +175,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
            					g.drawOval(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()) - 2, 
             						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()) - 2,
             						4, 4);
-           			}
+           			}*/
         		}
         	}
         }
@@ -184,6 +183,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         if(gridVisible) {
         	paintGrid(g);
         }
+    	        
     } 
 	
 	/**
