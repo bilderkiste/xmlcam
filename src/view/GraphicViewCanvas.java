@@ -78,9 +78,9 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	// Transform for elements and workbench
 		AffineTransform paintAt = new AffineTransform();
 		paintAt.scale(graphicView.getScale(), graphicView.getScale());
-		paintAt.translate(0 - (graphicView.getxBar().getValue() / graphicView.getScale()), 
-				(graphicView.getyBar().getMaximum() - graphicView.getyBar().getVisibleAmount() - graphicView.getyBar().getValue())  / -graphicView.getScale());
-		//System.out.println(graphicView.getxBar().getValue() + " - " +graphicView.getyBar().getValue());
+		int yScrollBarValueInv = graphicView.getyBar().getMaximum() - graphicView.getyBar().getVisibleAmount() - graphicView.getyBar().getValue();
+		paintAt.translate(0 - (graphicView.getxBar().getValue() / graphicView.getScale()), yScrollBarValueInv  / -graphicView.getScale());
+		System.out.println(graphicView.getxBar().getValue() + " - " + yScrollBarValueInv);
 		
 		// Canvas Transform
     	g2.translate(0, this.getHeight());
@@ -105,11 +105,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     			shape.transform(paintAt);
     			g2.draw(shape);
     		}
-    	}
-    	
-   
-       
-        //g2.translate(y2, index);
+    	};
     	
     	// Paint all G0 and G1 moves
         for(int i = 0; i < programModel.sizeRow(); i++) {
@@ -129,10 +125,10 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         		if(draw) {
         			if(g0lineVisible ) {
         				g.setColor(Color.GREEN);
-        				g.drawLine(GraphicViewHelpers.convertX(x1, graphicView.getScale(), graphicView.getxBar()), 
-        						GraphicViewHelpers.convertY(y1, this.getHeight(), graphicView.getScale(), graphicView.getyBar()), 
-        						GraphicViewHelpers.convertX(x2, graphicView.getScale(), graphicView.getxBar()), 
-        						GraphicViewHelpers.convertY(y2, this.getHeight(), graphicView.getScale(), graphicView.getyBar()));
+        				g.drawLine((int)(x1 + graphicView.getxBar().getValue()) * graphicView.getScale(), 
+        						(int)(y1 + yScrollBarValueInv) * graphicView.getScale(), 
+        						(int)(x2 + graphicView.getxBar().getValue()) * graphicView.getScale(), 
+        						(int)(y2 + yScrollBarValueInv) * graphicView.getScale());
         			}
         			x1 = x2;
                 	y1 = y2;

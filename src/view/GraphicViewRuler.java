@@ -21,6 +21,8 @@ package view;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 
 import javax.swing.JPanel;
 
@@ -59,6 +61,8 @@ public class GraphicViewRuler extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		
+		Graphics2D g2 = (Graphics2D) g;
+		
 		if(axis == 0) {
 			for(int i = Settings.workbench.getXMin() * graphicView.getScale(); i <= (Settings.workbench.getXMin() + Settings.workbench.getXDimension()) * graphicView.getScale(); i += Settings.gridStep) {
 				g.drawLine(i - Settings.workbench.getXMin() * graphicView.getScale() - graphicView.getxBar().getValue(), this.getHeight(), i - Settings.workbench.getXMin() * graphicView.getScale() - graphicView.getxBar().getValue(), this.getHeight() - 30);
@@ -67,8 +71,10 @@ public class GraphicViewRuler extends JPanel {
 		
 		} else if(axis == 1) {
 			for(int i = Settings.workbench.getYMin() * graphicView.getScale(); i <= (Settings.workbench.getYMin() + Settings.workbench.getYDimension()) * graphicView.getScale(); i += Settings.gridStep) {
-				g.drawLine(0, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() + (graphicView.getyBar().getValue())), 30, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() + (graphicView.getyBar().getValue())));
-				g.drawString(Integer.toString(i / graphicView.getScale()), 0, this.getHeight() - (i - Settings.workbench.getYMin() * graphicView.getScale() + 2 + (graphicView.getyBar().getValue())));
+				g2.drawLine(0, 0 + (i - Settings.workbench.getYMin() * graphicView.getScale() + (graphicView.getyBar().getValue())), 30, 0 + (i - Settings.workbench.getYMin() * graphicView.getScale() + (graphicView.getyBar().getValue())));
+				g2.drawString(Integer.toString(i / graphicView.getScale()), 0, 0 + (i - Settings.workbench.getYMin() * graphicView.getScale() + 2 + (graphicView.getyBar().getValue())));
+				AffineTransform at = new AffineTransform();
+				
 			}
 		}
 		

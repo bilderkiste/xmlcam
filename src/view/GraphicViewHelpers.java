@@ -39,7 +39,7 @@ public class GraphicViewHelpers {
      * @return the output coordinate
      */
 	public static int convertY(double coordinate, int componentHeight, int scale, JScrollBar scrollBar) {
-		return (int) ((coordinate * scale + scrollBar.getValue() + scrollBar.getVisibleAmount()) - Settings.workbench.getYMin() * scale);
+		return (int) (coordinate * scale + scrollBar.getValue() - Settings.workbench.getYMin() * scale);
     }
     
 	/**
