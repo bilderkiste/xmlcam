@@ -26,12 +26,16 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 import misc.Settings;
 import model.Program;
+import model.ToolPath;
 
 /**
  * This class paints the canvas where the G moves are displayed.
@@ -84,7 +88,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 		paintAt.scale(graphicView.getScale(), graphicView.getScale());
 		int yScrollBarValueInv = graphicView.getyBar().getMaximum() - graphicView.getyBar().getVisibleAmount() - graphicView.getyBar().getValue();
 		paintAt.translate(0 - (graphicView.getxBar().getValue() / graphicView.getScale()), yScrollBarValueInv  / -graphicView.getScale());
-		//System.out.println(graphicView.getxBar().getValue() + " - " + yScrollBarValueInv);
+		System.out.println(graphicView.getxBar().getValue() + " - " + yScrollBarValueInv);
 		
 		// Antialiasing aktivieren
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -106,6 +110,29 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     			g2.draw(shape);
     		}
     	};
+    	
+    	if(shapeVisible) {
+    		for(int i = 0; i < programModel.sizeElements(); i++) {
+    			Path2D.Double shape = programModel.getElement(index).getShape();
+    			PathIterator pi = shape.getPathIterator(null, 0.1); 
+    		    
+    		    double[] coords = new double[2];
+    		    double x1, y1;
+    		    while (!pi.isDone()) {
+    	        	int segmentType = pi.currentSegment(coords);
+    	        	if(segmentType == PathIterator.SEG_MOVETO) {
+    	        		x1 = coords[0];
+    	        		
+    	        	} else if(segmentType == PathIterator.SEG_LINETO) {
+    	        		tpl.get(tpl.size() - 1).addPoint(coords[0], coords[1]);
+    	        	} else if(segmentType == PathIterator.SEG_CLOSE) {
+    	        		tpl.get(tpl.size() - 1).addPoint(startCoords.getX(), startCoords.getY());
+    	        	} 
+    	        
+    	            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
+    	            pi.next();
+    		    }
+    		    	};
     	
     	// Paint all G0 and G1 moves
         for(int i = 0; i < programModel.sizeRow(); i++) {
