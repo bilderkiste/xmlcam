@@ -88,7 +88,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 		paintAt.scale(graphicView.getScale(), graphicView.getScale());
 		int yScrollBarValueInv = graphicView.getyBar().getMaximum() - graphicView.getyBar().getVisibleAmount() - graphicView.getyBar().getValue();
 		paintAt.translate(0 - (graphicView.getxBar().getValue() / graphicView.getScale()), yScrollBarValueInv  / -graphicView.getScale());
-		System.out.println(graphicView.getxBar().getValue() + " - " + yScrollBarValueInv);
+		//System.out.println(graphicView.getxBar().getValue() + " - " + yScrollBarValueInv);
 		
 		// Antialiasing aktivieren
 		//g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -225,13 +225,24 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         }
         
         if(gridVisible) {
-        	g2.setColor(Color.ORANGE);
-        	for(int i = 0; i <= Settings.workbench.getXDimension(); i += Settings.gridStep / graphicView.getScale()) {
-        		for(int j = 0; j <= Settings.workbench.getYDimension(); j += 10) {
+        	g2.setColor(Color.LIGHT_GRAY);
+        	// X - Grid
+        	for(int i = 0; i <= Settings.workbench.getXDimension() * graphicView.getScale(); i += Settings.gridStep / graphicView.getScale()) {
+        		for(int j = 0; j <= Settings.workbench.getYDimension() * graphicView.getScale(); j += Settings.gridStep / graphicView.getScale()) {
 					g.drawLine((int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
-							j * graphicView.getScale(),
+							(j * graphicView.getScale() - 4) - yScrollBarValueInv,
 							(int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
-							j * graphicView.getScale() + 5);
+							(j * graphicView.getScale() + 4) - yScrollBarValueInv);
+	        	}
+        	}
+        	// Y - Grid
+        	for(int i = 0; i <= Settings.workbench.getYDimension() * graphicView.getScale(); i += Settings.gridStep / graphicView.getScale()) {
+        		for(int j = 0; j < Settings.workbench.getXDimension() * graphicView.getScale(); j += Settings.gridStep / graphicView.getScale()) {
+					g.drawLine((j * graphicView.getScale() - 4) - graphicView.getxBar().getValue(),
+							(int)(i * graphicView.getScale() - yScrollBarValueInv),
+							(j * graphicView.getScale() + 4) - graphicView.getxBar().getValue(),
+							(int)(i * graphicView.getScale() - yScrollBarValueInv));
+							
 	        	}
         	}
         }
