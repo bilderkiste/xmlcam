@@ -227,10 +227,12 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         if(gridVisible) {
         	g2.setColor(Color.ORANGE);
         	for(int i = 0; i <= Settings.workbench.getXDimension(); i += Settings.gridStep / graphicView.getScale()) {
-				g.drawLine((int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
-						0,
-						(int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
-						this.getHeight());
+        		for(int j = 0; j <= Settings.workbench.getYDimension(); j += 10) {
+					g.drawLine((int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
+							j * graphicView.getScale(),
+							(int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
+							j * graphicView.getScale() + 5);
+	        	}
         	}
         }
     	        

@@ -79,10 +79,7 @@ public class GraphicViewRuler extends JPanel {
 						(int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv),
 						30, 
 						(int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv));
-				g2.drawString(Integer.toString(i), 0, (int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv));
-		    	//g2.translate(0, this.getHeight());
-		    	//g2.scale(1,-1);
-				
+				g2.drawString(Integer.toString(i), 0, (int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv));				
 			}
 		}
 		
