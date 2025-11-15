@@ -1,14 +1,52 @@
 <?xml version="1.0"?>
 <program>
 	<tool>
-		<diameter>2</diameter>
-		<name>Kugelfräser</name>
+		<diameter>2.3</diameter>
+		<name>Flachfraeser</name>
 	</tool>	
-
+	<text pocket="parallel">
+		<content>Ein toller Tag</content>
+		<p>20,20</p>
+		<size>80</size>
+		<type>Calibri</type>
+		<style>plain</style>
+		<flatness>1.0</flatness>
+		<z>0,-1,1</z>
+	</text>
+	<translate x="-10" y="100">
 		<rectangle path="inset" pocket="parallel">
-			<p>10,10</p>
-			<p>20,20</p>
+			<p>100,100</p>
+			<p>150,130</p>
 			<z>0,-1,0.1</z>
 		</rectangle>
-		
+	</translate>
+	<line>
+		<p>100,100</p>
+		<p>100,200</p>
+		<z>0,-1,0.1</z>
+	</line>
+	<translate x="20" y="20">
+		<drill>
+			<p>15,15</p>
+			<z>0,-1</z>
+		</drill>
+	</translate>
+	<tool>
+		<diameter>1.0</diameter>
+		<name>Kugelfraeser</name>
+	</tool>	
+	<feedrate>200</feedrate>
+	<translate x="34" y="23">
+		<circle path="outset" pocket="parallel">
+			<p>44,66</p>
+			<rad>20</rad>
+			<z>0,-1,0.1</z>
+		</circle>
+		<polyline>
+			<p>100,130</p>
+			<spl>50,200</spl>
+			<p>120,250</p>
+			<z>0,-1,0.1</z>
+		</polyline>
+	</translate>
 </program>

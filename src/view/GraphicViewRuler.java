@@ -64,16 +64,24 @@ public class GraphicViewRuler extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 		
 		if(axis == 0) {
-			for(int i = Settings.workbench.getXMin() * graphicView.getScale(); i <= (Settings.workbench.getXMin() + Settings.workbench.getXDimension()) * graphicView.getScale(); i += Settings.gridStep) {
-				g.drawLine(i - Settings.workbench.getXMin() * graphicView.getScale() - graphicView.getxBar().getValue(), this.getHeight(), i - Settings.workbench.getXMin() * graphicView.getScale() - graphicView.getxBar().getValue(), this.getHeight() - 30);
-				g.drawString(Integer.toString(i / graphicView.getScale()), i - Settings.workbench.getXMin() * graphicView.getScale() + 2 - graphicView.getxBar().getValue(), this.getHeight() - 4);
+			for(int i = 0; i <= Settings.workbench.getXDimension(); i += Settings.gridStep / graphicView.getScale()) {
+				g.drawLine((int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
+						this.getHeight(),
+						(int)(i * graphicView.getScale() - graphicView.getxBar().getValue()), 
+						this.getHeight() - 30);
+				g.drawString(Integer.toString(i), (int)(i * graphicView.getScale() - graphicView.getxBar().getValue()), this.getHeight() - 4);
 			}
 		
 		} else if(axis == 1) {
-			for(int i = Settings.workbench.getYMin() * graphicView.getScale(); i <= (Settings.workbench.getYMin() + Settings.workbench.getYDimension()) * graphicView.getScale(); i += Settings.gridStep) {
-				g2.drawLine(0, 0 + (i - Settings.workbench.getYMin() * graphicView.getScale() + (graphicView.getyBar().getValue())), 30, 0 + (i - Settings.workbench.getYMin() * graphicView.getScale() + (graphicView.getyBar().getValue())));
-				g2.drawString(Integer.toString(i / graphicView.getScale()), 0, 0 + (i - Settings.workbench.getYMin() * graphicView.getScale() + 2 + (graphicView.getyBar().getValue())));
-				AffineTransform at = new AffineTransform();
+			int yScrollBarValueInv = graphicView.getyBar().getMaximum() - graphicView.getyBar().getVisibleAmount() - graphicView.getyBar().getValue();
+			for(int i = 0; i <= Settings.workbench.getYDimension(); i += Settings.gridStep / graphicView.getScale()) {
+				g2.drawLine(0, 
+						(int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv),
+						30, 
+						(int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv));
+				g2.drawString(Integer.toString(i), 0, (int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv));
+		    	//g2.translate(0, this.getHeight());
+		    	//g2.scale(1,-1);
 				
 			}
 		}

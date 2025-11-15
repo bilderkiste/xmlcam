@@ -111,11 +111,14 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     		}
     	};*/
     	
+    	// Paint shapes
     	if(shapeVisible) {
     		g2.setColor(Color.BLUE);
     		for(int i = 0; i < programModel.sizeElements(); i++) {
     			Path2D.Double shape = programModel.getElement(i).getShape();
-    			PathIterator pi = shape.getPathIterator(null, 0.1); 
+    			AffineTransform originalAt = programModel.getElement(i).getTransform();
+    			
+    			PathIterator pi = shape.getPathIterator(originalAt, 0.1); 
     		    
     		    double[] coords = new double[2];
     		    double startX = 0, startY = 0;
@@ -148,6 +151,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	}
     	
     	// Paint all G0 and G1 moves
+    	x1 = y1 = 0;
         for(int i = 0; i < programModel.sizeRow(); i++) {
         	draw = false;
         	if(programModel.getRow(i).getField(0).toString().equals("G0")) {
@@ -221,7 +225,13 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         }
         
         if(gridVisible) {
-        	paintGrid(g);
+        	g2.setColor(Color.ORANGE);
+        	for(int i = 0; i <= Settings.workbench.getXDimension(); i += Settings.gridStep / graphicView.getScale()) {
+				g.drawLine((int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
+						0,
+						(int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
+						this.getHeight());
+        	}
         }
     	        
     } 
@@ -230,7 +240,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	 * Paints the grid.
 	 * @param g The graphics object
 	 */
-	private void paintGrid(Graphics g) {
+/*	private void paintGrid(Graphics g) {
 		g.setColor(Color.DARK_GRAY);
 		
 		for(int i = 0; i < Settings.workbench.getXDimension() * graphicView.getScale(); i += Settings.gridStep) {
@@ -239,7 +249,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 						i - graphicView.getxBar().getValue(), this.getHeight() - j - (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()));
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 * Returns if the grid is visible or not.
