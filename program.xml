@@ -5,7 +5,7 @@
 		<name>Kugelfräser</name>
 	</tool>	
 
-		<rectangle pocket="parallel">
+		<rectangle path="inset" pocket="parallel">
 			<p>10,10</p>
 			<p>20,20</p>
 			<z>0,-1,0.1</z>

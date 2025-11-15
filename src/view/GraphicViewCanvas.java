@@ -100,7 +100,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	g2.fill(transformedWorkbench);
     	
     	// Paint shapes
-    	if(shapeVisible) {
+    	/*if(shapeVisible) {
     		for(int i = 0; i < programModel.sizeElements(); i++) {
     			g2.setColor(Color.BLUE);
     			AffineTransform originalAt = programModel.getElement(i).getTransform();
@@ -109,30 +109,43 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     			shape.transform(paintAt);
     			g2.draw(shape);
     		}
-    	};
+    	};*/
     	
     	if(shapeVisible) {
+    		g2.setColor(Color.BLUE);
     		for(int i = 0; i < programModel.sizeElements(); i++) {
-    			Path2D.Double shape = programModel.getElement(index).getShape();
+    			Path2D.Double shape = programModel.getElement(i).getShape();
     			PathIterator pi = shape.getPathIterator(null, 0.1); 
     		    
     		    double[] coords = new double[2];
-    		    double x1, y1;
+    		    double startX = 0, startY = 0;
+    		    
     		    while (!pi.isDone()) {
     	        	int segmentType = pi.currentSegment(coords);
     	        	if(segmentType == PathIterator.SEG_MOVETO) {
-    	        		x1 = coords[0];
-    	        		
+    	        		startX = x1 = coords[0];
+    	        		startY = y1 = coords[1];
     	        	} else if(segmentType == PathIterator.SEG_LINETO) {
-    	        		tpl.get(tpl.size() - 1).addPoint(coords[0], coords[1]);
+    	        		g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue()), 
+    	        					(int)(y1 * graphicView.getScale() - yScrollBarValueInv),
+    	        					(int)(coords[0] * graphicView.getScale() - graphicView.getxBar().getValue()), 
+    	        					(int)(coords[1] * graphicView.getScale() - yScrollBarValueInv));
+    	        					
+	        					
+    	        		x1 = coords[0];
+    	        		y1 = coords[1];
     	        	} else if(segmentType == PathIterator.SEG_CLOSE) {
-    	        		tpl.get(tpl.size() - 1).addPoint(startCoords.getX(), startCoords.getY());
+    	        		g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue()), 
+	        					(int)(y1 * graphicView.getScale() - yScrollBarValueInv),
+	        					(int)(startX * graphicView.getScale() - graphicView.getxBar().getValue()), 
+	        					(int)(startY * graphicView.getScale() - yScrollBarValueInv));
     	        	} 
     	        
     	            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
     	            pi.next();
     		    }
-    		    	};
+    		}
+    	}
     	
     	// Paint all G0 and G1 moves
         for(int i = 0; i < programModel.sizeRow(); i++) {
