@@ -111,6 +111,30 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     		}
     	};*/
     	
+    	// Paint grid
+        if(gridVisible) {
+        	g2.setColor(Color.LIGHT_GRAY);
+        	// X - Grid
+        	for(int i = 0; i <= Settings.workbench.getXDimension(); i += Settings.gridStep / graphicView.getScale()) {
+        		for(int j = 0; j <= Settings.workbench.getYDimension(); j += Settings.gridStep / graphicView.getScale()) {
+					g.drawLine((int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
+							(j * graphicView.getScale() - 4) - yScrollBarValueInv,
+							(int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
+							(j * graphicView.getScale() + 4) - yScrollBarValueInv);
+	        	}
+        	}
+        	// Y - Grid
+        	for(int i = 0; i <= Settings.workbench.getYDimension(); i += Settings.gridStep / graphicView.getScale()) {
+        		for(int j = 0; j <= Settings.workbench.getXDimension(); j += Settings.gridStep / graphicView.getScale()) {
+					g.drawLine((j * graphicView.getScale() - 4) - graphicView.getxBar().getValue(),
+							(int)(i * graphicView.getScale() - yScrollBarValueInv),
+							(j * graphicView.getScale() + 4) - graphicView.getxBar().getValue(),
+							(int)(i * graphicView.getScale() - yScrollBarValueInv));
+							
+	        	}
+        	}
+        }
+    	
     	// Paint shapes
     	if(shapeVisible) {
     		g2.setColor(Color.BLUE);
@@ -223,46 +247,8 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         		}
         	}
         }
-        
-        if(gridVisible) {
-        	g2.setColor(Color.LIGHT_GRAY);
-        	// X - Grid
-        	for(int i = 0; i <= Settings.workbench.getXDimension() * graphicView.getScale(); i += Settings.gridStep / graphicView.getScale()) {
-        		for(int j = 0; j <= Settings.workbench.getYDimension() * graphicView.getScale(); j += Settings.gridStep / graphicView.getScale()) {
-					g.drawLine((int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
-							(j * graphicView.getScale() - 4) - yScrollBarValueInv,
-							(int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
-							(j * graphicView.getScale() + 4) - yScrollBarValueInv);
-	        	}
-        	}
-        	// Y - Grid
-        	for(int i = 0; i <= Settings.workbench.getYDimension() * graphicView.getScale(); i += Settings.gridStep / graphicView.getScale()) {
-        		for(int j = 0; j < Settings.workbench.getXDimension() * graphicView.getScale(); j += Settings.gridStep / graphicView.getScale()) {
-					g.drawLine((j * graphicView.getScale() - 4) - graphicView.getxBar().getValue(),
-							(int)(i * graphicView.getScale() - yScrollBarValueInv),
-							(j * graphicView.getScale() + 4) - graphicView.getxBar().getValue(),
-							(int)(i * graphicView.getScale() - yScrollBarValueInv));
-							
-	        	}
-        	}
-        }
     	        
     } 
-	
-	/**
-	 * Paints the grid.
-	 * @param g The graphics object
-	 */
-/*	private void paintGrid(Graphics g) {
-		g.setColor(Color.DARK_GRAY);
-		
-		for(int i = 0; i < Settings.workbench.getXDimension() * graphicView.getScale(); i += Settings.gridStep) {
-			for(int j = 0; j < Settings.workbench.getYDimension() * graphicView.getScale(); j += Settings.gridStep) {
-				g.drawLine(i - graphicView.getxBar().getValue(), this.getHeight() - j - (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()),
-						i - graphicView.getxBar().getValue(), this.getHeight() - j - (graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()));
-			}
-		}
-	}*/
 	
 	/**
 	 * Returns if the grid is visible or not.
