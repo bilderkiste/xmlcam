@@ -35,7 +35,6 @@ public class Circle extends ElementClosed {
 	private Tuple segments;
 	private int resolution; // mm
 	private double phiStep;
-	private boolean pocket;
 
 	public Circle(Node node, Generator gen) {
 		super(node, gen);
@@ -43,7 +42,6 @@ public class Circle extends ElementClosed {
 		segments = null;
 		resolution = 2; // mm
 		phiStep = 0;
-		pocket = false;
 	}
 
 	@Override
@@ -120,7 +118,7 @@ public class Circle extends ElementClosed {
         addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("Circle at " + center + " with radius " + radius)));
 		
 		//create pockettoolpath
-		if(pocket) {
+		if(isPocket()) {
 			addToolPathes(createPocket(pathShape, at, gen.getTool()));
 		}
 		
