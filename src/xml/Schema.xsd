@@ -22,7 +22,7 @@
 			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 		<xs:attribute name="pocket" type="pockettype" />
-		<xs:attribute name="path" type="pathtype" />
+		<xs:attribute name="offset" type="offsettype" />
 	</xs:complexType>
 		
 	<xs:complexType name="circle">
@@ -33,7 +33,7 @@
 			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 		<xs:attribute name="pocket" type="pockettype" />
-		<xs:attribute name="path" type="pathtype" />
+		<xs:attribute name="offset" type="offsettype" />
 	</xs:complexType>
 
 	<xs:complexType name="text">
@@ -47,7 +47,7 @@
 			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 		<xs:attribute name="pocket" type="pockettype" />
-		<xs:attribute name="path" type="pathtype" />
+		<xs:attribute name="offset" type="offsettype" />
 	</xs:complexType>
 		
 	<xs:complexType name="polyline">
@@ -66,7 +66,7 @@
 			<xs:element name="z" type="ztype3" />
 		</xs:sequence>
 		<xs:attribute name="pocket" type="pockettype" />
-		<xs:attribute name="path" type="pathtype" />
+		<xs:attribute name="offset" type="offsettype" />
 	</xs:complexType>
 	
 	<xs:complexType name="tool">
@@ -142,7 +142,7 @@
 	    </xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="pathtype">
+	<xs:simpleType name="offsettype">
 	    <xs:restriction base="xs:string">
 	    	<xs:pattern value="engraving|inset|outset?"/>
 	    </xs:restriction>

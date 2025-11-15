@@ -11,6 +11,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 import controller.Generator;
@@ -23,12 +24,34 @@ abstract class ElementClosed extends Element {
 	public static final int INSET = 1;
 	public static final int OUTSET = 2;
 	
-	protected int path;
+	private int pathOffset;
+	private boolean pocket;
 
 	public ElementClosed(Node node, Generator gen) {
 		super(node, gen);
+		pathOffset = ElementClosed.ENGRAVING;
+		pocket = false;
 	}
 
+	protected void setClosedElementsAttributeVars(NamedNodeMap map) {
+		try {
+			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
+				pocket = true;
+			}
+		} catch(NullPointerException e) {
+		} 
+		
+		try {
+			if(map.getNamedItem("offset").getTextContent().equals("engraving")) {
+				pathOffset = ElementClosed.ENGRAVING;
+			} else if(map.getNamedItem("offset").getTextContent().equals("inset")) {
+				pathOffset = ElementClosed.INSET;
+			} else if(map.getNamedItem("offset").getTextContent().equals("outset")) {
+				pathOffset = ElementClosed.OUTSET;
+			}
+		} catch(NullPointerException e) {
+		}
+	}
 
     public Path2D.Double AreaToPath(Area area) {
         Path2D.Double path = new Path2D.Double();
@@ -235,5 +258,24 @@ abstract class ElementClosed extends Element {
 			return y;
 		}
 	}
+
+	public int getPath() {
+		return pathOffset;
+	}
+
+
+	public void setPath(int offset) {
+		this.pathOffset = offset;
+	}
+
+	public boolean isPocket() {
+		return pocket;
+	}
+
+	public void setPocket(boolean pocket) {
+		this.pocket = pocket;
+	}
+	
+	
 		
 }

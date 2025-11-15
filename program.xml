@@ -6,15 +6,15 @@
 	</tool>	
 	<text pocket="parallel">
 		<content>Ein toller Tag</content>
-		<p>20,20</p>
-		<size>80</size>
+		<p>20,80</p>
+		<size>20</size>
 		<type>Calibri</type>
 		<style>plain</style>
 		<flatness>1.0</flatness>
 		<z>0,-1,1</z>
 	</text>
 	<translate x="-10" y="100">
-		<rectangle path="inset" pocket="parallel">
+		<rectangle offset="inset" pocket="parallel">
 			<p>100,100</p>
 			<p>150,130</p>
 			<z>0,-1,0.1</z>
@@ -27,18 +27,18 @@
 	</line>
 	<translate x="20" y="20">
 		<drill>
-			<p>15,15</p>
+			<p>30,30</p>
 			<z>0,-1</z>
 		</drill>
 	</translate>
 	<tool>
-		<diameter>1.0</diameter>
+		<diameter>2.0</diameter>
 		<name>Kugelfraeser</name>
 	</tool>	
 	<feedrate>200</feedrate>
-	<translate x="34" y="23">
-		<circle path="outset" pocket="parallel">
-			<p>44,66</p>
+	<translate x="0" y="0">
+		<circle offset="inset">
+			<p>25,25</p>
 			<rad>20</rad>
 			<z>0,-1,0.1</z>
 		</circle>

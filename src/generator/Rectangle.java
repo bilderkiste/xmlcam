@@ -33,34 +33,17 @@ import model.Tuple;
 public class Rectangle extends ElementClosed {
 	
 	private ArrayList<Tuple> xmlPoints;
-	private boolean pocket;
 	
 	public Rectangle(Node node, Generator gen) {
 		super(node, gen);
 		xmlPoints = new ArrayList<Tuple>();
-		pocket = false;
 	}
 
 	@Override
 	public void extract() throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
 
-		NamedNodeMap map = node.getAttributes();
-		
-		try {
-			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
-				pocket = true;
-			}
-			if(map.getNamedItem("path").getTextContent().equals("engraving")) {
-				path = ElementClosed.ENGRAVING;
-			} else if(map.getNamedItem("path").getTextContent().equals("inset")) {
-				path = ElementClosed.INSET;
-			} else if(map.getNamedItem("path").getTextContent().equals("outset")) {
-				path = ElementClosed.OUTSET;
-			}
-		} catch(NullPointerException e) {
-		
-		} 
+		setClosedElementsAttributeVars(node.getAttributes());
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
@@ -92,18 +75,18 @@ public class Rectangle extends ElementClosed {
 		
         Path2D.Double pathShape = null;
         
-        if(path == ElementClosed.ENGRAVING) {
+        if(super.getPath() == ElementClosed.ENGRAVING) {
         	pathShape = shape;
-        } else if(path == ElementClosed.INSET) {
+        } else if(super.getPath() == ElementClosed.INSET) {
         	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) gen.getTool().getRadius()));
-        } else if(path == ElementClosed.OUTSET) {
+        } else if(super.getPath() == ElementClosed.OUTSET) {
         	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) gen.getTool().getRadius()));
         }
 		
 		addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("Rectangle from " + xmlPoints.get(0) + " to " + xmlPoints.get(1))));
 		
 		//create pockettoolpath
-		if(pocket) {
+		if(isPocket()) {
 			addToolPathes(createPocket(pathShape, at, gen.getTool()));
 		}
 

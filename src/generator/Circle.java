@@ -50,22 +50,7 @@ public class Circle extends ElementClosed {
 	public void extract() throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
 		
-		NamedNodeMap map = node.getAttributes();
-
-		try {
-			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
-				pocket = true;
-			}
-			if(map.getNamedItem("path").getTextContent().equals("engraving")) {
-				path = ElementClosed.ENGRAVING;
-			} else if(map.getNamedItem("path").getTextContent().equals("inset")) {
-				path = ElementClosed.INSET;
-			} else if(map.getNamedItem("path").getTextContent().equals("outset")) {
-				path = ElementClosed.OUTSET;
-			}
-		} catch(NullPointerException e) {
-		
-		} 
+		setClosedElementsAttributeVars(node.getAttributes());
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
@@ -123,12 +108,13 @@ public class Circle extends ElementClosed {
         
         Path2D.Double pathShape = null;
         
-        if(path == ElementClosed.ENGRAVING) {
+        if(super.getPath() == ElementClosed.ENGRAVING) {
         	pathShape = shape;
-        } else if(path == ElementClosed.INSET) {
+        } else if(super.getPath() == ElementClosed.INSET) {
         	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) gen.getTool().getRadius()));
-        } else if(path == ElementClosed.OUTSET) {
+        } else if(super.getPath() == ElementClosed.OUTSET) {
         	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) gen.getTool().getRadius()));
+        	System.out.println("circleOutset");
         }
         
         addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("Circle at " + center + " with radius " + radius)));

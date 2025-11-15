@@ -47,7 +47,6 @@ public class Text extends ElementClosed {
 	private String content;
 	private Font font;
 	private double flatness;
-	private boolean pocket;
 
 	public Text(Node node, Generator gen) {
 		super(node, gen);
@@ -55,7 +54,6 @@ public class Text extends ElementClosed {
 		content = null;
 		font = null;
 		flatness = 0.5;
-		pocket = false;
 		name = "Text";
 	}
 
@@ -71,22 +69,7 @@ public class Text extends ElementClosed {
 		styleMap.put("ITALIC", 2);
 		styleMap.put("BOLDITALIC", 3);
 		
-		NamedNodeMap map = node.getAttributes();
-
-		try {
-			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
-				pocket = true;
-			}
-			if(map.getNamedItem("path").getTextContent().equals("engraving")) {
-				path = ElementClosed.ENGRAVING;
-			} else if(map.getNamedItem("path").getTextContent().equals("inset")) {
-				path = ElementClosed.INSET;
-			} else if(map.getNamedItem("path").getTextContent().equals("outset")) {
-				path = ElementClosed.OUTSET;
-			}
-		} catch(NullPointerException e) {
-		
-		} 
+		setClosedElementsAttributeVars(node.getAttributes());
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
@@ -149,13 +132,11 @@ public class Text extends ElementClosed {
         
         Path2D.Double pathShape = null;
         
-        if(path == ElementClosed.ENGRAVING) {
+        if(super.getPath() == ElementClosed.ENGRAVING) {
         	pathShape = shape;
-        } else if(path == ElementClosed.INSET) {
+        } else if(super.getPath() == ElementClosed.INSET) {
         	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) gen.getTool().getRadius()));
-        	System.out.println("in");
-        } else if(path == ElementClosed.OUTSET) {
-        	System.out.println("out");
+        } else if(super.getPath() == ElementClosed.OUTSET) {
         	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) gen.getTool().getRadius()));
         }
         
