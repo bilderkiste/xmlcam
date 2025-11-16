@@ -83,12 +83,17 @@ public class ScriptValidator extends Thread {
 		
 		Main.log.log(Level.FINE, "Start new validator thread no. " + this.threadId() + ".");
 		Highlighter highlighter = editorPane.getHighlighter();
+		Color marker = new Color(255, 0,0, 40);
+		Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(marker);
+		Object tag = null;
 		
 		while(!interrupt) {
 						
 			try {
+				if(tag != null) {
+					highlighter.removeHighlight(tag);
+				}
 				xmlValidator.validate(new StreamSource(new StringReader(editorPane.getText())));
-				highlighter.removeAllHighlights();
 				fireNoErrorFound();
 			} catch (SAXException e) {
 				String xml = editorPane.getText();
@@ -106,9 +111,8 @@ public class ScriptValidator extends Thread {
 					}
 					j = xml.indexOf("\n", j + 1);
 				}
-				System.out.println(j + " " + k);
 				try {
-				    highlighter.addHighlight(j, k, new DefaultHighlighter.DefaultHighlightPainter(Color.RED));
+				    tag = highlighter.addHighlight(j, k, painter);
 				} catch (BadLocationException err) {
 					err.printStackTrace();
 				}
