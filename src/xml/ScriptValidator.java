@@ -28,10 +28,8 @@ import java.util.logging.Level;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Highlighter;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.StyleConstants;
+
 import javax.xml.XMLConstants;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.transform.stream.StreamSource;
@@ -39,9 +37,6 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
-import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
-import org.fife.ui.rsyntaxtextarea.Token;
 import org.xml.sax.SAXException;
 
 import main.Main;
@@ -81,7 +76,7 @@ public class ScriptValidator extends Thread {
 			return;
 		}
 		
-		Main.log.log(Level.FINE, "Start new validator thread no. " + this.threadId() + ".");
+		Main.log.log(Level.FINE, "Start new validator thread no. " + this.getId() + ".");
 		Highlighter highlighter = editorPane.getHighlighter();
 		Color marker = new Color(255, 0,0, 40);
 		Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(marker);
@@ -130,7 +125,7 @@ public class ScriptValidator extends Thread {
 				Main.log.log(Level.WARNING, "Validator thread was interrupted. " + e);
 			}
 		}
-		Main.log.log(Level.FINE, "Validator thread "+ this.threadId() + " was interrupted.");
+		Main.log.log(Level.FINE, "Validator thread "+ this.getId() + " was interrupted.");
 	}
 	
 	/**

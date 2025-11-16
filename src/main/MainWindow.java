@@ -335,9 +335,6 @@ public class MainWindow extends JFrame {
 		
 		xmlEditorPane.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
 		xmlEditorPane.setCodeFoldingEnabled(true);
-
-        //RTextScrollPane sp = new RTextScrollPane(textArea);
-        
 		
 		// TODO: Delete stuff
 		try {
@@ -354,7 +351,8 @@ public class MainWindow extends JFrame {
 		xmlEditorPane.setScriptvalidator(new ScriptValidator()); 
 		xmlEditorPane.getScriptvalidator().start();
 	    
-		JScrollPane scrollPane = new JScrollPane(xmlEditorPane);
+		//JScrollPane scrollPane = new JScrollPane(xmlEditorPane);
+		RTextScrollPane scrollPane = new RTextScrollPane(xmlEditorPane);
 		
 	    panel.add(scrollPane, BorderLayout.CENTER);
 		
