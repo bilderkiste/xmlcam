@@ -143,15 +143,7 @@ public class Polyline extends ElementClosed {
 		at = new AffineTransform();
 		at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
 		
-        Path2D.Double pathShape = null;
-        
-        if(super.getPath() == ElementClosed.ENGRAVING) {
-        	pathShape = shape;
-        } else if(super.getPath() == ElementClosed.INSET) {
-        	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) gen.getTool().getRadius()));
-        } else if(super.getPath() == ElementClosed.OUTSET) {
-        	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) gen.getTool().getRadius()));
-        }
+		Path2D.Double pathShape = createOffsetShape(shape);
 		
 		addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("Polyline starting from " + xmlPoints.get(0) + " to " + xmlPoints.get(xmlPoints.size() - 1))));
 

@@ -33,6 +33,10 @@ abstract class ElementClosed extends Element {
 		pocket = false;
 	}
 
+	/**
+	 * Reads the attributes from a closed element an put the values in the corresponding variables.
+	 * @param map The NamedNodeMapt with the attributes
+	 */
 	protected void setClosedElementsAttributeVars(NamedNodeMap map) {
 		try {
 			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
@@ -52,7 +56,31 @@ abstract class ElementClosed extends Element {
 		} catch(NullPointerException e) {
 		}
 	}
+	
+	/**
+	 * Creates the offset pathes like engravings, insets or outsets. 
+	 * @param shape The original shape.
+	 * @return The transformed shape.
+	 */
+	public Path2D.Double createOffsetShape(Path2D.Double shape) {
+        Path2D.Double pathShape = null;
+        
+        if(pathOffset == ElementClosed.ENGRAVING) {
+        	pathShape = shape;
+        } else if(pathOffset == ElementClosed.INSET) {
+        	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) gen.getTool().getRadius()));
+        } else if(pathOffset == ElementClosed.OUTSET) {
+        	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) gen.getTool().getRadius()));
+        	System.out.println("circleOutset");
+        }
+        return pathShape;
+	}
 
+	/**
+	 * Converts an Area shape to an Path2d.Double shape.
+	 * @param area The area shape
+	 * @return The Path2D.Double shape
+	 */
     public Path2D.Double AreaToPath(Area area) {
         Path2D.Double path = new Path2D.Double();
 
@@ -245,6 +273,12 @@ abstract class ElementClosed extends Element {
 		return pocketToolPathes;
 	}
 
+	/**
+	 * The LineSegment class for the parallel pocket which contains a list with double values which consists the start and the end of the horizontal line segments of a shape.
+	 * In field 0 the startX value of the x line, in field 1 the endX value. if there are side rivers in the shape the further startX and endX are in fields 2 and 3.
+	 * That means that even indexes are always xStart values and odd numbers always xEnd number of a segment. 
+	 * It also consists the y coordinate of the line segment.
+	 */
 	class LineSegment extends ArrayList<Double> {
 		
 		private static final long serialVersionUID = 1L;
@@ -259,12 +293,11 @@ abstract class ElementClosed extends Element {
 		}
 	}
 
-	public int getPath() {
+	public int getPathOffset() {
 		return pathOffset;
 	}
 
-
-	public void setPath(int offset) {
+	public void setPathOffset(int offset) {
 		this.pathOffset = offset;
 	}
 

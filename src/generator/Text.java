@@ -130,15 +130,7 @@ public class Text extends ElementClosed {
         at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
         at.scale(1.0, -1.0);
         
-        Path2D.Double pathShape = null;
-        
-        if(super.getPath() == ElementClosed.ENGRAVING) {
-        	pathShape = shape;
-        } else if(super.getPath() == ElementClosed.INSET) {
-        	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) gen.getTool().getRadius()));
-        } else if(super.getPath() == ElementClosed.OUTSET) {
-        	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) gen.getTool().getRadius()));
-        }
+        Path2D.Double pathShape = createOffsetShape(shape);
         
         /*ArrayList<Path2D.Double> subShapes = mergeContainedPaths(splitIntoSubpaths(pathShape));
         for(int i = 0; i < subShapes.size(); i++) {
