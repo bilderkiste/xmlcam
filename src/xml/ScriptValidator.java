@@ -109,7 +109,6 @@ public class ScriptValidator extends Thread {
 				try {
 				    tag = highlighter.addHighlight(j, k, painter);
 				} catch (BadLocationException err) {
-					err.printStackTrace();
 				}
 				fireErrorOccured(errorHandler);
 			} catch (IOException e) {
