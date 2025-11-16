@@ -317,6 +317,22 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	public void setPointVisible(boolean pointVisible) {
 		this.pointVisible = pointVisible;
 	}
+	
+	/**
+	 * Returns if the shapes are visible or not.
+	 * @return True if visible
+	 */
+	public boolean isShapeVisible() {
+		return shapeVisible;
+	}
+
+	/**
+	 * Sets the shapes visible.
+	 * @param shapeVisible
+	 */
+	public void setShapeVisible(boolean shapeVisible) {
+		this.shapeVisible = shapeVisible;
+	}
 
 	/**
 	 * Gets invoked each time a change in G-Code program model occurs.

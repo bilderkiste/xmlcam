@@ -264,6 +264,13 @@ public class MainWindow extends JFrame {
 		
 		GraphicViewMenuBarListener graphicViewMenuBarListener = new GraphicViewMenuBarListener(graphicView);
 		
+		checkBoxMenuItem = new JCheckBoxMenuItem("Zeige Formen");
+		checkBoxMenuItem.setMnemonic(KeyEvent.VK_S);
+		checkBoxMenuItem.setSelected(graphicView.getGraphicViewCanvasView().isShapeVisible());
+		checkBoxMenuItem.setActionCommand("show_shapes");
+		checkBoxMenuItem.addActionListener(graphicViewMenuBarListener);
+		menu.add(checkBoxMenuItem);
+		
 		checkBoxMenuItem = new JCheckBoxMenuItem("Zeige G0");
 		checkBoxMenuItem.setMnemonic(KeyEvent.VK_0);
 		checkBoxMenuItem.setSelected(graphicView.getGraphicViewCanvasView().isG0lineVisible());

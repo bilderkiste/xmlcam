@@ -40,7 +40,10 @@ public class GraphicViewMenuBarListener implements ActionListener {
 	public void actionPerformed(ActionEvent actionEvent) {
 		AbstractButton actionButton = (AbstractButton) actionEvent.getSource();
 		
-		if(actionButton.getActionCommand() == "show_g0") {
+		if(actionButton.getActionCommand() == "show_shapes") {
+			graphicView.getGraphicViewCanvasView().setShapeVisible(actionButton.isSelected());
+			graphicView.repaint();
+		} else if(actionButton.getActionCommand() == "show_g0") {
 			graphicView.getGraphicViewCanvasView().setG0lineVisible(actionButton.isSelected());
 			graphicView.repaint();
 		} else if(actionButton.getActionCommand() == "show_g1") {

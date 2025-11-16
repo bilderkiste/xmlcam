@@ -274,8 +274,8 @@ abstract class ElementClosed extends Element {
 	}
 
 	/**
-	 * The LineSegment class for the parallel pocket which contains a list with double values which consists the start and the end of the horizontal line segments of a shape.
-	 * In field 0 the startX value of the x line, in field 1 the endX value. if there are side rivers in the shape the further startX and endX are in fields 2 and 3.
+	 * The LineSegment class for the parallel pocket which contains a list with double values which represent the start and the end of the horizontal line segments of a shape.
+	 * The field 0 has the startX value of the x line, the field 1 the endX value. if there are side rivers in the shape the further startX and endX are in fields 2 and 3, 4 and 5 ....
 	 * That means that even indexes are always xStart values and odd numbers always xEnd number of a segment. 
 	 * It also consists the y coordinate of the line segment.
 	 */

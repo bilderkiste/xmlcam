@@ -49,9 +49,13 @@ public class GraphicViewActionListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent actionEvent) {
 		AbstractButton actionButton = (AbstractButton) actionEvent.getSource();
-	
+		int scale = 0;
 		if(actionButton.getActionCommand() == "zoom_in") {
-			graphicView.setScale(graphicView.getScale() + 1);
+			scale = graphicView.getScale();
+			if(scale < 50) {
+				scale += 1;
+			}
+			graphicView.setScale(scale);
 			graphicView.getxBar().setMaximum(Settings.workbench.getXDimension() * graphicView.getScale());
 			graphicView.getyBar().setMinimum(Settings.workbench.getYDimension() * graphicView.getScale() * -1);
 			
