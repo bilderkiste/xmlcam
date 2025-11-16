@@ -80,10 +80,11 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	g2.scale(1,-1);
     	
     	// Transform for elements and workbench
-		AffineTransform paintAt = new AffineTransform();
-		paintAt.scale(graphicView.getScale(), graphicView.getScale());
+		
 		int yScrollBarValueInv = graphicView.getyBar().getMaximum() - graphicView.getyBar().getVisibleAmount() - graphicView.getyBar().getValue();
-		paintAt.translate(0 - (graphicView.getxBar().getValue() / graphicView.getScale()), yScrollBarValueInv  / -graphicView.getScale());
+		int workbenchTranslateX =  Settings.workbench.getXMin() * graphicView.getScale();
+		int workbenchTranslateY =  Settings.workbench.getYMin() * graphicView.getScale();
+		
 		//System.out.println(graphicView.getxBar().getValue() + " - " + yScrollBarValueInv);
 		
 		// Antialiasing aktivieren
@@ -91,22 +92,10 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 
     	// Paint workbench rectangle
     	g2.setColor(Color.WHITE);
-    	Rectangle2D workbench = new Rectangle2D.Double(0, 0, Settings.workbench.getXDimension(), Settings.workbench.getYDimension());
-    	Shape transformedWorkbench = paintAt.createTransformedShape(workbench);
-    	g2.fill(transformedWorkbench);
-    	
-    	// Paint shapes
-    	/*if(shapeVisible) {
-    		for(int i = 0; i < programModel.sizeElements(); i++) {
-    			g2.setColor(Color.BLUE);
-    			AffineTransform originalAt = programModel.getElement(i).getTransform();
-
-    			Path2D.Double shape = new Path2D.Double(programModel.getElement(i).getShape(), originalAt);
-    			shape.transform(paintAt);
-    			g2.draw(shape);
-    		}
-    	};*/
-    	
+    	Rectangle2D workbench = new Rectangle2D.Double(0, 0, Settings.workbench.getXDimension() * graphicView.getScale() - graphicView.getxBar().getValue(), 
+    														Settings.workbench.getYDimension() * graphicView.getScale() - yScrollBarValueInv);
+    	g2.fill(workbench);
+    	    	
     	// Paint grid
         if(gridVisible) {
         	g2.setColor(Color.LIGHT_GRAY);
@@ -149,29 +138,28 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	        		startX = x1 = coords[0];
     	        		startY = y1 = coords[1];
     	        	} else if(segmentType == PathIterator.SEG_LINETO) {
-    	        		g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue()), 
-    	        					(int)(y1 * graphicView.getScale() - yScrollBarValueInv),
-    	        					(int)(coords[0] * graphicView.getScale() - graphicView.getxBar().getValue()), 
-    	        					(int)(coords[1] * graphicView.getScale() - yScrollBarValueInv));
+    	        		g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue() - workbenchTranslateX), 
+    	        					(int)(y1 * graphicView.getScale() - yScrollBarValueInv - workbenchTranslateY),
+    	        					(int)(coords[0] * graphicView.getScale() - graphicView.getxBar().getValue() - workbenchTranslateX), 
+    	        					(int)(coords[1] * graphicView.getScale() - yScrollBarValueInv) - workbenchTranslateY);
     	        					
 	        					
     	        		x1 = coords[0];
     	        		y1 = coords[1];
     	        	} else if(segmentType == PathIterator.SEG_CLOSE) {
-    	        		g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue()), 
-	        					(int)(y1 * graphicView.getScale() - yScrollBarValueInv),
-	        					(int)(startX * graphicView.getScale() - graphicView.getxBar().getValue()), 
-	        					(int)(startY * graphicView.getScale() - yScrollBarValueInv));
+    	        		g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue() - workbenchTranslateX), 
+	        					(int)(y1 * graphicView.getScale() - yScrollBarValueInv - workbenchTranslateY),
+	        					(int)(startX * graphicView.getScale() - graphicView.getxBar().getValue() - workbenchTranslateX), 
+	        					(int)(startY * graphicView.getScale() - yScrollBarValueInv) - workbenchTranslateY);
     	        	} 
-    	        
-    	            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
     	            pi.next();
     		    }
     		}
     	}
     	
     	// Paint all G0 and G1 moves
-    	x1 = y1 = 0;
+    	x1 = Settings.workbench.getXMin();
+    	y1 = Settings.workbench.getYMin() ;
         for(int i = 0; i < programModel.sizeRow(); i++) {
         	draw = false;
         	if(programModel.getRow(i).getField(0).toString().equals("G0")) {
@@ -189,10 +177,10 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         		if(draw) {
         			if(g0lineVisible ) {
         				g2.setColor(Color.GREEN);
-        				g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue()), 
-        						(int)(y1 * graphicView.getScale() - yScrollBarValueInv), 
-        						(int)(x2 * graphicView.getScale() - graphicView.getxBar().getValue()) , 
-        						(int)(y2 * graphicView.getScale() - yScrollBarValueInv));
+        				g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue() - workbenchTranslateX), 
+        						(int)(y1 * graphicView.getScale() - yScrollBarValueInv - workbenchTranslateY), 
+        						(int)(x2 * graphicView.getScale() - graphicView.getxBar().getValue() - workbenchTranslateX), 
+        						(int)(y2 * graphicView.getScale() - yScrollBarValueInv) - workbenchTranslateY);
         			}
         			x1 = x2;
                 	y1 = y2;
@@ -212,16 +200,16 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
         		
     			if(pointVisible) {
 	        		g2.setColor(Color.RED);
-        			g2.drawOval((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue()) - 2, 
-    						(int)(y1 * graphicView.getScale() - yScrollBarValueInv) - 2, 4, 4);
+        			g2.drawOval((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue() - 2 - workbenchTranslateX), 
+    						(int)(y1 * graphicView.getScale() - yScrollBarValueInv - 2 - workbenchTranslateY), 4, 4);
     			}
         		if(draw) {
         			if(g1lineVisible) {
         				g2.setColor(Color.BLACK);
-        				g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue()), 
-        						(int)(y1 * graphicView.getScale() - yScrollBarValueInv), 
-        						(int)(x2 * graphicView.getScale() - graphicView.getxBar().getValue()) , 
-        						(int)(y2 * graphicView.getScale() - yScrollBarValueInv));
+        				g2.drawLine((int)(x1 * graphicView.getScale() - graphicView.getxBar().getValue() - workbenchTranslateX), 
+        						(int)(y1 * graphicView.getScale() - yScrollBarValueInv - workbenchTranslateY), 
+        						(int)(x2 * graphicView.getScale() - graphicView.getxBar().getValue() - workbenchTranslateX) , 
+        						(int)(y2 * graphicView.getScale() - yScrollBarValueInv - workbenchTranslateY));
         			}
         			x1 = x2;
             		y1 = y2;

@@ -32,7 +32,7 @@ public class Workbench {
 	private int xMin, yMin, xMax, yMax;
 	
 	protected Workbench(int xMin, int yMin, int xMax, int yMax) {
-		if(xMin >= 0) {
+		/*if(xMin >= 0) {
 			this.xMin = xMin;
 		} else {
 			this.xMin = 0;
@@ -41,7 +41,9 @@ public class Workbench {
 			this.yMin = yMin;
 		} else {
 			this.yMin = 0;
-		}
+		}*/
+		this.xMin = xMin;
+		this.yMin = yMin;
 		this.xMax = xMax;
 		this.yMax = yMax;
 	}

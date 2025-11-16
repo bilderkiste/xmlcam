@@ -38,7 +38,7 @@
 	<feedrate>200</feedrate>
 	<translate x="0" y="0">
 		<circle offset="inset">
-			<p>25,25</p>
+			<p>0,0</p>
 			<rad>20</rad>
 			<z>0,-1,0.1</z>
 		</circle>

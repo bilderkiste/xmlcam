@@ -63,22 +63,24 @@ public class GraphicViewRuler extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 		
 		if(axis == 0) {
-			for(int i = 0; i <= Settings.workbench.getXDimension(); i += Settings.gridStep / graphicView.getScale()) {
-				g.drawLine((int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
+			for(int i = Settings.workbench.getXMin(); i <= Settings.workbench.getXMax(); i += Settings.gridStep / graphicView.getScale()) {
+				int translation = Settings.workbench.getXMin() * graphicView.getScale();
+				g.drawLine((int)(i * graphicView.getScale() - graphicView.getxBar().getValue() - translation),
 						this.getHeight(),
-						(int)(i * graphicView.getScale() - graphicView.getxBar().getValue()), 
+						(int)(i * graphicView.getScale() - graphicView.getxBar().getValue()) - translation, 
 						this.getHeight() - 30);
-				g.drawString(Integer.toString(i), (int)(i * graphicView.getScale() - graphicView.getxBar().getValue()), this.getHeight() - 4);
+				g.drawString(Integer.toString(i), (int)(i * graphicView.getScale() - graphicView.getxBar().getValue() - translation), this.getHeight() - 4);
 			}
 		
 		} else if(axis == 1) {
 			int yScrollBarValueInv = graphicView.getyBar().getMaximum() - graphicView.getyBar().getVisibleAmount() - graphicView.getyBar().getValue();
-			for(int i = 0; i <= Settings.workbench.getYDimension(); i += Settings.gridStep / graphicView.getScale()) {
+			for(int i = Settings.workbench.getYMin(); i <= Settings.workbench.getYMax(); i += Settings.gridStep / graphicView.getScale()) {
+				int translation = Settings.workbench.getYMin() * graphicView.getScale();
 				g2.drawLine(0, 
-						(int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv),
+						(int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv + translation),
 						30, 
-						(int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv));
-				g2.drawString(Integer.toString(i), 0, (int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv));				
+						(int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv) + translation);
+				g2.drawString(Integer.toString(i), 0, (int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv + translation));				
 			}
 		}
 		
