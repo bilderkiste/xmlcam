@@ -26,7 +26,10 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Highlighter;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.xml.XMLConstants;
@@ -36,6 +39,9 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
+import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
+import org.fife.ui.rsyntaxtextarea.Token;
 import org.xml.sax.SAXException;
 
 import main.Main;
@@ -76,18 +82,13 @@ public class ScriptValidator extends Thread {
 		}
 		
 		Main.log.log(Level.FINE, "Start new validator thread no. " + this.threadId() + ".");
-		DefaultStyledDocument document;
-		MutableAttributeSet attributes = editorPane.getInputAttributes();
-	
+		Highlighter highlighter = editorPane.getHighlighter();
+		
 		while(!interrupt) {
-			document = (DefaultStyledDocument) editorPane.getStyledDocument();
-			StyleConstants.setForeground(attributes, Color.BLACK);
-			document.setCharacterAttributes(0, document.getLength(), attributes, true);
-			
-			StyleConstants.setForeground(attributes, Color.RED);
-			
+						
 			try {
 				xmlValidator.validate(new StreamSource(new StringReader(editorPane.getText())));
+				highlighter.removeAllHighlights();
 				fireNoErrorFound();
 			} catch (SAXException e) {
 				String xml = editorPane.getText();
@@ -105,7 +106,12 @@ public class ScriptValidator extends Thread {
 					}
 					j = xml.indexOf("\n", j + 1);
 				}
-				document.setCharacterAttributes(j, k - j, attributes, false);
+				System.out.println(j + " " + k);
+				try {
+				    highlighter.addHighlight(j, k, new DefaultHighlighter.DefaultHighlightPainter(Color.RED));
+				} catch (BadLocationException err) {
+					err.printStackTrace();
+				}
 				fireErrorOccured(errorHandler);
 			} catch (IOException e) {
 				Main.log.log(Level.WARNING, e.toString());

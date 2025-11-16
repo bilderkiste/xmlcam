@@ -19,7 +19,7 @@
 
 package xml;
 
-import javax.swing.JTextPane;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 /**
  * This class implements the XML View.
@@ -29,7 +29,7 @@ import javax.swing.JTextPane;
  *
  */
 
-public class XMLView extends JTextPane {
+public class XMLView extends RSyntaxTextArea {
 	
 	private static final long serialVersionUID = 1L;
 	private ScriptValidator scriptValidator;

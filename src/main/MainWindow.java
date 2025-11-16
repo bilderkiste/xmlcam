@@ -41,6 +41,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
+
 import controller.MenuBarListener;
 import controller.TableViewActionListener;
 import controller.TableViewDummyModelChangeListener;
@@ -324,11 +328,16 @@ public class MainWindow extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		
-		xmlEditorPane = new XMLView();  
-		xmlEditorPane.setContentType("text/plain");
+		xmlEditorPane = new XMLView();
 		xmlEditorPane.setFont(xmlEditorPane.getFont().deriveFont(Font.PLAIN, Settings.xmlFontSize));
 		
 		xmlEditorPane.setText("<?xml version=\"1.0\"?>\n");
+		
+		xmlEditorPane.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_XML);
+		xmlEditorPane.setCodeFoldingEnabled(true);
+
+        //RTextScrollPane sp = new RTextScrollPane(textArea);
+        
 		
 		// TODO: Delete stuff
 		try {
