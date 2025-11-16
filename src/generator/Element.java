@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import org.w3c.dom.Node;
 
 import controller.Generator;
-import model.Tool;
 import model.ToolPath;
 import model.Tuple;
 /**

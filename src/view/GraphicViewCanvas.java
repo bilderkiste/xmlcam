@@ -22,20 +22,16 @@ package view;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 import misc.Settings;
 import model.Program;
-import model.ToolPath;
 
 /**
  * This class paints the canvas where the G moves are displayed.

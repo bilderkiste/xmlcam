@@ -1,25 +1,18 @@
 package generator;
 
 import java.awt.Font;
-import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Area;
 import java.awt.geom.Path2D;
-import java.awt.geom.PathIterator;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import controller.Generator;
 import main.Main;
-import model.Tool;
-import model.ToolPath;
 import model.Tuple;
 
 /**
