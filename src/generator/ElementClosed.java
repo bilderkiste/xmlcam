@@ -89,7 +89,7 @@ abstract class ElementClosed extends Element {
         
         PathIterator iterator = area.getPathIterator(null);
         
-        double[] coords = new double[6];
+        double[] coords = new double[2];
 
         while (!iterator.isDone()) {
             int segmentType = iterator.currentSegment(coords);
@@ -110,14 +110,15 @@ abstract class ElementClosed extends Element {
                     }
                     pts.add(new Point2D.Double(coords[0], coords[1]));	
                     break;
-                case PathIterator.SEG_QUADTO:
+                /*case PathIterator.SEG_QUADTO:
                 	tmp_path.quadTo(coords[0], coords[1], coords[2], coords[3]);
                     break;
                 case PathIterator.SEG_CUBICTO:
                 	tmp_path.curveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
-                    break;
+                    break;*/
                 case PathIterator.SEG_CLOSE:
                 	tmp_path.closePath();
+                	// Degenerierte Pfade erkennen und loeschen
                 	if(isPathValid(pts)) {
                     	result_path.append(tmp_path, false);
                 	}
@@ -125,8 +126,7 @@ abstract class ElementClosed extends Element {
                     pts.clear();
                     break;
             }
-            // Degenerierte Pfade erkennen und loeschen
-            System.out.println(segmentType + " - " + coords[0] + " " + coords[1] + " " + coords[2]+ " " + coords[3] + " " + coords[4] + " " + coords[5]);
+            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1] + " " + coords[2]+ " " + coords[3] + " " + coords[4] + " " + coords[5]);
             
             iterator.next();
         }

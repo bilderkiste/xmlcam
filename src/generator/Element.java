@@ -154,8 +154,8 @@ public abstract class Element {
         		tpl.get(tpl.size() - 1).addPoint(coords[0], coords[1]);
         	} else if(segmentType == PathIterator.SEG_CLOSE) {
         		// letzten Punkt loeschen, da extrem nah an Startkoordinate, dann Pfad schliessen
-        		int tpSize = tpl.get(tpl.size() - 1).size();
-        		tpl.get(tpl.size() - 1).remove(tpSize - 1);
+        		/*int tpSize = tpl.get(tpl.size() - 1).size();
+        		tpl.get(tpl.size() - 1).remove(tpSize);*/
         		tpl.get(tpl.size() - 1).addPoint(startCoords.getX(), startCoords.getY());
         	} 
         
