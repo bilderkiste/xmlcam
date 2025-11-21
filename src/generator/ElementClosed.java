@@ -134,7 +134,11 @@ abstract class ElementClosed extends Element {
         return result_path;
     }
     
-
+    /**
+     * Check if the Path2D generated from an Area is valid or degenerated.
+     * @param pts an Array with Point2D.Double
+     * @return true if valid, false if degenerated
+     */
     private boolean isPathValid(ArrayList<Point2D.Double> pts) {
     	
     	if (pts.size() < 3) return false; // Mindestens 3 Punkte für Fläche
