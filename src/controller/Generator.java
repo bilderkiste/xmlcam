@@ -265,7 +265,6 @@ public class Generator {
 		try {
 			x = new BigDecimal(map.getNamedItem("x").getTextContent()).doubleValue();
 		} catch(NullPointerException e) {
-			Main.log.log(Level.WARNING, "Missing translation parameter(s); " + e);
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
 		}	
@@ -273,7 +272,7 @@ public class Generator {
 		try {
 			y = new BigDecimal(map.getNamedItem("y").getTextContent()).doubleValue();
 		} catch(NullPointerException e) {
-			Main.log.log(Level.WARNING, "Missing translation parameter(s); " + e);
+			Main.log.log(Level.SEVERE, "Missing translation parameter(s); " + e);
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
 		}

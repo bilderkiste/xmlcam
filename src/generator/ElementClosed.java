@@ -9,6 +9,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -70,7 +72,6 @@ abstract class ElementClosed extends Element {
         	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) gen.getTool().getRadius()));
         } else if(pathOffset == ElementClosed.OUTSET) {
         	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) gen.getTool().getRadius()));
-        	System.out.println("circleOutset");
         }
         return pathShape;
 	}
@@ -81,34 +82,85 @@ abstract class ElementClosed extends Element {
 	 * @return The Path2D.Double shape
 	 */
     public Path2D.Double AreaToPath(Area area) {
-        Path2D.Double path = new Path2D.Double();
-
+        Path2D.Double tmp_path = null;
+        Path2D.Double result_path = new Path2D.Double();
+        
+        ArrayList<Point2D.Double> pts = new ArrayList<Point2D.Double>();
+        
         PathIterator iterator = area.getPathIterator(null);
+        
         double[] coords = new double[6];
 
         while (!iterator.isDone()) {
-            int type = iterator.currentSegment(coords);
-            switch (type) {
+            int segmentType = iterator.currentSegment(coords);
+
+            switch (segmentType) {
                 case PathIterator.SEG_MOVETO:
-                    path.moveTo(coords[0], coords[1]);
+                	tmp_path = new Path2D.Double();
+                    tmp_path.moveTo(coords[0], coords[1]);
+                    pts.add(new Point2D.Double(coords[0], coords[1]));
                     break;
                 case PathIterator.SEG_LINETO:
-                    path.lineTo(coords[0], coords[1]);
+                    // Punkte mit sehr geringem Abstand ermitteln und loeschen
+                    int pts_size = pts.size(); 
+                    if(pts_size > 0) {
+                    	if(pts.get(pts_size - 1).distance(coords[0], coords[1]) > 0.0001) {
+                    		tmp_path.lineTo(coords[0], coords[1]);
+                    	}
+                    }
+                    pts.add(new Point2D.Double(coords[0], coords[1]));	
                     break;
                 case PathIterator.SEG_QUADTO:
-                    path.quadTo(coords[0], coords[1], coords[2], coords[3]);
+                	tmp_path.quadTo(coords[0], coords[1], coords[2], coords[3]);
                     break;
                 case PathIterator.SEG_CUBICTO:
-                    path.curveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
+                	tmp_path.curveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
                     break;
                 case PathIterator.SEG_CLOSE:
-                    path.closePath();
+                	tmp_path.closePath();
+                	if(isPathValid(pts)) {
+                    	result_path.append(tmp_path, false);
+                	}
+                    
+                    pts.clear();
                     break;
             }
+            // Degenerierte Pfade erkennen und loeschen
+            System.out.println(segmentType + " - " + coords[0] + " " + coords[1] + " " + coords[2]+ " " + coords[3] + " " + coords[4] + " " + coords[5]);
+            
             iterator.next();
         }
         
-        return path;
+        return result_path;
+    }
+    
+
+    private boolean isPathValid(ArrayList<Point2D.Double> pts) {
+    	
+    	if (pts.size() < 3) return false; // Mindestens 3 Punkte für Fläche
+
+    	// Eindeutige Punkte zählen
+    	HashSet<String> unique = new HashSet<>();
+    	for (Point2D.Double p : pts) {
+    	    unique.add(p.x + "|" + p.y);
+    	}
+    	if (unique.size() < 3) return false; // degeneriert / collinear / identisch
+
+    	// Bounding box prüfen
+    	double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
+    	double maxX = -Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
+
+    	for (Point2D.Double p : pts) {
+    	    minX = Math.min(minX, p.getX());
+    	    minY = Math.min(minY, p.getY());
+    	    maxX = Math.max(maxX, p.getX());
+    	    maxY = Math.max(maxY, p.getY());
+    	}
+
+    	if (maxX - minX < 0.01) return false; // praktisch Nullbreite → degeneriert
+    	if (maxY - minY < 0.01) return false; // praktisch Nullhöhe → degeneriert
+
+    	return true;
     }
 	
 	/**
