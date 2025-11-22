@@ -251,6 +251,18 @@ public abstract class Element {
 
         return merged;
     }
+    
+    public void showToolPathes() {
+    	System.out.println("Toolpathes for " + this.getName());
+    	for(int i = 0; i < toolPathes.size(); i++) {
+    		ToolPath tp = toolPathes.get(i);
+    		for(int j = 0; j < tp.size(); j++) {
+    			System.out.println(tp.getX(j) + " - " + tp.getY(j));
+    		}
+    		System.out.println("=====");
+    	}
+    }
+
 
 	public String getName() {
 		return name;
