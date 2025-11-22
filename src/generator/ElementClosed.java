@@ -90,10 +90,11 @@ abstract class ElementClosed extends Element {
         PathIterator iterator = area.getPathIterator(null);
         
         double[] coords = new double[2];
-
+        int pts_size;
+        
         while (!iterator.isDone()) {
             int segmentType = iterator.currentSegment(coords);
-
+            
             switch (segmentType) {
                 case PathIterator.SEG_MOVETO:
                 	tmp_path = new Path2D.Double();
@@ -102,7 +103,7 @@ abstract class ElementClosed extends Element {
                     break;
                 case PathIterator.SEG_LINETO:
                     // Punkte mit sehr geringem Abstand ermitteln und loeschen
-                    int pts_size = pts.size(); 
+                    pts_size = pts.size(); 
                     if(pts_size > 0) {
                     	if(pts.get(pts_size - 1).distance(coords[0], coords[1]) > 0.0001) {
                     		tmp_path.lineTo(coords[0], coords[1]);
@@ -117,16 +118,19 @@ abstract class ElementClosed extends Element {
                 	tmp_path.curveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
                     break;*/
                 case PathIterator.SEG_CLOSE:
-                	tmp_path.closePath();
+                	// Punkte mit sehr geringem Abstand ermitteln und loeschen
+                    pts_size = pts.size(); 
+                	if(pts.get(pts_size - 1).distance(coords[0], coords[1]) > 0.0001) {
+                		tmp_path.closePath();
+                	}
                 	// Degenerierte Pfade erkennen und loeschen
                 	if(isPathValid(pts)) {
                     	result_path.append(tmp_path, false);
                 	}
-                    
                     pts.clear();
                     break;
             }
-            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1] + " " + coords[2]+ " " + coords[3] + " " + coords[4] + " " + coords[5]);
+            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// + " " + coords[2]+ " " + coords[3] + " " + coords[4] + " " + coords[5]);
             
             iterator.next();
         }
