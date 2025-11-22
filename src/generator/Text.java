@@ -49,7 +49,6 @@ public class Text extends ElementClosed {
 		content = null;
 		font = null;
 		flatness = 0.5;
-		super.setName(new String("Text"));
 	}
 
 	@Override
@@ -125,11 +124,10 @@ public class Text extends ElementClosed {
         at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
         at.scale(1.0, -1.0);
         
-        Path2D.Double pathShape = createOffsetShape(shape);
-        
-        ArrayList<Path2D.Double> subShapes = mergeContainedPaths(splitIntoSubpaths(pathShape));
+        ArrayList<Path2D.Double> subShapes = mergeContainedPaths(splitIntoSubpaths(shape));
         for(int i = 0; i < subShapes.size(); i++) {
-        	addToolPathes(generateToolPathes(subShapes.get(i), at, flatness, new String("Text: " + content)));
+        	Path2D.Double pathShape = createOffsetShape(subShapes.get(i));
+        	addToolPathes(generateToolPathes(pathShape, at, flatness, new String("Text: " + content)));
     		if(isPocket()) {
     			ArrayList<ToolPath> pockets = createPocket(subShapes.get(i), at, gen.getTool());
     			//prüfen ob leere ToolPath vorhanden sind um (tmp)

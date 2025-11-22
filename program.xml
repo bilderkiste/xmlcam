@@ -4,7 +4,7 @@
 		<diameter>0.2</diameter>
 		<name>Kugelfräser</name>
 	</tool>	
-	<text offset="outset">
+	<text pocket="parallel" offset="inset">
 		<content>Ein toller Tag</content>
 		<p>20,50</p>
 		<size>10</size>
@@ -22,7 +22,7 @@
 			<p>30,20</p>
 			<z>0,-1,0.1</z>
 		</rectangle>
-		<circle pocket="parallel">
+		<circle pocket="parallel" offset="inset">
 			<p>40,10</p>
 			<rad>15</rad>
 			<z>0,-1,0.1</z>

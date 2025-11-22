@@ -125,7 +125,7 @@ abstract class ElementClosed extends Element {
                 	//}
                 	// Degenerierte Pfade erkennen und loeschen
                 	if(isPathValid(pts)) {
-                    	result_path.append(tmp_path, false);
+                    	result_path.append(tmp_path, true);
                 	}
                     pts.clear();
                     break;
