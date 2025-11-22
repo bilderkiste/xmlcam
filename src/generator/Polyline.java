@@ -141,7 +141,9 @@ public class Polyline extends ElementClosed {
 		
 		Path2D.Double pathShape = createOffsetShape(shape);
 		
-		addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("Polyline starting from " + xmlPoints.get(0) + " to " + xmlPoints.get(xmlPoints.size() - 1))));
+		super.setName(new String("Polyline starting from " + xmlPoints.get(0) + " to " + xmlPoints.get(xmlPoints.size() - 1)));
+		
+		addToolPathes(generateToolPathes(pathShape, at, 0.1, super.getName()));
 
 		//create pockettoolpath
 		if(isPocket()) {

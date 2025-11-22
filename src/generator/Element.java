@@ -20,7 +20,7 @@ public abstract class Element {
 	
 	protected Generator gen;
 	protected Node node;
-	protected String name;
+	private String name;
 	/**
 	 * Arraylist with one or more toolpathes.
 	 */
@@ -251,6 +251,13 @@ public abstract class Element {
 
         return merged;
     }
-	
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 }

@@ -5,6 +5,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -13,6 +14,7 @@ import org.w3c.dom.NodeList;
 
 import controller.Generator;
 import main.Main;
+import model.ToolPath;
 import model.Tuple;
 
 /**
@@ -47,7 +49,7 @@ public class Text extends ElementClosed {
 		content = null;
 		font = null;
 		flatness = 0.5;
-		name = "Text";
+		super.setName(new String("Text"));
 	}
 
 	@Override
@@ -106,7 +108,7 @@ public class Text extends ElementClosed {
 			
 		}
 		
-		name = new String("Text " + content);
+		super.setName(new String("Text " + content));
 	
 	}
 
@@ -125,10 +127,10 @@ public class Text extends ElementClosed {
         
         Path2D.Double pathShape = createOffsetShape(shape);
         
-        /*ArrayList<Path2D.Double> subShapes = mergeContainedPaths(splitIntoSubpaths(pathShape));
+        ArrayList<Path2D.Double> subShapes = mergeContainedPaths(splitIntoSubpaths(pathShape));
         for(int i = 0; i < subShapes.size(); i++) {
         	addToolPathes(generateToolPathes(subShapes.get(i), at, flatness, new String("Text: " + content)));
-    		if(pocket) {
+    		if(isPocket()) {
     			ArrayList<ToolPath> pockets = createPocket(subShapes.get(i), at, gen.getTool());
     			//prüfen ob leere ToolPath vorhanden sind um (tmp)
     			for(int j = 0; j < pockets.size(); j++) {
@@ -141,9 +143,9 @@ public class Text extends ElementClosed {
     			//toolPathes.clear();
     			//toolPathes.add(createPocket(subShapes.get(i), at, new Tool(2)));
     		}
-        }*/
+        }
         
-        addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("test")));
+        //addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("test")));
        
 		/*for(int i = 0; i < toolPathes.size(); i++) {
 			System.out.println(toolPathes.get(i).getName() + " " + toolPathes.get(i));

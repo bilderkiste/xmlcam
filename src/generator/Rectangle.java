@@ -34,6 +34,7 @@ public class Rectangle extends ElementClosed {
 	public Rectangle(Node node, Generator gen) {
 		super(node, gen);
 		xmlPoints = new ArrayList<Tuple>();
+		super.setName(new String("Rectangle"));
 	}
 
 	@Override
@@ -57,10 +58,6 @@ public class Rectangle extends ElementClosed {
 	public void execute() {
 		shape = new Path2D.Double();
 		
-		/*for(int i = 0; i < xmlPoints.size(); i++) {
-			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
-		}*/
-		
 		shape.moveTo(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
 		shape.lineTo(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
 		shape.lineTo(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue());
@@ -72,7 +69,9 @@ public class Rectangle extends ElementClosed {
 		
 		Path2D.Double pathShape = createOffsetShape(shape);
 		
-		addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("Rectangle from " + xmlPoints.get(0) + " to " + xmlPoints.get(1))));
+		super.setName(new String("Rectangle from " + xmlPoints.get(0) + " to " + xmlPoints.get(1)));
+	
+		addToolPathes(generateToolPathes(pathShape, at, 0.1, super.getName()));
 		
 		//create pockettoolpath
 		if(isPocket()) {

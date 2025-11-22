@@ -71,9 +71,7 @@ public class Circle extends ElementClosed {
 		shape = new Path2D.Double();
 		double phi = 0;
 
-		float radiusv = radius.getValue(0).floatValue();;
-		
-		//center = addTranslation(center);
+		float radiusv = radius.getValue(0).floatValue();
 		
 		if(segments == null) { 
 			// Determine phiStep. If the circle is very small, the step should be < 0.5 (that means more G points on the circle
@@ -104,7 +102,9 @@ public class Circle extends ElementClosed {
         
         Path2D.Double pathShape = createOffsetShape(shape);
         
-        addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("Circle at " + center + " with radius " + radius)));
+        super.setName(new String("Circle at " + center + " with radius " + radius));
+        		
+        addToolPathes(generateToolPathes(pathShape, at, 0.1, super.getName()));
 		
         /*for(int i = 0; i < toolPathes.size(); i++) {
 	        for(int j = 0; j < toolPathes.get(i).size(); j++) {

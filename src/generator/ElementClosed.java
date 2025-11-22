@@ -89,7 +89,7 @@ abstract class ElementClosed extends Element {
         
         PathIterator iterator = area.getPathIterator(null);
         
-        double[] coords = new double[2];
+        double[] coords = new double[6];
         int pts_size;
         
         while (!iterator.isDone()) {
@@ -111,18 +111,18 @@ abstract class ElementClosed extends Element {
                     }
                     pts.add(new Point2D.Double(coords[0], coords[1]));	
                     break;
-                /*case PathIterator.SEG_QUADTO:
+                case PathIterator.SEG_QUADTO:
                 	tmp_path.quadTo(coords[0], coords[1], coords[2], coords[3]);
                     break;
                 case PathIterator.SEG_CUBICTO:
                 	tmp_path.curveTo(coords[0], coords[1], coords[2], coords[3], coords[4], coords[5]);
-                    break;*/
+                    break;
                 case PathIterator.SEG_CLOSE:
                 	// Punkte mit sehr geringem Abstand ermitteln und loeschen
                     pts_size = pts.size(); 
-                	if(pts.get(pts_size - 1).distance(coords[0], coords[1]) > 0.0001) {
-                		tmp_path.closePath();
-                	}
+                	//if(pts.get(pts_size - 1).distance(coords[0], coords[1]) > 0.0001) {
+                	tmp_path.closePath();
+                	//}
                 	// Degenerierte Pfade erkennen und loeschen
                 	if(isPathValid(pts)) {
                     	result_path.append(tmp_path, false);
@@ -273,7 +273,7 @@ abstract class ElementClosed extends Element {
         int j = 0;
 
         Point2D.Double start, end;
-        ToolPath ptp = new ToolPath("Pocket part " + stage++);
+        ToolPath ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName());
         // Toolpath für Zick-Zack-Bewegung erzeugen
         while(!lineSegments.isEmpty()) {
         	LineSegment ls = lineSegments.get(j);
