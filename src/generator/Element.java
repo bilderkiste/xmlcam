@@ -154,14 +154,10 @@ public abstract class Element {
         	} else if(segmentType == PathIterator.SEG_LINETO) {
         		tpl.get(tpl.size() - 1).addPoint(coords[0], coords[1]);
         	} else if(segmentType == PathIterator.SEG_CLOSE) {
-        		// letzten Punkt loeschen, da extrem nah an Startkoordinate, dann Pfad schliessen
-        		/*int tpSize = tpl.get(tpl.size() - 1).size();
-        		tpl.get(tpl.size() - 1).remove(tpSize);*/
         		tpl.get(tpl.size() - 1).addPoint(startCoords.getX(), startCoords.getY());
         	} 
-        
-            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// +" " + coords[2]+ " " + coords[3] +" " + coords[4] + " " + coords[5]);
-            pi.next();
+      
+        	pi.next();
 	    }
 	    return tpl;
 	}
@@ -254,7 +250,7 @@ public abstract class Element {
     }
     
     /**
-     * Tidies up the generated ToolPathes for the element
+     * Cleanup the generated ToolPathes for the element
      */
     public void purgePathes() {
     	for(int i = 0; i < toolPathes.size(); i++) {
@@ -263,6 +259,11 @@ public abstract class Element {
     	
     }
     
+    /**
+     * Delete the almost equal points in a toolpath.
+     * @param path The path to cleanup
+     * @return The same cleaned path 
+     */
     private ToolPath deleteNarrowPoints(ToolPath path) {
 		for(int j = 0; j < path.size() - 1; j++) {
     		if(path.get(j).distance(path.get(j + 1)) < 0.000001) {
