@@ -112,24 +112,28 @@ public class Generator {
 				Polyline item = new Polyline(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
+				item.purgePathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
 				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "circle") {
 				Circle item = new Circle(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
+				item.purgePathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
 				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "rectangle") {
 				Rectangle item = new Rectangle(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
+				item.purgePathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
 				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "text") {
 				Text item = new Text(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
+				item.purgePathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
 				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "feedrate") {

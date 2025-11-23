@@ -7,6 +7,7 @@ import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.w3c.dom.Node;
 
@@ -251,6 +252,60 @@ public abstract class Element {
 
         return merged;
     }
+    
+    /**
+     * Tidies up the generated ToolPathes for the element
+     */
+    public void purgePathes() {
+    	for(int i = 0; i < toolPathes.size(); i++) {
+    		deleteNarrowPoints(toolPathes.get(i));
+    	}
+    	
+    }
+    
+    private ToolPath deleteNarrowPoints(ToolPath path) {
+		for(int j = 0; j < path.size() - 1; j++) {
+    		if(path.get(j).distance(path.get(j + 1)) < 0.000001) {
+    			path.remove(j);
+    			j--;
+    		}
+		}
+    	return path;
+    }
+    
+    /**
+     * Check if the Path2D generated from an Area is valid or degenerated.
+     * @param path The ToolPath
+     * @return true if valid, false if degenerated
+     */
+    private boolean isPathValid(ToolPath path) {
+    	
+    	if (path.size() < 3) return false; // Mindestens 3 Punkte für Fläche
+
+    	// Eindeutige Punkte zählen
+    	HashSet<String> unique = new HashSet<>();
+    	for (Point2D.Double p : path) {
+    	    unique.add(p.x + "|" + p.y);
+    	}
+    	if (unique.size() < 3) return false; // degeneriert / collinear / identisch
+
+    	// Bounding box prüfen
+    	double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
+    	double maxX = -Double.MAX_VALUE, maxY = -Double.MAX_VALUE;
+
+    	for (Point2D.Double p : path) {
+    	    minX = Math.min(minX, p.getX());
+    	    minY = Math.min(minY, p.getY());
+    	    maxX = Math.max(maxX, p.getX());
+    	    maxY = Math.max(maxY, p.getY());
+    	}
+
+    	if (maxX - minX < 0.01) return false; // praktisch Nullbreite → degeneriert
+    	if (maxY - minY < 0.01) return false; // praktisch Nullhöhe → degeneriert
+
+    	return true;
+    }
+
     
     public void showToolPathes() {
     	System.out.println("Toolpathes for " + this.getName());
