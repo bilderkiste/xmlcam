@@ -254,9 +254,16 @@ public abstract class Element {
      */
     public void purgePathes() {
     	for(int i = 0; i < toolPathes.size(); i++) {
-    		deleteNarrowPoints(toolPathes.get(i));
+    		if(isPathValid(toolPathes.get(i))) {
+    			deleteNarrowPoints(toolPathes.get(i));
+    			deleteCollinearPoints(toolPathes.get(i));
+    		} else {
+    			toolPathes.remove(i);
+    			i--;
+    		}
+    			
     	}
-    	
+   	
     }
     
     /**
@@ -265,12 +272,46 @@ public abstract class Element {
      * @return The same cleaned path 
      */
     private ToolPath deleteNarrowPoints(ToolPath path) {
-		for(int j = 0; j < path.size() - 1; j++) {
-    		if(path.get(j).distance(path.get(j + 1)) < 0.000001) {
-    			path.remove(j);
-    			j--;
-    		}
-		}
+        double tol = 0.0001;
+
+        for (int i = 1; i < path.size(); i++) {
+            Point2D.Double p0 = path.get(i - 1);
+            Point2D.Double p1 = path.get(i);
+
+            double dx = p1.x - p0.x;
+            double dy = p1.y - p0.y;
+
+            if (dx * dx + dy * dy < tol) {
+                path.remove(i);
+                i--;
+            }
+        }
+
+    	return path;
+    }
+    
+    /**
+     * Delete the collinear points.
+     * @param path The path to cleanup
+     * @return The same cleaned path 
+     */
+    private ToolPath deleteCollinearPoints(ToolPath path) {
+    	double tol = 0.000001;
+    	
+    	for (int i = 1; i < path.size() - 1; i++) {
+    		Point2D.Double prev = path.get(i - 1);
+    		Point2D.Double current = path.get(i);
+    		Point2D.Double next = path.get(i + 1);
+  
+	        // Flächeninhalt des Dreiecks ≈ 0?
+	        double area =
+		              (current.getX() - prev.getX()) * (next.getY() - prev.getY())
+		            - (current.getY() - prev.getY()) * (next.getX() - prev.getX());
+	        if(Math.abs(area) < tol) {
+	        	path.remove(i);
+	        	i--;
+	        }
+    	}
     	return path;
     }
     

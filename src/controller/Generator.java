@@ -119,7 +119,9 @@ public class Generator {
 				Circle item = new Circle(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
+				//item.showToolPathes();
 				item.purgePathes();
+				//item.showToolPathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
 				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "rectangle") {

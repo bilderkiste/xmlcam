@@ -105,14 +105,6 @@ public class Circle extends ElementClosed {
         super.setName(new String("Circle at " + center + " with radius " + radius));
         		
         addToolPathes(generateToolPathes(pathShape, at, 0.1, super.getName()));
-		
-        /*for(int i = 0; i < toolPathes.size(); i++) {
-	        for(int j = 0; j < toolPathes.get(i).size(); j++) {
-	        	System.out.println(toolPathes.get(i).getX(j) + " " + toolPathes.get(i).getY(j));
-	        	
-	        }
-	        System.out.println("-----------------");
-        }*/
         	
 		//create pockettoolpath
 		if(isPocket()) {
