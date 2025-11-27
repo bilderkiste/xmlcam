@@ -138,16 +138,8 @@ public class Text extends ElementClosed {
     				}
     			}
     			addToolPathes(pockets);
-    			//toolPathes.clear();
-    			//toolPathes.add(createPocket(subShapes.get(i), at, new Tool(2)));
     		}
         }
-        
-        //addToolPathes(generateToolPathes(pathShape, at, 0.1, new String("test")));
-       
-		/*for(int i = 0; i < toolPathes.size(); i++) {
-			System.out.println(toolPathes.get(i).getName() + " " + toolPathes.get(i));
-		}*/
         
         Main.log.log(Level.FINE, "Text element: text {0} at {1} and translation {2} with type {3} size {4} and flatness {5}" , new Object[] { content, xmlPoint, gen.getTranslation(), font.getFontName(), font.getSize(), flatness } );
 	}
