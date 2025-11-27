@@ -137,7 +137,7 @@ public class Generator {
 				Text item = new Text(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
-				//item.purgePathes();
+				item.purgePathes();
 				//item.showToolPathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
 				programModel.addElement(item);

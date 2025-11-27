@@ -8,10 +8,17 @@ public class ToolPath extends ArrayList<Point2D.Double> {
 	
 	private static final long serialVersionUID = 1L;
 	protected String name;
+	private boolean pocket;
+	
+	public ToolPath(String name, boolean pocket) {
+		this(name);
+		this.pocket = pocket;
+	}
 
 	public ToolPath(String name) {
 		super();
 		this.name = name;
+		this.pocket = false;
 	}
 	
 	/**
@@ -64,6 +71,22 @@ public class ToolPath extends ArrayList<Point2D.Double> {
 		for(int i = 0; i < toolPath.size(); i++) {
 			this.add(toolPath.get(i));
 		}
+	}
+
+	/**
+	 * Returns true if it is a pocket ToolPath
+	 * @return true
+	 */
+	public boolean isPocket() {
+		return pocket;
+	}
+
+	/**
+	 * Sets if it is a pocket or not.
+	 * @param pocket The boolean value
+	 */
+	protected void setPocket(boolean pocket) {
+		this.pocket = pocket;
 	}
 	
 }

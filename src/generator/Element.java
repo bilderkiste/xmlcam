@@ -120,17 +120,6 @@ public abstract class Element {
 	}
 	
 	/**
-	 * Adds the translation to the x and y values of a point.
-	 * @param pint The point.
-	 * @return The point translated.
-	 */
-	/*protected Tuple addTranslation(Tuple point) {
-		point.setValue(0, point.getValue(0).doubleValue() + gen.getTranslateX().doubleValue());
-		point.setValue(1, point.getValue(1).doubleValue() + gen.getTranslateY().doubleValue());
-		return point;
-	}*/
-	
-	/**
 	 * Generates the ToolPathes (ArrayList with Point2D) with the Flattening PathIterator from the Path2D.
 	 * @param path The Path2D object.
 	 * @param at The transformation.
@@ -254,12 +243,14 @@ public abstract class Element {
      */
     public void purgePathes() {
     	for(int i = 0; i < toolPathes.size(); i++) {
-    		if(isPathValid(toolPathes.get(i))) {
-    			deleteNarrowPoints(toolPathes.get(i));
-    			deleteCollinearPoints(toolPathes.get(i));
-    		} else {
-    			toolPathes.remove(i);
-    			i--;
+    		if(!toolPathes.get(i).isPocket()) {
+	    		if(isPathValid(toolPathes.get(i))) {
+	    			deleteNarrowPoints(toolPathes.get(i));
+	    			deleteCollinearPoints(toolPathes.get(i));
+	    		} else {
+	    			toolPathes.remove(i);
+	    			i--;
+	    		}
     		}
     			
     	}

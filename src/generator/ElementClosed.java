@@ -209,10 +209,6 @@ abstract class ElementClosed extends Element {
             // Sortiere die X-Koordinaten (Start, Ende, Start, Ende, ...)
             Collections.sort(ls);
             
-            /*for(int i = 0; i < ls.size(); i++) {
-            	System.out.println(i + "->" + y + "->"+ ls.get(i));
-            }*/
-            
             lineSegments.add(ls);
         }
         
@@ -220,7 +216,7 @@ abstract class ElementClosed extends Element {
         int j = 0;
 
         Point2D.Double start, end;
-        ToolPath ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName());
+        ToolPath ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName(), true);
         // Toolpath für Zick-Zack-Bewegung erzeugen
         while(!lineSegments.isEmpty()) {
         	LineSegment ls = lineSegments.get(j);
@@ -234,19 +230,19 @@ abstract class ElementClosed extends Element {
 	        	ptp.addPoint(end);
         		ptp.addPoint(start);
 	        }
-        	// Wenn Wechselline zwischen den Segmenten das Sshape verlässt, neuen Path anfangen
+        	// Wenn Wechselline zwischen den Segmenten das Shape verlässt, neuen Path anfangen
             try {
             	LineSegment nextLs = lineSegments.get(j + 1);
             	
 	            if(directionLeftToRight) {
 		            if(lineLeavesShape(area, end, new Point2D.Double(nextLs.get(1), nextLs.getY()))) {
 		            	pocketToolPathes.add(ptp);
-		            	ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName());
+		            	ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName(), true);
 		            } 
 	            } else {
 		            if(lineLeavesShape(area, start, new Point2D.Double(nextLs.get(0), nextLs.getY())))	{
 		            	pocketToolPathes.add(ptp);
-		            	ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName());
+		            	ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName(), true);
 		            }
 	            }
             } catch(IndexOutOfBoundsException e) {
@@ -269,7 +265,7 @@ abstract class ElementClosed extends Element {
             if(j >= lineSegments.size()) {
             	j = 0;
             	pocketToolPathes.add(ptp);
-            	ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName());
+            	ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName(), true);
             }
  
         }
