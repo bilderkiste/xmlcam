@@ -107,7 +107,6 @@ abstract class ElementClosed extends Element {
                 	path.closePath();                    
                     break;
             }
-            //System.out.println(segmentType + " - " + coords[0] + " " + coords[1]);// + " " + coords[2]+ " " + coords[3] + " " + coords[4] + " " + coords[5]);
             
             iterator.next();
         }

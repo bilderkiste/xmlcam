@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+	<xs:element name="program" type="programRootType"/>
+	
+	<xs:complexType name="programRootType">
+	    <xs:sequence>
+	        <xs:element name="tool" type="tool"/>
+	        <xs:group ref="programElements" minOccurs="1" maxOccurs="unbounded"/>
+	    </xs:sequence>
+	</xs:complexType>
+
+	<xs:group name="programElements">
+	    <xs:choice>
+	        <xs:element name="drill" type="drill"/>
+	        <xs:element name="line" type="line"/>
+	        <xs:element name="polyline" type="polyline"/>
+	        <xs:element name="circle" type="circle"/>
+	        <xs:element name="rectangle" type="rectangle"/>
+	        <xs:element name="text" type="text"/>
+	        <xs:element name="feedrate" type="xs:positiveInteger"/>
+	        <xs:element name="tool" type="tool"/>
+	        <xs:element name="translate" type="translateType"/>
+	    </xs:choice>
+	</xs:group>
+	
+	<xs:complexType name="programType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="drill" type="drill" />
+			<xs:element name="line" type="line" />
+			<xs:element name="polyline" type="polyline" />
+			<xs:element name="circle" type="circle" />
+			<xs:element name="rectangle" type="rectangle" />
+			<xs:element name="text" type="text" />
+			<xs:element name="feedrate" type="xs:positiveInteger" />
+			<xs:element name="tool" type="tool" />
+			<xs:element name="translate" type="translateType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:complexType name="translateType">
+	    <xs:complexContent>
+	        <xs:extension base="programType">
+	            <xs:attribute name="x" type="translationtype" use="required" />
+	            <xs:attribute name="y" type="translationtype" use="required" />
+	        </xs:extension>
+	    </xs:complexContent>
+	</xs:complexType>	
+
 	<xs:complexType name="drill">
 		<xs:sequence>
 			<xs:element name="p" type="pointtype" />
@@ -77,40 +123,6 @@
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>
-
-	<xs:element name="program">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="tool" type="tool" />
-				<xs:choice minOccurs="0" maxOccurs="unbounded">
-					<xs:element name="drill" type="drill" />
-					<xs:element name="line" type="line" />
-					<xs:element name="polyline" type="polyline" />
-					<xs:element name="circle" type="circle" />
-					<xs:element name="rectangle" type="rectangle" />
-					<xs:element name="text" type="text" />
-					<xs:element name="feedrate" type="xs:positiveInteger" />
-					<xs:element name="tool" type="tool" />
-					<xs:element name="translate">
-						<xs:complexType>
-							<xs:choice minOccurs="1" maxOccurs="unbounded">
-								<xs:element name="drill" type="drill" />
-								<xs:element name="line" type="line" />
-								<xs:element name="polyline" type="polyline" />
-								<xs:element name="circle" type="circle" />
-								<xs:element name="rectangle" type="rectangle" />
-								<xs:element name="text" type="text" />
-								<xs:element name="feedrate" type="xs:positiveInteger" />
-								<xs:element name="tool" type="tool" />
-							</xs:choice>
-							<xs:attribute name="x" type="translationtype" use="required" />
-							<xs:attribute name="y" type="translationtype" use="required" />
-						</xs:complexType>
-					</xs:element>
-				</xs:choice>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
 	
 	<xs:simpleType name="pointtype">
 	    <xs:restriction base="xs:string">

@@ -270,16 +270,16 @@ public class Generator {
 	 */
 	private void setTranslation(Node node) throws IllegalArgumentException {
 		NamedNodeMap map = node.getAttributes();
-		double x = 0, y = 0;
+		double x = this.getTranslation().getX(), y = this.getTranslation().getY();
 		try {
-			x = new BigDecimal(map.getNamedItem("x").getTextContent()).doubleValue();
+			x += new BigDecimal(map.getNamedItem("x").getTextContent()).doubleValue();
 		} catch(NullPointerException e) {
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
 		}	
 		
 		try {
-			y = new BigDecimal(map.getNamedItem("y").getTextContent()).doubleValue();
+			y += new BigDecimal(map.getNamedItem("y").getTextContent()).doubleValue();
 		} catch(NullPointerException e) {
 			Main.log.log(Level.SEVERE, "Missing translation parameter(s); " + e);
 		} catch(NumberFormatException e) {
