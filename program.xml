@@ -1,51 +1,17 @@
 <?xml version="1.0"?>
 <program>
 	<tool>
-		<diameter>0.2</diameter>
+		<diameter>2</diameter>
 		<name>Kugelfräser</name>
 	</tool>	
-	<text pocket="parallel" offset="inset">
-		<content>Ein toller Tag</content>
+	<text pocket="parallel">
+		<content>G</content>
 		<p>20,50</p>
-		<size>10</size>
+		<size>40</size>
 		<type>Calibri</type>
-		<style>italic</style>
+		<style>bolditalic</style>
 		<flatness>0.2</flatness>
 		<z>0,-1,1</z>
 	</text>
-	<tool>
-		<diameter>2</diameter>
-	</tool>	
-	<translate x="20" y="10">
-		<rectangle pocket="parallel">
-			<p>0,0</p>
-			<p>30,20</p>
-			<z>0,-1,0.1</z>
-		</rectangle>
-		<circle pocket="parallel" offset="inset">
-			<p>40,10</p>
-			<rad>15</rad>
-			<z>0,-1,0.1</z>
-		</circle>
-	</translate>
-	<line>
-		<p>10,60</p>
-		<p>50,60</p>
-		<z>0,-1,0.1</z>
-	</line>
-
-	<translate x="-10" y="100">
-		<drill>
-			<p>15,15</p>
-			<z>0,-1</z>
-		</drill>
-	</translate>
-
-	<feedrate>200</feedrate>
-	<polyline>
-		<p>10,5</p>
-		<spl>5,40</spl>
-		<p>40,45</p>
-		<z>0,-1,0.1</z>
-	</polyline>
+	
 </program>

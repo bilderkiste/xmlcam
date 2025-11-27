@@ -3,6 +3,7 @@ package generator;
 import java.awt.BasicStroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
+import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
@@ -155,8 +156,12 @@ abstract class ElementClosed extends Element {
 	protected ArrayList<ToolPath> createPocket(Path2D.Double shape, AffineTransform at, Tool tool) {
 		ArrayList<ToolPath> pocketToolPathes = new ArrayList<ToolPath>();
 		double overlap = 0.8;
-		
 		ArrayList<LineSegment> lineSegments = new ArrayList<LineSegment>();
+		
+		// Wenn kein shape vorhanden, dann Liste ohne ToolPath zurückgeben
+		if(shape.getCurrentPoint() == null) {
+			return pocketToolPathes;
+		}
 	
 		shape.closePath();
 		
@@ -164,10 +169,10 @@ abstract class ElementClosed extends Element {
         Area area = new Area(at.createTransformedShape(shape));
         
         // Erzeuge mit einem inset eine kleinere Kontur
-        area = createInsetArea(area, (float) (tool.getRadius() * overlap));
+        Area areaInset = createInsetArea(area, (float) (tool.getRadius() * overlap));
                    
         // Hole die Bounding Box der gesamten Form
-        Rectangle2D bounds = area.getBounds2D();
+        Rectangle2D bounds = areaInset.getBounds2D();
     
         // Beginne den Scanline (Hatching) Prozess
         double[] coords = new double[6];
@@ -183,7 +188,7 @@ abstract class ElementClosed extends Element {
             Area scanArea = new Area(scanRect);
 
             // Finde die SCHNITTMENGE (Intersection) zwischen Buchstaben und Scanline
-            scanArea.intersect(area);
+            scanArea.intersect(areaInset);
 
             if (scanArea.isEmpty()) {
                 continue; // Nichts in dieser Zeile
@@ -219,36 +224,35 @@ abstract class ElementClosed extends Element {
         // Toolpath für Zick-Zack-Bewegung erzeugen
         while(!lineSegments.isEmpty()) {
         	LineSegment ls = lineSegments.get(j);
-        	//System.out.println(j + "-" + ls.getY() + " -> " + ls);
+
     		start = new Point2D.Double(ls.get(0), ls.getY());
     		end = new Point2D.Double(ls.get(1), ls.getY());
-    		//if(xEnd - xStart > tool.getDiameter()) { //Prüfen, ob das Segment nicht zu kurz
         	if(directionLeftToRight) {
-        		/*if(old.distance(start) > 10) {
-	        		toolPathes.add(ptp);
-	        		ptp = new ToolPath("Pocket part " + stage++);
-	        		System.out.println("=x=========");
-	        	}*/
-        		//System.out.println("LnR " + old + "->" + start + "->Dist: "+ old.distance(start));
-	            // Fahre von Links nach Rechts
         		ptp.addPoint(start);
                 ptp.addPoint(end);
-                //System.out.println(ptp);
-                //old.setLocation(end);
 	        } else {
-	        	 // Fahre von Rechts nach Links
-	        	/*if(old.distance(end) > 10) {
-	        		toolPathes.add(ptp);
-	        		ptp = new ToolPath("Pocket part " + stage++);
-	        		System.out.println("=xx=========");
-	        	}*/
-	        	//System.out.println("RnL " + old + "->" + start + "->Dist: "+ old.distance(end));
 	        	ptp.addPoint(end);
         		ptp.addPoint(start);
-        		//System.out.println(ptp);
-        		//old.setLocation(start);
 	        }
-    		
+        	// Wenn Wechselline zwischen den Segmenten das Sshape verlässt, neuen Path anfangen
+            try {
+            	LineSegment nextLs = lineSegments.get(j + 1);
+            	
+	            if(directionLeftToRight) {
+		            if(lineLeavesShape(area, end, new Point2D.Double(nextLs.get(1), nextLs.getY()))) {
+		            	pocketToolPathes.add(ptp);
+		            	ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName());
+		            } 
+	            } else {
+		            if(lineLeavesShape(area, start, new Point2D.Double(nextLs.get(0), nextLs.getY())))	{
+		            	pocketToolPathes.add(ptp);
+		            	ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName());
+		            }
+	            }
+            } catch(IndexOutOfBoundsException e) {
+            	//e.printStackTrace();
+            }
+        	
         	
         	//Lösche gefahrenen Start- und Endpunkt
             ls.remove(0);
@@ -260,19 +264,67 @@ abstract class ElementClosed extends Element {
             	j++; //ansonsten stehen lassen für spätere Bearbeitung und weitergehen
             }
             directionLeftToRight = !directionLeftToRight;
-             
+            
+            // Wenn die erste 0 und 1 Segmente leer, dann 2 und 3 Segmente in neuem Toolpath abarbeiten.
             if(j >= lineSegments.size()) {
             	j = 0;
             	pocketToolPathes.add(ptp);
-            	ptp = new ToolPath("Pocket part " + stage++);
-            	//System.out.println("===========");
+            	ptp = new ToolPath("Pocket part " + stage++ + " for " + this.getName());
             }
-            
-            
+ 
         }
             
 		return pocketToolPathes;
 	}
+	
+	private boolean lineLeavesShape(Area shape, Point2D.Double start, Point2D.Double end) {
+		Line2D.Double line = new Line2D.Double(start, end);
+		
+	    // Start- und Endpunkte müssen im Shape liegen
+	    if (!shape.contains(line.getP1()) || !shape.contains(line.getP2())) {
+	    	System.out.println("check for " + line.getP1() + " , " + line.getP2() + " - true1");
+	        return true; // Linie beginnt/endet nicht im Shape → verlässt Shape
+	    }
+
+	    // Prüfen, ob die Linie die Formgrenze schneidet
+	    // Einzelne Segmente des Path iterieren und Überschneidungen prüfen
+	    PathIterator it = shape.getPathIterator(null, 0.1);
+	    
+	    double[] coords = new double[6];
+
+	    double lastX = 0, lastY = 0;
+	    double startX = 0, startY = 0;
+
+	    while (!it.isDone()) {
+	        int type = it.currentSegment(coords);
+
+	        switch (type) {
+	            case PathIterator.SEG_MOVETO:
+	                startX = lastX = coords[0];
+	                startY = lastY = coords[1];
+	                break;
+	            case PathIterator.SEG_LINETO:
+	                Line2D edge = new Line2D.Double(lastX, lastY, coords[0], coords[1]);
+	                if (line.intersectsLine(edge)) {
+	                	return true;
+	                }
+	                lastX = coords[0];
+	                lastY = coords[1];
+	                break;
+	            case PathIterator.SEG_CLOSE:
+	                Line2D closingEdge = new Line2D.Double(lastX, lastY, startX, startY);
+	                if (line.intersectsLine(closingEdge)) {
+	                	return true;
+	                }
+	                break;
+	        }
+
+	        it.next();
+	    }
+
+	    return false;
+	}
+
 
 	/**
 	 * The LineSegment class for the parallel pocket which contains a list with double values which represent the start and the end of the horizontal line segments of a shape.

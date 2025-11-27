@@ -128,14 +128,17 @@ public class Generator {
 				Rectangle item = new Rectangle(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
+				//item.showToolPathes();
 				item.purgePathes();
+				//item.showToolPathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
 				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "text") {
 				Text item = new Text(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
-				item.purgePathes();
+				//item.purgePathes();
+				//item.showToolPathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
 				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "feedrate") {
@@ -180,13 +183,13 @@ public class Generator {
 			Main.log.log(Level.SEVERE, "XML parsing failed; " + e);
 			//e.printStackTrace();
 		} catch(NullPointerException | IndexOutOfBoundsException e) {
-			Main.log.log(Level.SEVERE, "Missing parameter(s); " + e);
+			Main.log.log(Level.SEVERE, "Missing or illegal parameter(s) in XML; " + e);
 			e.printStackTrace();
 		} catch(NumberFormatException e) {
-			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
-			e.printStackTrace();
+			Main.log.log(Level.SEVERE, "Illegal parameter(s) in XML; " + e);
+			//e.printStackTrace();
 		} catch(IllegalArgumentException e) {
-			Main.log.log(Level.SEVERE, "Illegal parameter(s); " + e);
+			Main.log.log(Level.SEVERE, "Illegal parameter(s) in XML; " + e);
 			//e.printStackTrace();
 		}
 		

@@ -108,8 +108,8 @@ This element shifts the elements within this tag through the x and y pane.
 </pre>
 The center of the circle in this examle is now at (120,70).
 <h3>Offset Pathes</h3>
-It is possible to make offset pathes regarding the tool diameter. For that you cat define the offset with the offset attribute in the tag of the regarding element tag.
-There a three option to choose, inset, outset or engraving.
+It is possible to make offset pathes regarding the tool diameter. For that you cat define the offset with the attribute in the tag of the regarding element tag.
+There a three option to choose: inset, outset or engraving.
 An example for the circle element.
 <pre>
 &lt;circle offset&equals;&quot;inset&quot;&gt;
@@ -117,7 +117,6 @@ An example for the circle element.
   &lt;rad&gt;5&lt;&sol;rad&gt;
   &lt;z&gt;0&comma;-2&comma;0.2&lt;&sol;z&gt;
 &lt;&sol;circle&gt;
-&lt;&sol;translate&gt;
 </pre>
 <h3>Pockets</h3>
 You can create pockets by adding the pocket attribute to the element tag.
