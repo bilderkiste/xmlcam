@@ -104,6 +104,14 @@ This element shifts the elements within this tag through the x and y pane. It is
 &lt;&sol;translate&gt;
 </pre>
 The center of the circle in this examle is now at (120,70).
+<h3>Tool Element</h3>
+This element defines the used tool. The tool element must be the first element in a program. If within the program a tool element appears, xmlCAM will then create a tool change command.
+<pre>
+&lt;tool&gt;
+  &lt;diameter&gt;1.3&lt;/diameter&gt;
+  &lt;name&gt;Kugelfräser&lt;/name&gt;
+&lt;&sol;tool&gt;
+</pre>
 <h3>Offset Pathes</h3>
 It is possible to make offset pathes regarding the tool diameter. For that you cat define the offset with the attribute in the tag of the regarding element tag.
 There a three option to choose: inset, outset or engraving.
