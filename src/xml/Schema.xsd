@@ -23,6 +23,15 @@
 	        <xs:element name="translate" type="translateType"/>
 	    </xs:choice>
 	</xs:group>
+
+	<xs:complexType name="translateType">
+	    <xs:complexContent>
+	        <xs:extension base="programType">
+	            <xs:attribute name="x" type="translationtype" use="required" />
+	            <xs:attribute name="y" type="translationtype" use="required" />
+	        </xs:extension>
+	    </xs:complexContent>
+	</xs:complexType>	
 	
 	<xs:complexType name="programType">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -38,15 +47,6 @@
 		</xs:choice>
 	</xs:complexType>
 	
-	<xs:complexType name="translateType">
-	    <xs:complexContent>
-	        <xs:extension base="programType">
-	            <xs:attribute name="x" type="translationtype" use="required" />
-	            <xs:attribute name="y" type="translationtype" use="required" />
-	        </xs:extension>
-	    </xs:complexContent>
-	</xs:complexType>	
-
 	<xs:complexType name="drill">
 		<xs:sequence>
 			<xs:element name="p" type="pointtype" />

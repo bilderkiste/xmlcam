@@ -63,7 +63,7 @@ public class Generator {
 	private Program programModel;
 	private XMLView xmlEditorPane;
 	private BigDecimal currentX, currentY, currentZ, newX, newY, newZ;
-	private Point2D.Double translation;
+	private ArrayList<Point2D.Double> translation;
 	private Tool tool;
 	
 	/**
@@ -80,7 +80,7 @@ public class Generator {
 		this.newX = new BigDecimal(0);
 		this.newY = new BigDecimal(0);
 		this.newZ = new BigDecimal(0);
-		this.translation = new Point2D.Double(0,0);
+		this.translation = new ArrayList<Point2D.Double>();
 	}
 	
 	/**
@@ -149,7 +149,7 @@ public class Generator {
 				setTranslation(commands.item(commandNumber));
 				getChildNodes(commands.item(commandNumber));
 				// Translate tag closed. Reset translate values
-				this.translation.setLocation(0, 0);
+				this.translation.remove(translation.size() - 1);
 			}
 		}
 	}
@@ -258,11 +258,16 @@ public class Generator {
 	}
 	
 	/**
-	 * Sets the translation for x and y coordinates within the translation tag.
+	 * Adds a new point to the translation translation list with the x and y coordinates within the translation tag.
+	 * The current translation coordinate is then the sum of all points in the list
 	 * 	An code example snippet:
 	 * <pre>{@code
 	 * <translation x="10" y="10">
-	 * 		...
+	 * 	 ...
+	 *   <translation x="20" y="20">
+	 * 	 ...
+	 *   </translation>
+	 *   ...
 	 * </translation>
 	 * }</pre>
 	 * @param node
@@ -270,22 +275,24 @@ public class Generator {
 	 */
 	private void setTranslation(Node node) throws IllegalArgumentException {
 		NamedNodeMap map = node.getAttributes();
-		double x = this.getTranslation().getX(), y = this.getTranslation().getY();
+		double x = 0; 
+		double y = 0;
 		try {
-			x += new BigDecimal(map.getNamedItem("x").getTextContent()).doubleValue();
+			x = new BigDecimal(map.getNamedItem("x").getTextContent()).doubleValue();
 		} catch(NullPointerException e) {
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
 		}	
 		
 		try {
-			y += new BigDecimal(map.getNamedItem("y").getTextContent()).doubleValue();
+			y = new BigDecimal(map.getNamedItem("y").getTextContent()).doubleValue();
 		} catch(NullPointerException e) {
 			Main.log.log(Level.SEVERE, "Missing translation parameter(s); " + e);
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
 		}
-		translation.setLocation(x, y);
+		System.out.println(new Point2D.Double(x, y));
+		translation.add(new Point2D.Double(x, y));
 	}	
 
 	/**
@@ -483,8 +490,18 @@ public class Generator {
 
 	}
 		
+	/**
+	 * Returns the current translation value, which is the sum of al translation points. 
+	 * @return The current translation value;
+	 */
 	public Point2D.Double getTranslation() {
-		return translation;
+		int x = 0;
+		int y = 0;
+		for(int i = 0; i < translation.size(); i++) {
+			x += translation.get(i).getX();
+			y += translation.get(i).getY();
+		}
+		return new Point2D.Double(x, y);
 	}
 
 }
