@@ -67,7 +67,7 @@ import xml.XMLViewActionListener;
 public class MainWindow extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	private final String WINDOW_TITLE = new String("xmlCam");
+	private final String WINDOW_TITLE = new String("xmlCAM");
 	private Program programModel;
 	private XMLView xmlEditorPane;
 	private JMenuBar menuBar;
