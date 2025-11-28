@@ -27,8 +27,8 @@
 <h3>Drill element</h3>
 <p>This element generates the G-Code for a drill at the point &lt;p&gt;x,y&lt;/p&gt;. The z tag defines the start and the end (depth) of the drill.
 <pre>&lt;drill&gt;
-			&lt;p&gt;100,100&lt;&#x2F;p&gt;
-			&lt;z&gt;0,-1&lt;&#x2F;z&gt;
+  &lt;p&gt;100,100&lt;&#x2F;p&gt;
+  &lt;z&gt;0,-1&lt;&#x2F;z&gt;
 &lt;&#x2F;drill&gt;</pre>
 Hint: You need only two parameters for the z tag.
 </p>
@@ -61,11 +61,11 @@ With the &lt;seg&gt; tag you can define the number of segments in the circe. You
 <h3>Rectangle Element</h3>
 <p>A rectangle is defined by two points for the diagonal edges determined through a &lt;p&gt; tag.
 The z-depth must be defined by the &lt;z&gt; tag.
-	An code example snippet:
-	<pre>&lt;rectangle&gt;
-	&lt;p&gt;100,100&lt;&#x2F;p&gt;
-	&lt;p&gt;150,150&lt;&#x2F;p&gt;
-	&lt;z&gt;0,-1,0.1&lt;&#x2F;z&gt;
+An code example snippet:
+<pre>&lt;rectangle&gt;
+  &lt;p&gt;100,100&lt;&#x2F;p&gt;
+  &lt;p&gt;150,150&lt;&#x2F;p&gt;
+  &lt;z&gt;0,-1,0.1&lt;&#x2F;z&gt;
 &lt;&#x2F;rectangle&gt;</pre>
 <h3>Text Element</h3>
 Generates 2D coordinates for a text.
@@ -124,7 +124,7 @@ Pockets work for circle, rectangle and polyline elements.
   &lt;z&gt;0,-1,0.1&lt;&#x2F;z&gt;
 &lt;&#x2F;rectangle&gt;</pre>
 <h2>Settings</h2>
-<p>You can define your own settings for xmlCam. At the moment there are only a few settings to be done available.</p>
+<p>You can define your own settings for xmlCam. At the moment there are only a few settings available.</p>
 <pre>security-height = 5;		// The security height for a G0 move above the workpiece.
 workbench = 0, 0, 400, 400;	// The bounds of the workbench (xmin, ymin, xmax, ymax).
 grid-step = 50; 			// The ruler and grid steps for graphical view.
