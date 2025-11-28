@@ -96,7 +96,7 @@ An code example snippet:
 <p>The generated G-Code for this snippet is</p>
 <p>G0 F200</p>
 <h3>Translation Element</h3>
-This element shifts the elements within this tag through the x and y pane.
+This element shifts the elements within this tag through the x and y pane. It is possible to use the translation tag recursive.
 <pre>
 &lt;translate x&equals;&quot;100&quot; y&equals;&quot;50&quot;&gt;
   &lt;circle&gt;
@@ -104,6 +104,10 @@ This element shifts the elements within this tag through the x and y pane.
     &lt;rad&gt;5&lt;&sol;rad&gt;
     &lt;z&gt;0&comma;-2&comma;0.2&lt;&sol;z&gt;
   &lt;&sol;circle&gt;
+  &lt;translate x&equals;&quot;-20&quot; y&equals;&quot;0&quot;&gt;  
+    ...
+  &lt;&sol;circle&gt;
+  ...
 &lt;&sol;translate&gt;
 </pre>
 The center of the circle in this examle is now at (120,70).
