@@ -6,19 +6,26 @@ package model;
 
 public class Tool {
 
+	private String id;
+	private String type;
 	/**
 	 * The diameter of the milling tool.
 	 */
 	private double diameter;
-	private String name;
 	
-	public Tool(double diameter) {
-		this(diameter, null);
+	
+	public Tool(String id, double diameter) {
+		this(id, diameter, null);
 	}
 	
-	public Tool(double diameter, String name) {
+	public Tool(String id, double diameter, String type) {
+		this.id = id;
 		this.diameter = diameter;
-		this.name = name;
+		this.type = type;
+	}
+	
+	public String getId() {
+		return id;
 	}
 	
 	public double getDiameter() {
@@ -28,8 +35,16 @@ public class Tool {
 	public double getRadius() {
 		return diameter / 2;
 	}
-	
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public String toString( ) {
-		return new String("Tool: diameter " + diameter + " name " + name );
+		return new String("Tool " + id + ": diameter " + diameter + " type " + type );
 	}
 }

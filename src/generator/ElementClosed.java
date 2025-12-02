@@ -296,7 +296,6 @@ abstract class ElementClosed extends Element {
 		
 	    // Start- und Endpunkte müssen im Shape liegen
 	    if (!shape.contains(line.getP1()) || !shape.contains(line.getP2())) {
-	    	System.out.println("check for " + line.getP1() + " , " + line.getP2() + " - true1");
 	        return true; // Linie beginnt/endet nicht im Shape → verlässt Shape
 	    }
 

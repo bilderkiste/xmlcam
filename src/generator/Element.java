@@ -32,6 +32,7 @@ import java.util.HashSet;
 import org.w3c.dom.Node;
 
 import controller.Generator;
+import model.Tool;
 import model.ToolPath;
 import model.Tuple;
 /**
@@ -48,6 +49,7 @@ public abstract class Element {
 	protected ArrayList<ToolPath> toolPathes;
 	protected Path2D.Double shape; 
 	protected AffineTransform at;
+	private Tool tool;
 	protected Tuple zLevel;
 	
 	public Element(Node node, Generator gen) {
@@ -56,6 +58,7 @@ public abstract class Element {
 		this.gen = gen;
 		this.shape = null;
 		this.at = null;
+		this.tool = null;
 	}
 	
 	public abstract void extract() throws IllegalArgumentException;
@@ -371,13 +374,20 @@ public abstract class Element {
     	}
     }
 
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Tool getTool() {
+		return tool;
+	}
+
+	public void setTool(Tool tool) {
+		this.tool = tool;
 	}
 	
 }

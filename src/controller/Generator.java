@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -64,7 +65,7 @@ public class Generator {
 	private XMLView xmlEditorPane;
 	private BigDecimal currentX, currentY, currentZ, newX, newY, newZ;
 	private ArrayList<Point2D.Double> translation;
-	private Tool tool;
+	private HashMap<String, Tool> tools;
 	
 	/**
 	 * Constructs a new G-Code Generator.
@@ -81,6 +82,7 @@ public class Generator {
 		this.newY = new BigDecimal(0);
 		this.newZ = new BigDecimal(0);
 		this.translation = new ArrayList<Point2D.Double>();
+		this.tools = new HashMap<String, Tool>();
 	}
 	
 	/**
@@ -96,7 +98,10 @@ public class Generator {
 			System.out.println(commands.item(commandNumber). + " ;" + commands.item(commandNumber));
 		}*/
 		for(commandNumber = 0; commandNumber < commands.getLength(); commandNumber++) {
-			if(commands.item(commandNumber).getNodeName() == "drill") {
+			
+			if(commands.item(commandNumber).getNodeName() == "tools") {
+				setTools(commands.item(commandNumber));
+			} else if(commands.item(commandNumber).getNodeName() == "drill") {
 				Drill item = new Drill(commands.item(commandNumber), this);
 				item.extract();
 				item.execute();
@@ -143,8 +148,6 @@ public class Generator {
 				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "feedrate") {
 				setFeedRate(commands.item(commandNumber));
-			} else if(commands.item(commandNumber).getNodeName() == "tool") {
-				setTool(commands.item(commandNumber));
 			} else if(commands.item(commandNumber).getNodeName() == "translate") {
 				setTranslation(commands.item(commandNumber));
 				getChildNodes(commands.item(commandNumber));
@@ -215,38 +218,42 @@ public class Generator {
 	}
 	
 	/**
-	 * Sets the milling tool.
-	 * A tool changing G-Code will be inserted from the second tool tag.
-	 * @param node The node with the diameter and name
+	 * Sets the milling tools and write it to a List.
+	 * @param node The node with the id, diameter and name
 	 */
-	private void setTool(Node node) throws IllegalArgumentException {
+	private void setTools(Node node) throws IllegalArgumentException {
+		if(!tools.isEmpty()) {
+			throw new IllegalArgumentException("Toolset already defined.");
+		}
+		
 		NodeList children = node.getChildNodes();
 		
+		String id = null;
+		String type = null;
 		double diameter = 0;
-		String name = null;
-		
+		NamedNodeMap map;
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
-			if(item.getNodeName() == "diameter") {
-				diameter = Double.parseDouble(item.getTextContent());
-				if(diameter < 0.05) {
-					throw new IllegalArgumentException("Diameter must be greater or equal 0.05.");
+			if(item.getNodeName() == "tool") {
+				try {
+					map = item.getAttributes();
+					id = map.getNamedItem("id").getTextContent();
+					if (tools.containsKey(id)) {
+						throw new IllegalArgumentException("Tool with id " + id + " already exists.");
+					}
+					type = map.getNamedItem("type").getTextContent();
+					diameter = Double.parseDouble(map.getNamedItem("diameter").getTextContent());
+					if(diameter < 0.05) {
+						throw new IllegalArgumentException("Diameter must be greater or equal 0.05.");
+					}
+					tools.put(id, new Tool(id, diameter, type));
+			
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
-			if(item.getNodeName() == "name") {
-				name = item.getTextContent();
-			}
 		}
-		
-		if(tool != null) {
-			// Add G-Code for tool change
-			Row row = new Row(new Field('M', new BigDecimal(6)));
-			row.setComment("Tool change");
-			programModel.addRow(row);
-		}
-		
-		tool = new Tool(diameter, name);
 	}
 	
 	/**
@@ -254,7 +261,7 @@ public class Generator {
 	 * @return
 	 */
 	public Tool getTool() {
-		return tool;
+		return null;
 	}
 	
 	/**

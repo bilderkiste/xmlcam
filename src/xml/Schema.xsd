@@ -5,146 +5,162 @@
 	
 	<xs:complexType name="programRootType">
 	    <xs:sequence>
-	        <xs:element name="tool" type="tool"/>
-	        <xs:group ref="programElements" minOccurs="1" maxOccurs="unbounded"/>
+	        <xs:element name="tools" type="toolsType" />
+	        <xs:choice minOccurs="1" maxOccurs="unbounded">
+	        	<xs:element name="drill" type="drillType" />
+				<xs:element name="line" type="lineType" />
+				<xs:element name="polyline" type="polylineType" />
+				<xs:element name="circle" type="circleType" />
+				<xs:element name="rectangle" type="rectangleType" />
+				<xs:element name="text" type="textType" />
+				<xs:element name="feedrate" type="xs:positiveInteger" />
+				<xs:element name="transform" type="transformType" />
+	        </xs:choice>
 	    </xs:sequence>
 	</xs:complexType>
+		
+	<xs:complexType name="toolsType">
+		<xs:sequence>
+			<xs:element name="tool" type="toolType" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="toolType">
+		<xs:attribute name="diameter" type="posdoubletype" use="required" />
+		<xs:attribute name="id" type="xs:ID" />
+		<xs:attribute name="type" type="xs:string" />
+	</xs:complexType>
 
-	<xs:group name="programElements">
-	    <xs:choice>
-	        <xs:element name="drill" type="drill"/>
-	        <xs:element name="line" type="line"/>
-	        <xs:element name="polyline" type="polyline"/>
-	        <xs:element name="circle" type="circle"/>
-	        <xs:element name="rectangle" type="rectangle"/>
-	        <xs:element name="text" type="text"/>
-	        <xs:element name="feedrate" type="xs:positiveInteger"/>
-	        <xs:element name="tool" type="tool"/>
-	        <xs:element name="translate" type="translateType"/>
-	    </xs:choice>
-	</xs:group>
-
-	<xs:complexType name="translateType">
-	    <xs:complexContent>
-	        <xs:extension base="programType">
-	            <xs:attribute name="x" type="translationtype" use="required" />
-	            <xs:attribute name="y" type="translationtype" use="required" />
-	        </xs:extension>
-	    </xs:complexContent>
+	<xs:complexType name="transformType">
+    	<xs:choice minOccurs="1" maxOccurs="unbounded">
+        	<xs:element name="drill" type="drillType" />
+			<xs:element name="line" type="lineType" />
+			<xs:element name="polyline" type="polylineType" />
+			<xs:element name="circle" type="circleType" />
+			<xs:element name="rectangle" type="rectangleType" />
+			<xs:element name="text" type="textType" />
+			<xs:element name="feedrate" type="xs:positiveInteger" />
+			<xs:element name="transform" type="transformType" />
+        </xs:choice>
+		<xs:attribute name="translate" type="doubleType2" />
 	</xs:complexType>	
 	
-	<xs:complexType name="programType">
+	<xs:complexType name="geometryType">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="drill" type="drill" />
-			<xs:element name="line" type="line" />
-			<xs:element name="polyline" type="polyline" />
-			<xs:element name="circle" type="circle" />
-			<xs:element name="rectangle" type="rectangle" />
-			<xs:element name="text" type="text" />
-			<xs:element name="feedrate" type="xs:positiveInteger" />
-			<xs:element name="tool" type="tool" />
-			<xs:element name="translate" type="translateType" minOccurs="0" maxOccurs="unbounded" />
+
 		</xs:choice>
 	</xs:complexType>
 	
-	<xs:complexType name="drill">
+	<xs:complexType name="drillType">
 		<xs:sequence>
-			<xs:element name="p" type="pointtype" />
-			<xs:element name="z" type="ztype2" />
+			<xs:element name="point" type="pointType" />
+			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
 		</xs:sequence>
+		<xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
 	
 	
-	<xs:complexType name="line">
+	<xs:complexType name="lineType">
 		<xs:sequence>
-			<xs:element name="p" type="pointtype" minOccurs="2" maxOccurs="2" />
-			<xs:element name="z" type="ztype3" />
+			<xs:element name="point" type="pointType" minOccurs="2" maxOccurs="2" />
+			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
 		</xs:sequence>
+		<xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
 	
-	<xs:complexType name="rectangle">
-		<xs:sequence>
-			<xs:element name="p" type="pointtype" minOccurs="2" maxOccurs="2" />
-			<xs:element name="z" type="ztype3" />
-		</xs:sequence>
-		<xs:attribute name="pocket" type="pockettype" />
-		<xs:attribute name="offset" type="offsettype" />
+	<xs:complexType name="rectangleType">
+	    <xs:sequence>
+	        <xs:element name="point" type="pointType" minOccurs="2" maxOccurs="2"/>
+	        <xs:element name="offset" type="offsetType" minOccurs="0" maxOccurs="1"/>
+	        <xs:element name="pocket" type="pocketType" minOccurs="0" maxOccurs="1"/>
+	        <xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+	    </xs:sequence>
+	    <xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
 		
-	<xs:complexType name="circle">
-		<xs:sequence>
-			<xs:element name="p" type="pointtype" />
-			<xs:element name="rad" type="posinttype" />		
-			<xs:element name="seg" type="posinttype" minOccurs="0" maxOccurs="1" />				
-			<xs:element name="z" type="ztype3" />
-		</xs:sequence>
-		<xs:attribute name="pocket" type="pockettype" />
-		<xs:attribute name="offset" type="offsettype" />
+	<xs:complexType name="circleType">
+	    <xs:sequence>
+	        <xs:element name="point" type="pointType" minOccurs="1" maxOccurs="1"/>
+	        <xs:element name="radius" type="radiusType" minOccurs="1" maxOccurs="1"/>
+	        <xs:element name="offset" type="offsetType" minOccurs="0" maxOccurs="1"/>
+	        <xs:element name="pocket" type="pocketType" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+	    </xs:sequence>
+	    <xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
 
-	<xs:complexType name="text">
+	<xs:complexType name="textType">
 		<xs:sequence>
-			<xs:element name="content" type="xs:string" />
-			<xs:element name="p" type="pointtype" />					
+			<xs:element name="content" type="xs:string" minOccurs="1" maxOccurs="1" />
+			<xs:element name="point" type="pointType" minOccurs="1" maxOccurs="1" />					
 			<xs:element name="size" type="posinttype" minOccurs="0" maxOccurs="1" />
 			<xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1" />
 			<xs:element name="style" type="styletype" minOccurs="0" maxOccurs="1" />
 			<xs:element name="flatness" type="posdoubletype" minOccurs="0" maxOccurs="1" />
-			<xs:element name="z" type="ztype3" />
+			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
 		</xs:sequence>
-		<xs:attribute name="pocket" type="pockettype" />
-		<xs:attribute name="offset" type="offsettype" />
+		<xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
-		
-	<xs:complexType name="polyline">
+	<xs:complexType name="polylineType">
 		<xs:sequence>
-			<xs:element name="p" type="pointtype" />
+			<xs:element name="point" type="pointType" />
 			<xs:choice minOccurs="1" maxOccurs="unbounded">
 				<xs:sequence>
-					<xs:element name="bez" type="pointtype" minOccurs="1" maxOccurs="unbounded" /> 
-					<xs:element name="p" type="pointtype" />
+					<xs:element name="bezier" type="pointType" minOccurs="1" maxOccurs="unbounded" /> 
+					<xs:element name="point" type="pointType" />
 				</xs:sequence>
 				<xs:sequence>
-					<xs:element name="spl" type="pointtype" minOccurs="1" maxOccurs="unbounded" />
+					<xs:element name="spline" type="pointType" minOccurs="1" maxOccurs="unbounded" />
 				</xs:sequence>
-				<xs:element name="p" type="pointtype" />	
+				<xs:element name="point" type="pointType" />	
 			</xs:choice>
-			<xs:element name="z" type="ztype3" />
+			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
 		</xs:sequence>
-		<xs:attribute name="pocket" type="pockettype" />
-		<xs:attribute name="offset" type="offsettype" />
+		<xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
 	
-	<xs:complexType name="tool">
-		<xs:sequence>
-			<xs:element name="diameter" type="posdoubletype" />
-			<xs:choice minOccurs="0" maxOccurs="unbounded">
-				<xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" /> 	
-			</xs:choice>
-		</xs:sequence>
+
+	
+	<xs:complexType name="pointType">
+	    <xs:attribute name="x" type="posdoubletype" use="required" />
+	    <xs:attribute name="y" type="posdoubletype" use="required" />
 	</xs:complexType>
 	
-	<xs:simpleType name="pointtype">
+	<xs:complexType name="depthType">
+		<xs:attribute name="start" type="doubleType" />
+		<xs:attribute name="end" type="doubleType" />
+		<xs:attribute name="step" type="posdoubletype" />
+	</xs:complexType>
+	
+	<xs:complexType name="radiusType">
+	    <xs:attribute name="value" type="posdoubletype" use="required" />
+	</xs:complexType>
+	
+		<xs:complexType name="offsetType">
+		<xs:attribute name="type" type="offsetTypeAttribute" />
+	</xs:complexType>
+	
+	<xs:simpleType name="offsetTypeAttribute">
+	    <xs:restriction base="xs:string">
+	        <xs:enumeration value="engraving"/>
+	        <xs:enumeration value="inset"/>
+	        <xs:enumeration value="outset"/>
+	    </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="pocketType">
+		<xs:attribute name="type" type="pocketTypeAttribute" />
+	</xs:complexType>
+	
+	<xs:simpleType name="pocketTypeAttribute">
+	    <xs:restriction base="xs:string">
+	        <xs:enumeration value="parallel"/>
+	    </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="doubleType2">
 	    <xs:restriction base="xs:string">
 	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?,-?[0-9]+(\.[0-9]+)?"/>
-	    </xs:restriction>
-	</xs:simpleType>
-	
-	<xs:simpleType name="translationtype">
-	    <xs:restriction base="xs:string">
-	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?"/>
-	    </xs:restriction>
-	</xs:simpleType>
-	
-	<xs:simpleType name="ztype3">
-	    <xs:restriction base="xs:string">
-	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?,-[0-9]+(\.[0-9]+)?,[0-9]+(\.[0-9]+)?"/>
-	    </xs:restriction>
-	</xs:simpleType>
-	
-	<xs:simpleType name="ztype2">
-	    <xs:restriction base="xs:string">
-	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?,-[0-9]+(\.[0-9]+)?"/>
 	    </xs:restriction>
 	</xs:simpleType>
 	
@@ -153,13 +169,7 @@
 	    	<xs:pattern value="plain|bold|italic|bolditalic?"/>
 	    </xs:restriction>
 	</xs:simpleType>
-	
-	<xs:simpleType name="offsettype">
-	    <xs:restriction base="xs:string">
-	    	<xs:pattern value="engraving|inset|outset?"/>
-	    </xs:restriction>
-	</xs:simpleType>
-	
+
 	<xs:simpleType name="posinttype">
 	    <xs:restriction base="xs:string">
 	    	<xs:pattern value="[0-9]+"/>
@@ -172,9 +182,9 @@
 	    </xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="pockettype">
+	<xs:simpleType name="doubleType">
 	    <xs:restriction base="xs:string">
-	    	<xs:pattern value="parallel"/>
+	    	<xs:pattern value="-?[0-9]+(\.[0-9]+)?"/>
 	    </xs:restriction>
 	</xs:simpleType>
 	 

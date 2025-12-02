@@ -69,7 +69,7 @@ public class Circle extends ElementClosed {
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
-			if(item.getNodeName() == "p") {
+			if(item.getNodeName() == "point") {
 				center = new Tuple(item);
 			}
 			if(item.getNodeName() == "rad") {
