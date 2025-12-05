@@ -381,11 +381,19 @@ public abstract class Element {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
+	/**
+	 * Returns the tool for the element.
+	 * @return The tool object.
+	 */
 	public Tool getTool() {
 		return tool;
 	}
 
+	/**
+	 * Set the tool for the element.
+	 * @param tool The tool object
+	 */
 	public void setTool(Tool tool) {
 		this.tool = tool;
 	}

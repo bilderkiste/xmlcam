@@ -43,13 +43,16 @@ abstract class ElementClosed extends Element {
 	public static final int INSET = 1;
 	public static final int OUTSET = 2;
 	
+	public static final int NO_POCKET = 3;
+	public static final int PARALLEL_POCKET = 4;
+	
 	private int pathOffset;
-	private boolean pocket;
+	private int pocket;
 
 	public ElementClosed(Node node, Generator gen) {
 		super(node, gen);
 		pathOffset = ElementClosed.ENGRAVING;
-		pocket = false;
+		pocket = ElementClosed.NO_POCKET;
 	}
 
 	/**
@@ -59,11 +62,11 @@ abstract class ElementClosed extends Element {
 	protected void setClosedElementsAttributeVars(NamedNodeMap map) {
 		try {
 			if(map.getNamedItem("pocket").getTextContent().equals("parallel")) {
-				pocket = true;
+				pocket = ElementClosed.PARALLEL_POCKET;
 			}
-		} catch(NullPointerException e) {
+		} catch (NullPointerException e) {
 		} 
-		
+	
 		try {
 			if(map.getNamedItem("offset").getTextContent().equals("engraving")) {
 				pathOffset = ElementClosed.ENGRAVING;
@@ -72,8 +75,8 @@ abstract class ElementClosed extends Element {
 			} else if(map.getNamedItem("offset").getTextContent().equals("outset")) {
 				pathOffset = ElementClosed.OUTSET;
 			}
-		} catch(NullPointerException e) {
-		}
+		} catch (NullPointerException e) {
+		} 
 	}
 	
 	/**
@@ -87,9 +90,9 @@ abstract class ElementClosed extends Element {
         if(pathOffset == ElementClosed.ENGRAVING) {
         	pathShape = shape;
         } else if(pathOffset == ElementClosed.INSET) {
-        	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) gen.getTool().getRadius()));
+        	pathShape = AreaToPath(createInsetArea(new Area(shape), (float) getTool().getRadius()));
         } else if(pathOffset == ElementClosed.OUTSET) {
-        	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) gen.getTool().getRadius()));
+        	pathShape = AreaToPath(createOutsetArea(new Area(shape), (float) getTool().getRadius()));
         }
         return pathShape;
 	}
@@ -362,16 +365,10 @@ abstract class ElementClosed extends Element {
 		return pathOffset;
 	}
 
-	public void setPathOffset(int offset) {
-		this.pathOffset = offset;
-	}
-
 	public boolean isPocket() {
-		return pocket;
+		if(pocket == ElementClosed.PARALLEL_POCKET) {
+			return true;
+		}
+		return false;
 	}
-
-	public void setPocket(boolean pocket) {
-		this.pocket = pocket;
-	}
-		
 }

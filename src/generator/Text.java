@@ -85,7 +85,8 @@ public class Text extends ElementClosed {
 		styleMap.put("ITALIC", 2);
 		styleMap.put("BOLDITALIC", 3);
 		
-		setClosedElementsAttributeVars(node.getAttributes());
+		map = node.getAttributes();
+		setTool(gen.getTool(map.getNamedItem("tool").getTextContent()));
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
@@ -109,21 +110,30 @@ public class Text extends ElementClosed {
 				values[2] = Double.parseDouble(map.getNamedItem("step").getTextContent());
 				zLevel = new Tuple(values);
 			}
-			try {
-				if(item.getNodeName() == "options") {
-					map = item.getAttributes();
+			
+			if(item.getNodeName() == "options") {
+				map = item.getAttributes();
+				try {
 					size = Integer.parseInt(map.getNamedItem("size").getTextContent());
-					type = map.getNamedItem("type").getTextContent();
-					style = map.getNamedItem("style").getTextContent();
-					flatness = Double.parseDouble(map.getNamedItem("flatness").getTextContent());
-					//pocket = Double.parseDouble(map.getNamedItem("pocket").getTextContent());
-					//offset = map.getNamedItem("offset").getTextContent();
+				} catch (NullPointerException e) {
 				}
-			} catch (NullPointerException e) {
-				
+				try {
+					type = map.getNamedItem("type").getTextContent();
+				} catch (NullPointerException e) {
+				}
+				try {
+					style = map.getNamedItem("style").getTextContent();
+				} catch (NullPointerException e) {
+				}
+				try {
+					flatness = Double.parseDouble(map.getNamedItem("flatness").getTextContent());
+				} catch (NullPointerException e) {
+				}
+				setClosedElementsAttributeVars(map);
 			}
+			
 		}
-		
+			
 		if(size < 1) {
 			size = 10;
 		}
@@ -143,6 +153,7 @@ public class Text extends ElementClosed {
 		
 		super.setName(new String("Text " + content));
 	
+		System.out.println("->" + getPathOffset() + "," + isPocket() + "," + flatness);
 	}
 
 	@Override
@@ -163,14 +174,14 @@ public class Text extends ElementClosed {
         	Path2D.Double pathShape = createOffsetShape(subShapes.get(i));
         	addToolPathes(generateToolPathes(pathShape, at, flatness, new String("Text: " + content)));
     		if(isPocket()) {
-    			ArrayList<ToolPath> pockets = createPocket(pathShape, at, gen.getTool());
+    			ArrayList<ToolPath> pockets = createPocket(pathShape, at, getTool());
     			//prüfen ob leere ToolPath vorhanden sind um (tmp)
-    			for(int j = 0; j < pockets.size(); j++) {
+    			/*for(int j = 0; j < pockets.size(); j++) {
     				if(pockets.get(j).size() == 0) {
     					pockets.remove(j);
     					j--;
     				}
-    			}
+    			}*/
     			addToolPathes(pockets);
     		}
         }

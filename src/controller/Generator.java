@@ -257,11 +257,12 @@ public class Generator {
 	}
 	
 	/**
-	 * Returns the current tool.
-	 * @return
+	 * Returns the current tool with specified id from the tool list.
+	 * @param id The tool id
+	 * @return The tool object
 	 */
-	public Tool getTool() {
-		return null;
+	public Tool getTool(String id) {
+		return tools.get(id);
 	}
 	
 	/**
