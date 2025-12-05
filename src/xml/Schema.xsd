@@ -71,8 +71,6 @@
 	<xs:complexType name="rectangleType">
 	    <xs:sequence>
 	        <xs:element name="point" type="pointType" minOccurs="2" maxOccurs="2"/>
-	        <xs:element name="offset" type="offsetType" minOccurs="0" maxOccurs="1"/>
-	        <xs:element name="pocket" type="pocketType" minOccurs="0" maxOccurs="1"/>
 	        <xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
 	    </xs:sequence>
 	    <xs:attribute name="tool" type="xs:string" use="required"/>
@@ -82,8 +80,6 @@
 	    <xs:sequence>
 	        <xs:element name="point" type="pointType" minOccurs="1" maxOccurs="1"/>
 	        <xs:element name="radius" type="radiusType" minOccurs="1" maxOccurs="1"/>
-	        <xs:element name="offset" type="offsetType" minOccurs="0" maxOccurs="1"/>
-	        <xs:element name="pocket" type="pocketType" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
 	    </xs:sequence>
 	    <xs:attribute name="tool" type="xs:string" use="required"/>
@@ -91,16 +87,14 @@
 
 	<xs:complexType name="textType">
 		<xs:sequence>
-			<xs:element name="content" type="xs:string" minOccurs="1" maxOccurs="1" />
-			<xs:element name="point" type="pointType" minOccurs="1" maxOccurs="1" />					
-			<xs:element name="size" type="posinttype" minOccurs="0" maxOccurs="1" />
-			<xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1" />
-			<xs:element name="style" type="styletype" minOccurs="0" maxOccurs="1" />
-			<xs:element name="flatness" type="posdoubletype" minOccurs="0" maxOccurs="1" />
+			<xs:element name="content" type="xs:string" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="point" type="pointType" minOccurs="1" maxOccurs="1"/>					
 			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="options" type="optionsTextType" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
+	
 	<xs:complexType name="polylineType">
 		<xs:sequence>
 			<xs:element name="point" type="pointType" />
@@ -120,6 +114,14 @@
 	</xs:complexType>
 	
 
+	<xs:complexType name="optionsTextType">
+	    <xs:attribute name="size" type="posinttype"/>
+	    <xs:attribute name="type" type="xs:string"/>
+	    <xs:attribute name="style" type="optionsTextStyleTypeAttribute"/>
+	    <xs:attribute name="flatness" type="posdoubletype"/>
+	    <xs:attribute name="pocket" type="pocketTypeAttribute"/>
+	    <xs:attribute name="offset" type="offsetTypeAttribute"/>
+	</xs:complexType>
 	
 	<xs:complexType name="pointType">
 	    <xs:attribute name="x" type="posdoubletype" use="required" />
@@ -136,15 +138,20 @@
 	    <xs:attribute name="value" type="posdoubletype" use="required" />
 	</xs:complexType>
 	
-		<xs:complexType name="offsetType">
-		<xs:attribute name="type" type="offsetTypeAttribute" />
-	</xs:complexType>
-	
 	<xs:simpleType name="offsetTypeAttribute">
 	    <xs:restriction base="xs:string">
 	        <xs:enumeration value="engraving"/>
 	        <xs:enumeration value="inset"/>
 	        <xs:enumeration value="outset"/>
+	    </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="optionsTextStyleTypeAttribute">
+	    <xs:restriction base="xs:string">
+	        <xs:enumeration value="plain"/>
+	        <xs:enumeration value="bold"/>
+	        <xs:enumeration value="italic"/>
+	        <xs:enumeration value="bolditalic"/>
 	    </xs:restriction>
 	</xs:simpleType>
 	

@@ -24,10 +24,12 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -76,6 +78,7 @@ public class Text extends ElementClosed {
 		int size = 0;
 		String type = null;
 		String style = null;
+		NamedNodeMap map;
 		HashMap<String, Integer> styleMap = new HashMap<>();
 		styleMap.put("PLAIN", 0);
 		styleMap.put("BOLD", 1);
@@ -86,26 +89,38 @@ public class Text extends ElementClosed {
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
+
 			if(item.getNodeName() == "content") {
 				content = item.getTextContent();
 			}
-			if(item.getNodeName() == "p") {
-				xmlPoint = new Tuple(item);
+			if(item.getNodeName() == "point") {
+				map = item.getAttributes();
+				double coords[] = new double[2];
+				coords[0] = Double.parseDouble(map.getNamedItem("x").getTextContent());
+				coords[1] = Double.parseDouble(map.getNamedItem("y").getTextContent());
+				//xmlPoint = new Point2D.Double(x, y);
+				xmlPoint = new Tuple(coords);
 			}
-			if(item.getNodeName() == "z") {
-				zLevel = new Tuple(item);
+			if(item.getNodeName() == "depth") {
+				map = item.getAttributes();
+				double values[] = new double[3];
+				values[0] = Double.parseDouble(map.getNamedItem("start").getTextContent());
+				values[1] = Double.parseDouble(map.getNamedItem("end").getTextContent());
+				values[2] = Double.parseDouble(map.getNamedItem("step").getTextContent());
+				zLevel = new Tuple(values);
 			}
-			if(item.getNodeName() == "size") {
-				size = Integer.parseInt(item.getTextContent());
-			}
-			if(item.getNodeName() == "type") {
-				type = new String(item.getTextContent());
-			}
-			if(item.getNodeName() == "style") {
-				style = new String(item.getTextContent().toUpperCase()); 
-			}
-			if(item.getNodeName() == "flatness") {
-				flatness = Double.parseDouble(item.getTextContent()); 
+			try {
+				if(item.getNodeName() == "options") {
+					map = item.getAttributes();
+					size = Integer.parseInt(map.getNamedItem("size").getTextContent());
+					type = map.getNamedItem("type").getTextContent();
+					style = map.getNamedItem("style").getTextContent();
+					flatness = Double.parseDouble(map.getNamedItem("flatness").getTextContent());
+					//pocket = Double.parseDouble(map.getNamedItem("pocket").getTextContent());
+					//offset = map.getNamedItem("offset").getTextContent();
+				}
+			} catch (NullPointerException e) {
+				
 			}
 		}
 		
