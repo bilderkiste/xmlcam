@@ -46,27 +46,24 @@ import model.Tuple;
  * Optional tags are <size> for font size in point, <type> for font family, <style> for bold or italic styles and flatness for accuracy. 
  * An code example snippet:
  * <pre>{@code
-	<text>
-		<content>Ein toller Tag</content>
-		<p>20,20</p>
-		<size>10</size>
-		<type>Calibri</type>
-		<style>plain</style>
-		<flatness>0.1</flatness>
-		<z>0,-1,1</z>
+	<text tool="t1">
+		<content>Guten Morgen!</content>
+		<point x="10" y="50" />
+		<depth start="0" end="-1" step="0.1" />
+		<options size="20" syt/>
 	</text>
  * }</pre>
  */
 public class Text extends ElementClosed {
 	
-	private Tuple xmlPoint;
+	private Tuple point;
 	private String content;
 	private Font font;
 	private double flatness;
 
 	public Text(Node node, Generator gen) {
 		super(node, gen);
-		xmlPoint = null;
+		point = null;
 		content = null;
 		font = null;
 		flatness = 0.5;
@@ -100,7 +97,7 @@ public class Text extends ElementClosed {
 				coords[0] = Double.parseDouble(map.getNamedItem("x").getTextContent());
 				coords[1] = Double.parseDouble(map.getNamedItem("y").getTextContent());
 				//xmlPoint = new Point2D.Double(x, y);
-				xmlPoint = new Tuple(coords);
+				point = new Tuple(coords);
 			}
 			if(item.getNodeName() == "depth") {
 				map = item.getAttributes();
@@ -118,11 +115,11 @@ public class Text extends ElementClosed {
 				} catch (NullPointerException e) {
 				}
 				try {
-					type = map.getNamedItem("type").getTextContent();
+					type = map.getNamedItem("font").getTextContent();
 				} catch (NullPointerException e) {
 				}
 				try {
-					style = map.getNamedItem("style").getTextContent();
+					style = map.getNamedItem("style").getTextContent().toUpperCase();
 				} catch (NullPointerException e) {
 				}
 				try {
@@ -147,13 +144,11 @@ public class Text extends ElementClosed {
 		try {
 			font = new Font(type, styleMap.get(style), size);
 		} catch(NullPointerException e) {
-			throw new IllegalArgumentException("Invalid argments in text element.");
+			throw new IllegalArgumentException("Invalid arguments in text element.");
 			
 		}
 		
 		super.setName(new String("Text " + content));
-	
-		System.out.println("->" + getPathOffset() + "," + isPocket() + "," + flatness);
 	}
 
 	@Override
@@ -165,7 +160,7 @@ public class Text extends ElementClosed {
     	
         // Transformation, um den Text an die Startposition (startX, startY) zu verschieben
         at = new AffineTransform();
-        at.translate(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
+        at.translate(point.getValue(0).doubleValue(), point.getValue(1).doubleValue());
         at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
         at.scale(1.0, -1.0);
         
@@ -186,7 +181,7 @@ public class Text extends ElementClosed {
     		}
         }
         
-        Main.log.log(Level.FINE, "Text element: text {0} at {1} and translation {2} with type {3} size {4} and flatness {5}" , new Object[] { content, xmlPoint, gen.getTranslation(), font.getFontName(), font.getSize(), flatness } );
+        Main.log.log(Level.FINE, "Text element: text {0} at {1} and translation {2} with type {3} size {4} and flatness {5}" , new Object[] { content, point, gen.getTranslation(), font.getFontName(), font.getSize(), flatness } );
 	}
 
 }

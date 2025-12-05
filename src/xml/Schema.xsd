@@ -78,9 +78,10 @@
 		
 	<xs:complexType name="circleType">
 	    <xs:sequence>
-	        <xs:element name="point" type="pointType" minOccurs="1" maxOccurs="1"/>
+	        <xs:element name="center" type="pointType" minOccurs="1" maxOccurs="1"/>
 	        <xs:element name="radius" type="radiusType" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="options" type="optionsCircleType" minOccurs="0" maxOccurs="1"/>
 	    </xs:sequence>
 	    <xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
@@ -113,10 +114,15 @@
 		<xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
 	
+	<xs:complexType name="optionsCircleType">
+	    <xs:attribute name="segments" type="posinttype"/>
+	    <xs:attribute name="pocket" type="pocketTypeAttribute"/>
+	    <xs:attribute name="offset" type="offsetTypeAttribute"/>
+	</xs:complexType>
 
 	<xs:complexType name="optionsTextType">
 	    <xs:attribute name="size" type="posinttype"/>
-	    <xs:attribute name="type" type="xs:string"/>
+	    <xs:attribute name="font" type="xs:string"/>
 	    <xs:attribute name="style" type="optionsTextStyleTypeAttribute"/>
 	    <xs:attribute name="flatness" type="posdoubletype"/>
 	    <xs:attribute name="pocket" type="pocketTypeAttribute"/>

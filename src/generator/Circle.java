@@ -23,6 +23,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.util.logging.Level;
 
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -48,15 +49,16 @@ import model.Tuple;
 public class Circle extends ElementClosed {
 	
 	private Tuple center;
-	private Tuple radius;
-	private Tuple segments;
+	private double radius;
+	private int segments;
 	private int resolution; // mm
 	private double phiStep;
 
 	public Circle(Node node, Generator gen) {
 		super(node, gen);
 		center = null;
-		segments = null;
+		radius = 0;
+		segments = 0;
 		resolution = 2; // mm
 		phiStep = 0;
 	}
@@ -65,21 +67,40 @@ public class Circle extends ElementClosed {
 	public void extract() throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
 		
-		setClosedElementsAttributeVars(node.getAttributes());
+		NamedNodeMap map = node.getAttributes();
+		
+		map = node.getAttributes();
+		setTool(gen.getTool(map.getNamedItem("tool").getTextContent()));
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
-			if(item.getNodeName() == "point") {
-				center = new Tuple(item);
+			if(item.getNodeName() == "center") {
+				map = item.getAttributes();
+				double coords[] = new double[2];
+				coords[0] = Double.parseDouble(map.getNamedItem("x").getTextContent());
+				coords[1] = Double.parseDouble(map.getNamedItem("y").getTextContent());
+				//xmlPoint = new Point2D.Double(x, y);
+				center = new Tuple(coords);
 			}
-			if(item.getNodeName() == "rad") {
-				radius = new Tuple(item);
+			if(item.getNodeName() == "radius") {
+				map = item.getAttributes();
+				radius = Double.parseDouble(map.getNamedItem("value").getTextContent());
 			}
-			if(item.getNodeName() == "seg") {
-				segments = new Tuple(item);
+			if(item.getNodeName() == "depth") {
+				map = item.getAttributes();
+				double values[] = new double[3];
+				values[0] = Double.parseDouble(map.getNamedItem("start").getTextContent());
+				values[1] = Double.parseDouble(map.getNamedItem("end").getTextContent());
+				values[2] = Double.parseDouble(map.getNamedItem("step").getTextContent());
+				zLevel = new Tuple(values);
 			}
-			if(item.getNodeName() == "z") {
-				zLevel = new Tuple(item);
+			if(item.getNodeName() == "options") {
+				map = item.getAttributes();
+				try {
+					segments = Integer.parseInt(map.getNamedItem("segments").getTextContent());
+				} catch (NullPointerException e) {
+				}
+				setClosedElementsAttributeVars(map);
 			}
 		}
 		
@@ -89,27 +110,25 @@ public class Circle extends ElementClosed {
 	public void execute() {
 		shape = new Path2D.Double();
 		double phi = 0;
-
-		float radiusv = radius.getValue(0).floatValue();
 		
-		if(segments == null) { 
+		if(segments == 0) { 
 			// Determine phiStep. If the circle is very small, the step should be < 0.5 (that means more G points on the circle
-			phiStep = 2 * Math.PI / ((2 * radiusv * Math.PI) / resolution);
+			phiStep = 2 * Math.PI / ((2 * radius * Math.PI) / resolution);
 			if(phiStep > 0.5) {
 				phiStep = 0.5;
 			}
 		} else {
-			if(segments.getValue(0).intValue() < 3) {
+			if(segments < 3) {
 				throw new IllegalArgumentException("Segment value has to be greater 2.");
 			}
-			phiStep =  2 * Math.PI / segments.getValue(0).intValue();
+			phiStep =  2 * Math.PI / segments;
 		}
 	
 		while(phi < 2 * Math.PI) {
 			if(phi == 0) {
-				shape.moveTo(radiusv * Math.sin(phi), radiusv * Math.cos(phi));
+				shape.moveTo(radius * Math.sin(phi), radius * Math.cos(phi));
 			} else {
-				shape.lineTo(radiusv * Math.sin(phi), radiusv * Math.cos(phi));
+				shape.lineTo(radius * Math.sin(phi), radius * Math.cos(phi));
 			}
 			phi += phiStep;
 		}
@@ -127,7 +146,7 @@ public class Circle extends ElementClosed {
         	
 		//create pockettoolpath
 		if(isPocket()) {
-			addToolPathes(createPocket(pathShape, at, gen.getTool()));
+			addToolPathes(createPocket(pathShape, at, getTool()));
 		}
 		
 		Main.log.log(Level.FINE, "Circle element: circle at {0} with translation {1} and radius {2} with {3} points. Step for phi is {4}.", new Object[] { center, gen.getTranslation(), radius, getToolPath(0).size(), phi });	
