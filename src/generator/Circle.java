@@ -33,16 +33,18 @@ import model.Tuple;
 
 /**
  * Generate 2D coordinates for a circle.
- * A circle is defined by the center point determined through a <p> tag and a radius defined through a <rad> tag.
- * The z-depth must be defined by the <z> tag.
+ * A circle is defined by the center determined through a <center> tag with attributes x and y and radius defined through a <radius> tag with a value attribute.
+ * The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+ * Optional attributes in the <options> tag are segments for the definition of the number of segments i.e. 6 for an hexagon. 
+ * Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
  * An code example snippet:
  * <pre>{@code
- * <circle>
- * 		<p>200,200</p>
- * 		<rad>75</rad>
- * 		<seg>5</seg>
- *		<z>0,-1,0.1</z>
- * </circle>
+	<circle tool="t2">
+		<center x="60" y="30" />
+		<radius value="20" /> 
+		<depth start="0" end="-1" step="0.1" />
+		<options segments="5" offset="inset" pocket="parallel" />
+	</circle>
  * }</pre>
  * @param node The node with the needed parameters
  */

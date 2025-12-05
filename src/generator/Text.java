@@ -39,18 +39,19 @@ import model.ToolPath;
 import model.Tuple;
 
 /**
- * Generate 2D coordinates for a text.
- * A text must defined by a start point bottom left determined through a <p> tag.
+ * This class generates an 2D path for a text.
  * The Text must defined by the <content> tag.
- * The z-depth must be defined by the <z> tag.
- * Optional tags are <size> for font size in point, <type> for font family, <style> for bold or italic styles and flatness for accuracy. 
+ * The position of the text is determined through a <point> tag with attributes x and y defining bottom left.
+ * The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+ * Optional attributes in the <options> tag are size for font size in point, font for font family, style for bold or italic styles and flatness for accuracy. 
+ * Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
  * An code example snippet:
  * <pre>{@code
 	<text tool="t1">
 		<content>Guten Morgen!</content>
 		<point x="10" y="50" />
 		<depth start="0" end="-1" step="0.1" />
-		<options size="20" syt/>
+		<options size="20" font="C059" style="bold" flatness="0.1" offset="outset"/>
 	</text>
  * }</pre>
  */
