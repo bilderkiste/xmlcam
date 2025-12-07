@@ -32,7 +32,7 @@ import main.Main;
 import model.Tuple;
 
 /**
- * Generate 2D coordinates for a circle.
+ * Generate 2D path for a circle.
  * A circle is defined by the center determined through a <center> tag with attributes x and y and radius defined through a <radius> tag with a value attribute.
  * The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
  * Optional attributes in the <options> tag are segments for the definition of the number of segments i.e. 6 for an hexagon. 

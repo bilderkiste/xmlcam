@@ -24,6 +24,7 @@ import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -32,27 +33,31 @@ import main.Main;
 import model.Tuple;
 
 /**
- * Generate 2D coordinates for a rectangle.
- * A rectangle is defined by two points for the diagonal edges determined through a <p> tag.
- * The z-depth must be defined by the <z> tag.
+ * Generate 2D path for a rectangle.
+ * A rectangle is defined by two points for the diagonal edges determined through two <point> tags with attributes x and y.
+ * The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+ * Optional attributes in the <options> tag are size for font size in point, font for font family, style for bold or italic styles and flatness for accuracy. 
+ * Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+
  * An code example snippet:
  * <pre>{@code
- * <rectangle>
- * 		<p>100,100</p>
- * 		<p>150,150</p>
- *		<z>0,-1,0.1</z>
- * </rectangle>
+	<rectangle tool="t2">
+		<point x="10" y="10" />
+		<point x="30" y="30" />
+		<depth start="0" end="-1" step="0.1" />
+		<options pocket="parallel" offset="inset" />
+	</rectangle>
  * }</pre>
  * @param node The node with the needed parameters
  */
 
 public class Rectangle extends ElementClosed {
 	
-	private ArrayList<Tuple> xmlPoints;
+	private ArrayList<Tuple> points;
 	
 	public Rectangle(Node node, Generator gen) {
 		super(node, gen);
-		xmlPoints = new ArrayList<Tuple>();
+		points = new ArrayList<Tuple>();
 		super.setName(new String("Rectangle"));
 	}
 
@@ -60,15 +65,32 @@ public class Rectangle extends ElementClosed {
 	public void extract() throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
 
-		setClosedElementsAttributeVars(node.getAttributes());
+		NamedNodeMap map = node.getAttributes();
+		
+		map = node.getAttributes();
+		setTool(gen.getTool(map.getNamedItem("tool").getTextContent()));
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
-			if(item.getNodeName() == "p") {
-				xmlPoints.add(new Tuple(item));
+			if(item.getNodeName() == "point") {
+				map = item.getAttributes();
+				double coords[] = new double[2];
+				coords[0] = Double.parseDouble(map.getNamedItem("x").getTextContent());
+				coords[1] = Double.parseDouble(map.getNamedItem("y").getTextContent());
+				//xmlPoint = new Point2D.Double(x, y);
+				points.add(new Tuple(coords));
 			}
-			if(item.getNodeName() == "z") {
-				zLevel = new Tuple(item);
+			if(item.getNodeName() == "depth") {
+				map = item.getAttributes();
+				double values[] = new double[3];
+				values[0] = Double.parseDouble(map.getNamedItem("start").getTextContent());
+				values[1] = Double.parseDouble(map.getNamedItem("end").getTextContent());
+				values[2] = Double.parseDouble(map.getNamedItem("step").getTextContent());
+				zLevel = new Tuple(values);
+			}
+			if(item.getNodeName() == "options") {
+				map = item.getAttributes();
+				setClosedElementsAttributeVars(map);
 			}
 		}
 	}
@@ -77,10 +99,10 @@ public class Rectangle extends ElementClosed {
 	public void execute() {
 		shape = new Path2D.Double();
 		
-		shape.moveTo(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
-		shape.lineTo(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
-		shape.lineTo(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue());
-		shape.lineTo(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue());
+		shape.moveTo(points.get(0).getValue(0).doubleValue(), points.get(0).getValue(1).doubleValue());
+		shape.lineTo(points.get(1).getValue(0).doubleValue(), points.get(0).getValue(1).doubleValue());
+		shape.lineTo(points.get(1).getValue(0).doubleValue(), points.get(1).getValue(1).doubleValue());
+		shape.lineTo(points.get(0).getValue(0).doubleValue(), points.get(1).getValue(1).doubleValue());
 		shape.closePath();
 		
 		at = new AffineTransform();
@@ -88,16 +110,16 @@ public class Rectangle extends ElementClosed {
 		
 		Path2D.Double pathShape = createOffsetShape(shape);
 		
-		super.setName(new String("Rectangle from " + xmlPoints.get(0) + " to " + xmlPoints.get(1)));
+		super.setName(new String("Rectangle from " + points.get(0) + " to " + points.get(1)));
 	
 		addToolPathes(generateToolPathes(pathShape, at, 0.1, super.getName()));
 		
 		//create pockettoolpath
 		if(isPocket()) {
-			addToolPathes(createPocket(pathShape, at, gen.getTool()));
+			addToolPathes(createPocket(pathShape, at, getTool()));
 		}
 
-		Main.log.log(Level.FINE, "Rectangle element: rectangle from {0} to {1} with translation {2}.", new Object[] { xmlPoints.get(0), xmlPoints.get(1), gen.getTranslation() } );	
+		Main.log.log(Level.FINE, "Rectangle element: rectangle from {0} to {1} with translation {2}.", new Object[] { points.get(0), points.get(1), gen.getTranslation() } );	
 	}
 
 }

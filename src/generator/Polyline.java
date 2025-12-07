@@ -24,6 +24,7 @@ import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -47,32 +48,56 @@ import model.Tuple;
 
 public class Polyline extends ElementClosed {
 	
-	private ArrayList<Tuple> xmlPoints;
+	private ArrayList<Tuple> points;
 
 	public Polyline(Node node, Generator gen) {
 		super(node, gen);
-		xmlPoints = new ArrayList<Tuple>();
+		points = new ArrayList<Tuple>();
 	}
 
 	@Override
 	public void extract() throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
-
-		setClosedElementsAttributeVars(node.getAttributes());
+		
+		NamedNodeMap map = node.getAttributes();
+		
+		map = node.getAttributes();
+		setTool(gen.getTool(map.getNamedItem("tool").getTextContent()));
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
-			if(item.getNodeName() == "p") {
-				xmlPoints.add(new Tuple(item));
+			if(item.getNodeName() == "point") {
+				map = item.getAttributes();
+				double coords[] = new double[2];
+				coords[0] = Double.parseDouble(map.getNamedItem("x").getTextContent());
+				coords[1] = Double.parseDouble(map.getNamedItem("y").getTextContent());
+				points.add(new Tuple(coords));
 			}
-			if(item.getNodeName() == "bez") {
-				xmlPoints.add(new Tuple(item, Tuple.BEZIER));
+			if(item.getNodeName() == "bezier") {
+				map = item.getAttributes();
+				double coords[] = new double[2];
+				coords[0] = Double.parseDouble(map.getNamedItem("x").getTextContent());
+				coords[1] = Double.parseDouble(map.getNamedItem("y").getTextContent());
+				points.add(new Tuple(coords, Tuple.BEZIER));
 			}
-			if(item.getNodeName() == "spl") {
-				xmlPoints.add(new Tuple(item, Tuple.SPLINE));
+			if(item.getNodeName() == "spline") {
+				map = item.getAttributes();
+				double coords[] = new double[2];
+				coords[0] = Double.parseDouble(map.getNamedItem("x").getTextContent());
+				coords[1] = Double.parseDouble(map.getNamedItem("y").getTextContent());
+				points.add(new Tuple(coords, Tuple.SPLINE));
 			}
-			if(item.getNodeName() == "z") {
-				zLevel = new Tuple(item);
+			if(item.getNodeName() == "depth") {
+				map = item.getAttributes();
+				double values[] = new double[3];
+				values[0] = Double.parseDouble(map.getNamedItem("start").getTextContent());
+				values[1] = Double.parseDouble(map.getNamedItem("end").getTextContent());
+				values[2] = Double.parseDouble(map.getNamedItem("step").getTextContent());
+				zLevel = new Tuple(values);
+			}
+			if(item.getNodeName() == "options") {
+				map = item.getAttributes();
+				setClosedElementsAttributeVars(map);
 			}
 		}
 				

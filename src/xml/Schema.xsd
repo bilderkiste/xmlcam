@@ -72,6 +72,7 @@
 	    <xs:sequence>
 	        <xs:element name="point" type="pointType" minOccurs="2" maxOccurs="2"/>
 	        <xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+	        <xs:element name="options" type="optionsRectangleType" minOccurs="0" maxOccurs="1"/>
 	    </xs:sequence>
 	    <xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
@@ -116,6 +117,11 @@
 	
 	<xs:complexType name="optionsCircleType">
 	    <xs:attribute name="segments" type="posinttype"/>
+	    <xs:attribute name="pocket" type="pocketTypeAttribute"/>
+	    <xs:attribute name="offset" type="offsetTypeAttribute"/>
+	</xs:complexType>
+
+	<xs:complexType name="optionsRectangleType">
 	    <xs:attribute name="pocket" type="pocketTypeAttribute"/>
 	    <xs:attribute name="offset" type="offsetTypeAttribute"/>
 	</xs:complexType>
