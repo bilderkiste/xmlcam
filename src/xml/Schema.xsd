@@ -14,7 +14,7 @@
 				<xs:element name="rectangle" type="rectangleType" />
 				<xs:element name="text" type="textType" />
 				<xs:element name="feedrate" type="xs:positiveInteger" />
-				<xs:element name="transform" type="transformType" />
+				<xs:element name="translate" type="translateType" />
 	        </xs:choice>
 	    </xs:sequence>
 	</xs:complexType>
@@ -31,7 +31,7 @@
 		<xs:attribute name="type" type="xs:string" />
 	</xs:complexType>
 
-	<xs:complexType name="transformType">
+	<xs:complexType name="translateType">
     	<xs:choice minOccurs="1" maxOccurs="unbounded">
         	<xs:element name="drill" type="drillType" />
 			<xs:element name="line" type="lineType" />
@@ -40,9 +40,10 @@
 			<xs:element name="rectangle" type="rectangleType" />
 			<xs:element name="text" type="textType" />
 			<xs:element name="feedrate" type="xs:positiveInteger" />
-			<xs:element name="transform" type="transformType" />
+			<xs:element name="translate" type="translateType" />
         </xs:choice>
-		<xs:attribute name="translate" type="doubleType2" />
+		<xs:attribute name="x" type="doubleType" />
+		<xs:attribute name="y" type="doubleType" />
 	</xs:complexType>	
 	
 	<xs:complexType name="geometryType">

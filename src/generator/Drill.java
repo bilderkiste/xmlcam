@@ -73,7 +73,7 @@ public class Drill extends Element {
 				double coords[] = new double[2];
 				coords[0] = Double.parseDouble(map.getNamedItem("x").getTextContent());
 				coords[1] = Double.parseDouble(map.getNamedItem("y").getTextContent());
-				point.setLocation(coords[0], coords[1]);
+				point = new Point2D.Double(coords[0], coords[1]);
 			}
 			if(item.getNodeName() == "depth") {
 				map = item.getAttributes();
