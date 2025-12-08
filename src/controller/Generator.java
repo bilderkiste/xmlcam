@@ -66,6 +66,7 @@ public class Generator {
 	private BigDecimal currentX, currentY, currentZ, newX, newY, newZ;
 	private ArrayList<Point2D.Double> translation;
 	private HashMap<String, Tool> tools;
+	private Tool currentTool;
 	
 	/**
 	 * Constructs a new G-Code Generator.
@@ -83,6 +84,7 @@ public class Generator {
 		this.newZ = new BigDecimal(0);
 		this.translation = new ArrayList<Point2D.Double>();
 		this.tools = new HashMap<String, Tool>();
+		this.currentTool = null;
 	}
 	
 	/**
@@ -104,18 +106,21 @@ public class Generator {
 			} else if(commands.item(commandNumber).getNodeName() == "drill") {
 				Drill item = new Drill(commands.item(commandNumber), this);
 				item.extract();
+				generateToolChange(item.getTool());
 				item.execute();
 				createGCode(item.getToolPathes(), item.getZLevel());
 				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "line") {
 				Line item = new Line(commands.item(commandNumber), this);
 				item.extract();
+				generateToolChange(item.getTool());
 				item.execute();
 				createGCode(item.getToolPathes(), item.getZLevel());
 				programModel.addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "polyline") {
 				Polyline item = new Polyline(commands.item(commandNumber), this);
 				item.extract();
+				generateToolChange(item.getTool());
 				item.execute();
 				item.purgePathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
@@ -123,6 +128,7 @@ public class Generator {
 			} else if(commands.item(commandNumber).getNodeName() == "circle") {
 				Circle item = new Circle(commands.item(commandNumber), this);
 				item.extract();
+				generateToolChange(item.getTool());
 				item.execute();
 				//item.showToolPathes();
 				item.purgePathes();
@@ -132,6 +138,7 @@ public class Generator {
 			} else if(commands.item(commandNumber).getNodeName() == "rectangle") {
 				Rectangle item = new Rectangle(commands.item(commandNumber), this);
 				item.extract();
+				generateToolChange(item.getTool());
 				item.execute();
 				//item.showToolPathes();
 				item.purgePathes();
@@ -141,6 +148,7 @@ public class Generator {
 			} else if(commands.item(commandNumber).getNodeName() == "text") {
 				Text item = new Text(commands.item(commandNumber), this);
 				item.extract();
+				generateToolChange(item.getTool());
 				item.execute();
 				item.purgePathes();
 				//item.showToolPathes();
@@ -252,6 +260,21 @@ public class Generator {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}
+		}
+	}
+	
+	/**
+	 * Generates G-Code for a tool change, if the tool differs from previous and next element.
+	 * @param newTool The new tool
+	 */
+	private void generateToolChange(Tool newTool) {
+		if(currentTool == null) {
+			currentTool = newTool;
+		} else {
+			if(newTool != currentTool) {
+				currentTool = newTool;
+				programModel.addRow(new Row(new Field('M', new BigDecimal(6)), "Tool change"));
 			}
 		}
 	}

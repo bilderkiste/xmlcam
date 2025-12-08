@@ -34,15 +34,15 @@ public class Row {
 	private String comment;
 
 	/**
-	 * Constructs a empty line.
+	 * Constructs a empty row.
 	 */
 	public Row() {
 		this.commands = new ArrayList<Field>();
-		this.comment = new String();
+		this.comment = null;
 	}
 	
 	/**
-	 * Constructs a line object adds a field.
+	 * Constructs a row object adds a field.
 	 * @param field The field to be added
 	 */
 	public Row(Field field) {
@@ -51,15 +51,18 @@ public class Row {
 	}
 	
 	/**
-	 * Constructs a line 
-	 * @param command
+	 * Constructs a row object adds a field and a comment.
+	 * @param field The field to be added
+	 * @param comment The comment
 	 */
-	/*	public Line(ArrayList<Field> command) {
-		this.commands = command;
-	}*/
+	public Row(Field field, String comment) {
+		this(field);
+		this.comment = comment;
+	}
+	
 	
 	/**
-	 * Adds a field at the end of the line.
+	 * Adds a field at the end of the row.
 	 * @param field The new field
 	 */
 	protected void addField(Field field) {
