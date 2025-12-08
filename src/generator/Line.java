@@ -25,6 +25,7 @@ import java.awt.geom.Path2D;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -49,11 +50,11 @@ import model.Tuple;
 
 public class Line extends Element {
 
-	private ArrayList<Tuple> xmlPoints;
+	private ArrayList<Tuple> points;
 	
 	public Line(Node node, Generator gen) {
 		super(node, gen);
-		xmlPoints = new ArrayList<Tuple>();
+		points = new ArrayList<Tuple>();
 		zLevel = null;
 	}
 
@@ -61,13 +62,27 @@ public class Line extends Element {
 	public void extract() throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
 		
+		NamedNodeMap map = node.getAttributes();
+		
+		map = node.getAttributes();
+		setTool(gen.getTool(map.getNamedItem("tool").getTextContent()));
+		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
-			if(item.getNodeName() == "p") {
-				xmlPoints.add(new Tuple(item));
+			if(item.getNodeName() == "point") {
+				map = item.getAttributes();
+				double coords[] = new double[2];
+				coords[0] = Double.parseDouble(map.getNamedItem("x").getTextContent());
+				coords[1] = Double.parseDouble(map.getNamedItem("y").getTextContent());
+				points.add(new Tuple(coords));
 			}
-			if(item.getNodeName() == "z") {
-				zLevel = new Tuple(item);
+			if(item.getNodeName() == "depth") {
+				map = item.getAttributes();
+				double values[] = new double[3];
+				values[0] = Double.parseDouble(map.getNamedItem("start").getTextContent());
+				values[1] = Double.parseDouble(map.getNamedItem("end").getTextContent());
+				values[2] = Double.parseDouble(map.getNamedItem("step").getTextContent());
+				zLevel = new Tuple(values);
 			}
 		}		
 	}
@@ -76,15 +91,15 @@ public class Line extends Element {
 	public void execute() {
 		shape = new Path2D.Double();
 		
-		shape.moveTo(xmlPoints.get(0).getValue(0).doubleValue(), xmlPoints.get(0).getValue(1).doubleValue());
-		shape.lineTo(xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue());
+		shape.moveTo(points.get(0).getValue(0).doubleValue(), points.get(0).getValue(1).doubleValue());
+		shape.lineTo(points.get(1).getValue(0).doubleValue(), points.get(1).getValue(1).doubleValue());
 		
         at = new AffineTransform();
         at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
         
-        addToolPathes(generateToolPathes(shape, at, 0.1, new String("Line from " + xmlPoints.get(0) + " to " + xmlPoints.get(1))));
+        addToolPathes(generateToolPathes(shape, at, 0.1, new String("Line from " + points.get(0) + " to " + points.get(1))));
 		
-		Main.log.log(Level.FINE, "Line element: line from {0} to {1} with translation {3}.",  new Object[] { xmlPoints.get(0), xmlPoints.get(1), gen.getTranslation() } );
+		Main.log.log(Level.FINE, "Line element: line from {0} to {1} with translation {3}.",  new Object[] { points.get(0), points.get(1), gen.getTranslation() } );
 	}
 
 }

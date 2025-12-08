@@ -107,76 +107,72 @@ public class Polyline extends ElementClosed {
 	public void execute() {
 		shape = new Path2D.Double();
 		
-		/*for(int i = 0; i < xmlPoints.size(); i++) {
-			xmlPoints.set(i, addTranslation(xmlPoints.get(i)));
-		}*/
-		
 		// Create toolpath
-		for(int i = 0; i < xmlPoints.size(); i++) {
-			if(xmlPoints.get(i).getType() == Tuple.POINT) {
+		for(int i = 0; i < points.size(); i++) {
+			if(points.get(i).getType() == Tuple.POINT) {
 				if(i == 0) {
-					shape.moveTo(xmlPoints.get(i).getValue(0).doubleValue(), xmlPoints.get(i).getValue(1).doubleValue());
+					shape.moveTo(points.get(i).getValue(0).doubleValue(), points.get(i).getValue(1).doubleValue());
 				} else {
-					shape.lineTo(xmlPoints.get(i).getValue(0).doubleValue(), xmlPoints.get(i).getValue(1).doubleValue());
+					shape.lineTo(points.get(i).getValue(0).doubleValue(), points.get(i).getValue(1).doubleValue());
 				}
-				Main.log.log(Level.FINE, "Polyline element: line to (" + xmlPoints.get(i));
-			} else if(xmlPoints.get(i).getType() == Tuple.BEZIER) {
+				Main.log.log(Level.FINE, "Polyline element: line to (" + points.get(i));
+			} else if(points.get(i).getType() == Tuple.BEZIER) {
 				int n;
 				ArrayList<Tuple> b = new ArrayList<Tuple>();
 			
-				b.add(xmlPoints.get(i - 1)); // Add first control point b0
+				b.add(points.get(i - 1)); // Add first control point b0
 				// fill the control points b1 ... bn-1
-				for(n = 0; xmlPoints.get(i + n).getType() == Tuple.BEZIER; n++) {
-					b.add(xmlPoints.get(i + n));
+				for(n = 0; points.get(i + n).getType() == Tuple.BEZIER; n++) {
+					b.add(points.get(i + n));
 				}
-				b.add(xmlPoints.get(i + n)); // Add the last control point bn
+				b.add(points.get(i + n)); // Add the last control point bn
 
 				deCasteljau(b, 0.5, shape, 4);
 		
 				i += n - 1; 			// Skip the next inner control points (b1 - bn-1)
 				Main.log.log(Level.FINE, "Polyline element: bezier curve grade " + (n + 1) + " to (" + b.get(b.size() - 1).getValue(0).doubleValue() + ", " + b.get(b.size() - 1).getValue(1).doubleValue() + ").");
-			} else if(xmlPoints.get(i).getType() == Tuple.SPLINE) {
-				ArrayList<Tuple> points = new ArrayList<Tuple>();
+			} else if(points.get(i).getType() == Tuple.SPLINE) {
+				ArrayList<Tuple> splinePoints = new ArrayList<Tuple>();
 				
-				double dx = xmlPoints.get(i).getValue(0).doubleValue() - xmlPoints.get(i - 1).getValue(0).doubleValue();
-				double dy = xmlPoints.get(i).getValue(1).doubleValue() - xmlPoints.get(i - 1).getValue(1).doubleValue();
+				double dx = points.get(i).getValue(0).doubleValue() - points.get(i - 1).getValue(0).doubleValue();
+				double dy = points.get(i).getValue(1).doubleValue() - points.get(i - 1).getValue(1).doubleValue();
 				
 				for(int j = -1; j < 1; j++) {
-					points.add(xmlPoints.get(i + j));
+					splinePoints.add(points.get(i + j));
 				}
 				
 				if(i == 1) { // If are not two points before the first spline
-					points.add(0, new Tuple(new double[] { xmlPoints.get(i - 1).getValue(0).doubleValue() - dx, xmlPoints.get(i - 1).getValue(1).doubleValue() - dy } ));	
+					splinePoints.add(0, new Tuple(new double[] { points.get(i - 1).getValue(0).doubleValue() - dx, points.get(i - 1).getValue(1).doubleValue() - dy } ));	
 				} else {
-					points.add(0, xmlPoints.get(i - 2));
+					splinePoints.add(0, points.get(i - 2));
 				}
-				if(i == xmlPoints.size() -1) { // If the last point is missing
-					if(xmlPoints.get(i).equals(xmlPoints.get(0))) { // Check if last point is the same then first point (closed shape).
+				if(i == points.size() -1) { // If the last point is missing
+					if(points.get(i).equals(points.get(0))) { // Check if last point is the same then first point (closed shape).
 						Main.log.log(Level.FINER, "Closed shape!");
-						points.add(new Tuple(new double[] { xmlPoints.get(1).getValue(0).doubleValue(), xmlPoints.get(1).getValue(1).doubleValue() } ));
+						splinePoints.add(new Tuple(new double[] { points.get(1).getValue(0).doubleValue(), points.get(1).getValue(1).doubleValue() } ));
 					} else {
-						points.add(new Tuple(new double[] { xmlPoints.get(i).getValue(0).doubleValue() + dx, xmlPoints.get(i).getValue(1).doubleValue() + dy } ));
+						splinePoints.add(new Tuple(new double[] { points.get(i).getValue(0).doubleValue() + dx, points.get(i).getValue(1).doubleValue() + dy } ));
 					}
 				} else {
-					points.add(xmlPoints.get(i + 1));
+					splinePoints.add(points.get(i + 1));
 				}
 				
 				if(Main.log.isLoggable(Level.FINER)) {
 					StringBuffer stringBuffer = new StringBuffer("Considerable points for spline " + i + ": ");
-					for(int j = 0; j < points.size(); j++) {
-						stringBuffer.append(" p" + j + points.get(j) + ":");
+					for(int j = 0; j < splinePoints.size(); j++) {
+						stringBuffer.append(" p" + j + splinePoints.get(j) + ":");
 					}
 					Main.log.log(Level.FINER, stringBuffer.toString());
 				}
 			
-				calculatePoint(points, 0.5, shape, 5);
+				calculatePoint(splinePoints, 0.5, shape, 5);
 				
 				// insert last point of curve, because we do not add the last control point to the toolpath
-				if(points.get(3).getType() == Tuple.POINT) {
-					shape.lineTo(points.get(2).getValue(0).doubleValue(), points.get(2).getValue(1).doubleValue());
+				if(splinePoints.get(3).getType() == Tuple.POINT) {
+					shape.lineTo(splinePoints.get(2).getValue(0).doubleValue(), splinePoints.get(2).getValue(1).doubleValue());
 				}
 				
-				Main.log.log(Level.FINE, "Polyline element: spline to (" + points.get(points.size() - 2).getValue(0).doubleValue() + ", " + points.get(points.size() - 2).getValue(1).doubleValue() + ").");
+				Main.log.log(Level.FINE, "Polyline element: spline to (" + splinePoints.get(splinePoints.size() - 2).getValue(0).doubleValue() + ", " + splinePoints.get(splinePoints.size() - 2).getValue(1).doubleValue() + ").");
 			}
 		}
 		
@@ -185,16 +181,16 @@ public class Polyline extends ElementClosed {
 		
 		Path2D.Double pathShape = createOffsetShape(shape);
 		
-		super.setName(new String("Polyline starting from " + xmlPoints.get(0) + " to " + xmlPoints.get(xmlPoints.size() - 1)));
+		super.setName(new String("Polyline starting from " + points.get(0) + " to " + points.get(points.size() - 1)));
 		
 		addToolPathes(generateToolPathes(pathShape, at, 0.1, super.getName()));
 
 		//create pockettoolpath
 		if(isPocket()) {
-			addToolPathes(createPocket(pathShape, at, gen.getTool()));
+			addToolPathes(createPocket(pathShape, at, getTool()));
 		}
 		
-		Main.log.log(Level.FINE, "Generated polyline element from {0} with translation {1} with {2} points.", new Object[] { xmlPoints.get(0), gen.getTranslation(), getToolPath(0).size() });
+		Main.log.log(Level.FINE, "Generated polyline element from {0} with translation {1} with {2} points.", new Object[] { points.get(0), gen.getTranslation(), getToolPath(0).size() });
 	}
 	
 	/**

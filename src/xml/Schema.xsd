@@ -111,6 +111,7 @@
 				<xs:element name="point" type="pointType" />	
 			</xs:choice>
 			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="options" type="optionsPolylineType" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
@@ -125,6 +126,12 @@
 	    <xs:attribute name="pocket" type="pocketTypeAttribute"/>
 	    <xs:attribute name="offset" type="offsetTypeAttribute"/>
 	</xs:complexType>
+
+	<xs:complexType name="optionsPolylineType">
+	    <xs:attribute name="pocket" type="pocketTypeAttribute"/>
+	    <xs:attribute name="offset" type="offsetTypeAttribute"/>
+	</xs:complexType>
+
 
 	<xs:complexType name="optionsTextType">
 	    <xs:attribute name="size" type="posinttype"/>
