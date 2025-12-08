@@ -113,20 +113,20 @@ An code example snippet:
 &Tab;&lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot; &sol;&gt;
 &lt;&sol;rectangle&gt;</pre>
 <h3>Text Element</h3>
-Generates 2D coordinates for a text.
-A text must defined by a start point bottom left determined through a &lt;p&gt; tag.The Text must defined by the &lt;content&gt; tag. The z-depth must be defined by the &lt;z&gt; tag.
-Optional tags are &lt;size&gt; for font size in point, &lt;type&gt; for font family, &lt;style&gt; for bold or italic styles and flatness for accuracy. 
+This element generates G-Code for a text.
+The Text must defined by the <content> tag.
+The position of the text is determined through a <point> tag with attributes x and y defining bottom left.
+The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+Optional attributes in the <options> tag are size for font size in point, font for font family, style for bold or italic styles and flatness for accuracy. 
+Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+
 An code example snippet:
-<pre>&lt;text&gt;
-	&lt;content&gt;Ein toller Tag&lt;/content&gt;
-	&lt;p&gt;20,20&lt;/p&gt;
-	&lt;size&gt;10&lt;/size&gt;
-	&lt;type&gt;Calibri&lt;/type&gt;
-	&lt;style&gt;plain&lt;/style&gt;
-	&lt;flatness&gt;0.1&lt;/flatness&gt;
-	&lt;z&gt;0,-1,1&lt;/z&gt;
-&lt;/text&gt;
- </pre>
+<pre>&lt;text tool&equals;&quot;t1&quot;&gt;
+&Tab;&lt;content&gt;Guten Morgen&excl;&lt;&sol;content&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot; &sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+&Tab;&lt;options size&equals;&quot;20&quot; font&equals;&quot;C059&quot; style&equals;&quot;bold&quot; flatness&equals;&quot;0&period;1&quot; offset&equals;&quot;outset&quot;&sol;&gt;
+&lt;&sol;text&gt;</pre>
 
 <h3>Feedrate Element</h3>
 <p>This element sets the feedrate in mm/min for all subsequent G-Code.</p>
@@ -135,28 +135,20 @@ An code example snippet:
 <p>G0 F200</p>
 <h3>Translation Element</h3>
 This element shifts the elements within this tag through the x and y pane. It is possible to use the translation tag recursive.
-<pre>
-&lt;translate x&equals;&quot;100&quot; y&equals;&quot;50&quot;&gt;
-  &lt;circle&gt;
-    &lt;p&gt;20&comma;20&lt;&sol;p&gt;
-    &lt;rad&gt;5&lt;&sol;rad&gt;
-    &lt;z&gt;0&comma;-2&comma;0.2&lt;&sol;z&gt;
-  &lt;&sol;circle&gt;
-  &lt;translate x&equals;&quot;-20&quot; y&equals;&quot;0&quot;&gt;  
-    ...
-  &lt;&sol;translate&gt;
-  ...
+<pre>&lt;translate x&equals;&quot;100&quot; y&equals;&quot;50&quot;&gt;
+&Tab;&lt;circle tool&equals;&quot;t2&quot;&gt;
+&Tab;&Tab;&lt;center x&equals;&quot;60&quot; y&equals;&quot;30&quot; &sol;&gt;
+&Tab;&Tab;&lt;radius value&equals;&quot;20&quot; &sol;&gt; 
+&Tab;&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+&Tab;&Tab;&lt;options segments&equals;&quot;5&quot; offset&equals;&quot;inset&quot; pocket&equals;&quot;parallel&quot; &sol;&gt;
+&Tab;&lt;&sol;circle&gt;
+&Tab;&lt;translate x&equals;&quot;-20&quot; y&equals;&quot;0&quot;&gt;  
+&Tab;&Tab;...
+&Tab;&lt;&sol;translate&gt;
+&Tab;...
 &lt;&sol;translate&gt;
 </pre>
 The center of the circle in this examle is now at (120,70).
-<h3>Tool Element</h3>
-This element defines the used tool. The tool element must be the first element in a program. If within the program a tool element appears, xmlCAM will then create a tool change command.
-<pre>
-&lt;tool&gt;
-  &lt;diameter&gt;1.3&lt;/diameter&gt;
-  &lt;name&gt;Kugelfräser&lt;/name&gt;
-&lt;&sol;tool&gt;
-</pre>
 <h3>Offset Pathes</h3>
 It is possible to make offset pathes regarding the tool diameter. For that you cat define the offset with the attribute in the tag of the regarding element tag.
 There a three option to choose: inset, outset or engraving.
