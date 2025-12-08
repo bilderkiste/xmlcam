@@ -47,10 +47,10 @@ import model.Tuple;
  * 
  * <pre>{@code
 	<polyline tool="t2">
-		<point x="10" y="50" />
-		<spline x="10" y="100" />
-		<spline x="100" y="100" />
-		<spline x="100" y="10" />
+		<point x="10" y="50"/>
+		<spline x="10" y="100"/>
+		<spline x="100" y="100"/>
+		<spline x="100" y="10"/>
 		<depth start="0" end="-1" step="0.1" />
 		<options pocket="parallel" offset="inset"/>
 	</polyline>

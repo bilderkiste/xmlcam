@@ -40,9 +40,9 @@ import model.Tuple;
  * An code example snippet:
  * <pre>{@code
  * <line tool="t1">
- *		<point x="10" y="150" />
- *		<point x="10" y="200" />
- *		<depth start="0" end="-1" step="0.1" />
+ *		<point x="10" y="150"/>
+ *		<point x="10" y="200"/>
+ *		<depth start="0" end="-1" step="0.1"/>
  * </line>
  * }</pre>
  * @param node The node with the needed parameters

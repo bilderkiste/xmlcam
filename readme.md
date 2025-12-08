@@ -69,6 +69,18 @@ Standard but optional attributes in the <options> are for closed elements pocket
 &Tab;&lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot;&sol;&gt;
 &lt;&sol;polyline&gt;</pre>
 <h4>Bezier curves</h4>
+A Bezier curve can be described with setting control points. The start point (b0) and end point (bn) are defined by <point> tags. 
+One ore more inner control points can be defined (b1 to bn-1) with <bezier> tag with attributes x and y.
+One inner control point describes a quadratic bezier curve (second grade), two inner control points describes a cubic bezier curve (third grade). More than two points with n control points describes a curve with grade n + 1.
+For more information see in German https://de.wikipedia.org/wiki/B%C3%A9zierkurve and in English https://en.wikipedia.org/wiki/B%C3%A9zier_curve.
+<pre>&lt;polyline tool&equals;&quot;t2&quot;&gt;
+&Tab;&lt;point x&equals;&quot;0&quot; y&equals;&quot;50&quot;&sol;&gt;
+&Tab;&lt;bezier x&equals;&quot;10&quot; y&equals;&quot;100&quot;&sol;&gt;
+&Tab;&lt;bezier x&equals;&quot;100&quot; y&equals;&quot;100&quot;&sol;&gt;
+&Tab;&lt;point x&equals;&quot;100&quot; y&equals;&quot;10&quot;&sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;1&quot;&sol;&gt;
+&Tab;&lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot;&sol;&gt;
+&lt;&sol;polyline&gt;</pre>
 <h4>Cubic Hermite splines</h4>
 <p>The &lt;spl&gt; tag defines a spline curve which goes through the point. The spline must begin with a point (&lt;p&gt; tag) and continue with a &lt;spl&gt; tag. To influence the slope on the begin and end of the curve you can add a line short line section with the &lt;p&gt; tag at the begin and/or end like a direction vector. If you wish a closed spline you only need to set the last spline point equal to the first point.</p>
 <p>See the wikipedia articles for more information in <a href="https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline" target="_blank" rel="noopener">German</a> and in <a href="https://en.wikipedia.org/wiki/Cubic_Hermite_spline" target="_blank" rel="noopener">English</a>.</p>

@@ -42,10 +42,10 @@ import model.Tuple;
  * An code example snippet:
  * <pre>{@code
 	<rectangle tool="t2">
-		<point x="10" y="10" />
-		<point x="30" y="30" />
-		<depth start="0" end="-1" step="0.1" />
-		<options pocket="parallel" offset="inset" />
+		<point x="10" y="10"/>
+		<point x="30" y="30"/>
+		<depth start="0" end="-1" step="0.1"/>
+		<options pocket="parallel" offset="inset"/>
 	</rectangle>
  * }</pre>
  * @param node The node with the needed parameters

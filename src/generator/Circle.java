@@ -40,10 +40,10 @@ import model.Tuple;
  * An code example snippet:
  * <pre>{@code
 	<circle tool="t2">
-		<center x="60" y="30" />
-		<radius value="20" /> 
-		<depth start="0" end="-1" step="0.1" />
-		<options segments="5" offset="inset" pocket="parallel" />
+		<center x="60" y="30"/>
+		<radius value="20"/> 
+		<depth start="0" end="-1" step="0.1"/>
+		<options segments="5" offset="inset" pocket="parallel"/>
 	</circle>
  * }</pre>
  * @param node The node with the needed parameters

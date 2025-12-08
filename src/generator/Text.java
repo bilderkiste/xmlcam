@@ -48,8 +48,8 @@ import model.Tuple;
  * <pre>{@code
 	<text tool="t1">
 		<content>Guten Morgen!</content>
-		<point x="10" y="50" />
-		<depth start="0" end="-1" step="0.1" />
+		<point x="10" y="50"/>
+		<depth start="0" end="-1" step="0.1"/>
 		<options size="20" font="C059" style="bold" flatness="0.1" offset="outset"/>
 	</text>
  * }</pre>
