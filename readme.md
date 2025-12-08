@@ -24,6 +24,12 @@
 <p>It is possible to zoom in and out by clicking the "+" and "-" button.</p>
 <p>On the menubar -&gt; Graphic View it is possible to show or hide the G0 and G1 moves as well the calculated points and the grid suitable to the x and y rulers.</p>
 <h2>Tools</h2>
+In the tools section all tools have to be defined.
+An code example snippet:
+<pre>&lt;tools&gt;
+  &lt;tool id&equals;&quot;t1&quot; type&equals;&quot;ballend&quot; diameter&equals;&quot;1&period;2&quot; &sol;&gt;
+  &Tab;&lt;tool id&equals;&quot;t2&quot; type&equals;&quot;endmill&quot; diameter&equals;&quot;2&period;5&quot; &sol;&gt;
+&lt;&sol;tools&gt;
 <h2>Elements</h2>
 <h3>Drill element</h3>
 This element generates G-Code for a drill.
