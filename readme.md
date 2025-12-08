@@ -29,7 +29,7 @@ An code example snippet:
 <pre>&lt;tools&gt;
   &lt;tool id&equals;&quot;t1&quot; type&equals;&quot;ballend&quot; diameter&equals;&quot;1&period;2&quot; &sol;&gt;
   &Tab;&lt;tool id&equals;&quot;t2&quot; type&equals;&quot;endmill&quot; diameter&equals;&quot;2&period;5&quot; &sol;&gt;
-&lt;&sol;tools&gt;
+&lt;&sol;tools&gt;</pre>
 <h2>Elements</h2>
 <h3>Drill element</h3>
 This element generates G-Code for a drill.
@@ -52,12 +52,26 @@ An code example snippet:
 &lt;&sol;line&gt;
 </pre>
 <h3>Polyline-Element</h3>
-<p>This element generates G-Code for a polyline.<br />The polyline is defined by two or more points. The tupel in &lt;p&gt; defines the x and y position of the point (&lt;p&gt;x,y&lt;/p&gt;). Two consecutive points descibe a line.</p>
-<h3>Bezier curves</h3>
-<p>You can describe a bow by setting control points. The start point (b<sub>0</sub>) and end point (b<sub>n</sub>) are defined by &lt;p&gt; tags. You need to define one ore more inner control points (b<sub>1</sub> to b<sub>n-1</sub>) with tag &lt;bez&gt;x,y&lt;/bez&gt;.<br />With one inner control point you describe a quadratic bezier curve (second grade), with two inner control points a cubic bezier curve (third grade), with n control points you describe a curve with grade n + 1.<br />For more information see the wikipedia article in <a href="https://de.wikipedia.org/wiki/B%C3%A9zierkurve" target="_blank" rel="noopener">German</a> or in <a href="https://en.wikipedia.org/wiki/B%C3%A9zier_curve" target="_blank" rel="noopener">English</a>.</p>
-<pre>&lt;polyline&gt;<br />  &lt;p&gt;200,50&lt;/p&gt;<br />  &lt;p&gt;50,250&lt;/p&gt; &lt;!-- Start control point b0 of bezier curve --&gt;<br />  &lt;bez&gt;125,400&lt;/bez&gt; &lt;!-- Inner control point b1 of bezier curve --&gt;<br />  &lt;p&gt;200,250&lt;/p&gt; &lt;!-- End control point of bezier curve bn --&gt;<br />  &lt;z&gt;0,-1,0.1&lt;/z&gt;<br />&lt;/polyline&gt;</pre>
-<p>This code snippet has the following result:</p>
-</p>
+This element generates G-Code for a polyline.
+The polyline is defined by two or more points. The <point> tag must define the position of the first point with the attribute x and y. Two consecutive points describe a line.
+
+A bow can be described with setting control points. The start point (b0) and end point (bn) are defined by <point> tags. One ore more inner control points can be defined (b1 to bn-1) with <bezier> tag with attributes x and y.
+One inner control point describes a quadratic bezier curve (second grade), two inner control points describes a cubic bezier curve (third grade). More than two points with n control points describes a curve with grade n + 1.
+For more information see in German https://de.wikipedia.org/wiki/B%C3%A9zierkurve and in English https://en.wikipedia.org/wiki/B%C3%A9zier_curve. 
+
+For creating splines the <spline> tag can be used. The curve will go through the point.	
+
+The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+ <pre>&lt;polyline tool&equals;&quot;t2&quot;&gt;
+  &lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot; &sol;&gt;
+  &lt;spline x&equals;&quot;10&quot; y&equals;&quot;100&quot; &sol;&gt;
+  &lt;spline x&equals;&quot;100&quot; y&equals;&quot;100&quot; &sol;&gt;
+  &lt;spline x&equals;&quot;100&quot; y&equals;&quot;10&quot; &sol;&gt;
+  &lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+  &lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot;&sol;&gt;
+&lt;&sol;polyline&gt;</pre>
+
 <h3>Cubic Hermite splines</h3>
 <p>The &lt;spl&gt; tag defines a spline curve which goes through the point. The spline must begin with a point (&lt;p&gt; tag) and continue with a &lt;spl&gt; tag. To influence the slope on the begin and end of the curve you can add a line short line section with the &lt;p&gt; tag at the begin and/or end like a direction vector. If you wish a closed spline you only need to set the last spline point equal to the first point.</p>
 <p>See the wikipedia articles for more information in <a href="https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline" target="_blank" rel="noopener">German</a> and in <a href="https://en.wikipedia.org/wiki/Cubic_Hermite_spline" target="_blank" rel="noopener">English</a>.</p>
