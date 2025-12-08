@@ -150,24 +150,13 @@ This element shifts the elements within this tag through the x and y pane. It is
 </pre>
 The center of the circle in this examle is now at (120,70).
 <h3>Offset Pathes</h3>
-It is possible to make offset pathes regarding the tool diameter. For that you cat define the offset with the attribute in the tag of the regarding element tag.
-There a three option to choose: inset, outset or engraving.
-An example for the circle element.
-<pre>
-&lt;circle offset&equals;&quot;inset&quot;&gt;
-  &lt;p&gt;20&comma;20&lt;&sol;p&gt;
-  &lt;rad&gt;5&lt;&sol;rad&gt;
-  &lt;z&gt;0&comma;-2&comma;0.2&lt;&sol;z&gt;
-&lt;&sol;circle&gt;
-</pre>
+It is possible to create offset pathes regarding the tool diameter. Those offsets can defined with the offset attribute in the <options> tag with values inset, outset or engraving.
+An example.
+<pre>&lt;options &period;&period;&period; offset&equals;&quot;outset&quot; &period;&period;&period;</pre>
 <h3>Pockets</h3>
-You can create pockets by adding the pocket attribute to the element tag.
+It is possible to create pockets by adding the pocket attribute to the <options> tag. Possible values are parallel.
 Pockets work for circle, rectangle and polyline elements.
-<pre>&lt;rectangle pocket&#x3D;&quot;parallel&quot;&gt;
-  &lt;p&gt;10,10&lt;&#x2F;p&gt;
-  &lt;p&gt;20,20&lt;&#x2F;p&gt;
-  &lt;z&gt;0,-1,0.1&lt;&#x2F;z&gt;
-&lt;&#x2F;rectangle&gt;</pre>
+<pre>&lt;options &period;&period;&period; pocket&equals;&quot;parallel&quot; &period;&period;&period;</pre>
 <h2>Settings</h2>
 <p>You can define your own settings for xmlCam. At the moment there are only a few settings available.</p>
 <pre>security-height = 5;		// The security height for a G0 move above the workpiece.
