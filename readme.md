@@ -28,8 +28,8 @@
 In the tools section all tools have to be defined.
 An code example snippet:
 <pre>&lt;tools&gt;
-&Tab;&lt;tool id&equals;&quot;t1&quot; type&equals;&quot;ballend&quot; diameter&equals;&quot;1&period;2&quot; &sol;&gt;
-&Tab;&lt;tool id&equals;&quot;t2&quot; type&equals;&quot;endmill&quot; diameter&equals;&quot;2&period;5&quot; &sol;&gt;
+&Tab;&lt;tool id&equals;&quot;t1&quot; type&equals;&quot;ballend&quot; diameter&equals;&quot;1&period;2&quot;&sol;&gt;
+&Tab;&lt;tool id&equals;&quot;t2&quot; type&equals;&quot;endmill&quot; diameter&equals;&quot;2&period;5&quot;&sol;&gt;
 &lt;&sol;tools&gt;</pre>
 <h2>Elements</h2>
 <h3>Drill element</h3>
@@ -49,9 +49,9 @@ The depth must be defined by the <depth> tag  with attributes start for upper z 
 
 An code example snippet:
 <pre>&lt;line tool&equals;&quot;t1&quot;&gt;
-&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;150&quot; &sol;&gt;
-&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;200&quot; &sol;&gt;
-&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;150&quot;&sol;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;200&quot;&sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot;&sol;&gt;
 &lt;&sol;line&gt;
 </pre>
 <h3>Polyline-Element</h3>
@@ -61,11 +61,11 @@ The polyline is defined by two or more points. The <point> tag must define the p
 The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
 Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
 <pre>&lt;polyline tool&equals;&quot;t2&quot;&gt;
-&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot; &sol;&gt;
-&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;100&quot; &sol;&gt;
-&Tab;&lt;point x&equals;&quot;100&quot; y&equals;&quot;100&quot; &sol;&gt;
-&Tab;&lt;point x&equals;&quot;100&quot; y&equals;&quot;10&quot; &sol;&gt;
-&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot;&sol;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;100&quot;&sol;&gt;
+&Tab;&lt;point x&equals;&quot;100&quot; y&equals;&quot;100&quot;&sol;&gt;
+&Tab;&lt;point x&equals;&quot;100&quot; y&equals;&quot;10&quot;&sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot;&sol;&gt;
 &Tab;&lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot;&sol;&gt;
 &lt;&sol;polyline&gt;</pre>
 <h4>Bezier curves</h4>
@@ -75,11 +75,11 @@ Standard but optional attributes in the <options> are for closed elements pocket
 
 An code example snippet:
 <pre>&lt;polyline tool&equals;&quot;t2&quot;&gt;
-&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot; &sol;&gt;
-&Tab;&lt;spline x&equals;&quot;10&quot; y&equals;&quot;100&quot; &sol;&gt;
-&Tab;&lt;spline x&equals;&quot;100&quot; y&equals;&quot;100&quot; &sol;&gt;
-&Tab;&lt;spline x&equals;&quot;100&quot; y&equals;&quot;10&quot; &sol;&gt;
-&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot;&sol;&gt;
+&Tab;&lt;spline x&equals;&quot;10&quot; y&equals;&quot;100&quot;&sol;&gt;
+&Tab;&lt;spline x&equals;&quot;100&quot; y&equals;&quot;100&quot;&sol;&gt;
+&Tab;&lt;spline x&equals;&quot;100&quot; y&equals;&quot;10&quot;&sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot;&sol;&gt;
 &Tab;&lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot;&sol;&gt;
 &lt;&sol;polyline&gt;</pre>
 </p>
@@ -93,10 +93,10 @@ Standard but optional attributes in the <options> are for closed elements pocket
 
 An code example snippet:
 <pre>&lt;circle tool&equals;&quot;t2&quot;&gt;
-&Tab;&lt;center x&equals;&quot;60&quot; y&equals;&quot;30&quot; &sol;&gt;
-&Tab;&lt;radius value&equals;&quot;20&quot; &sol;&gt; 
-&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
-&Tab;&lt;options segments&equals;&quot;5&quot; offset&equals;&quot;inset&quot; pocket&equals;&quot;parallel&quot; &sol;&gt;
+&Tab;&lt;center x&equals;&quot;60&quot; y&equals;&quot;30&quot;&sol;&gt;
+&Tab;&lt;radius value&equals;&quot;20&quot;&sol;&gt; 
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot;&sol;&gt;
+&Tab;&lt;options segments&equals;&quot;5&quot; offset&equals;&quot;inset&quot; pocket&equals;&quot;parallel&quot;&sol;&gt;
 &lt;&sol;circle&gt;</pre>
 <h3>Rectangle Element</h3>
 This element generates G-Code for a rectangle.
@@ -107,10 +107,10 @@ Standard but optional attributes in the <options> are for closed elements pocket
 
 An code example snippet:
 <pre>&lt;rectangle tool&equals;&quot;t2&quot;&gt;
-&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;10&quot; &sol;&gt;
-&Tab;&lt;point x&equals;&quot;30&quot; y&equals;&quot;30&quot; &sol;&gt;
-&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
-&Tab;&lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot; &sol;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;10&quot;&sol;&gt;
+&Tab;&lt;point x&equals;&quot;30&quot; y&equals;&quot;30&quot;&sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot;&sol;&gt;
+&Tab;&lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot;&sol;&gt;
 &lt;&sol;rectangle&gt;</pre>
 <h3>Text Element</h3>
 This element generates G-Code for a text.
@@ -123,8 +123,8 @@ Standard but optional attributes in the <options> are for closed elements pocket
 An code example snippet:
 <pre>&lt;text tool&equals;&quot;t1&quot;&gt;
 &Tab;&lt;content&gt;Guten Morgen&excl;&lt;&sol;content&gt;
-&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot; &sol;&gt;
-&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot;&sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot;&sol;&gt;
 &Tab;&lt;options size&equals;&quot;20&quot; font&equals;&quot;C059&quot; style&equals;&quot;bold&quot; flatness&equals;&quot;0&period;1&quot; offset&equals;&quot;outset&quot;&sol;&gt;
 &lt;&sol;text&gt;</pre>
 
