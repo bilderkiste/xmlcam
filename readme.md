@@ -26,7 +26,8 @@
 <p>On the menubar -&gt; Graphic View it is possible to show or hide the G0 and G1 moves as well the calculated points and the grid suitable to the x and y rulers.</p>
 <h2>Tools</h2>
 In the tools section all tools have to be defined.
-An code example snippet:
+
+An example code snippet:
 <pre>&lt;tools&gt;
 &Tab;&lt;tool id&equals;&quot;t1&quot; type&equals;&quot;ballend&quot; diameter&equals;&quot;1&period;2&quot;&sol;&gt;
 &Tab;&lt;tool id&equals;&quot;t2&quot; type&equals;&quot;endmill&quot; diameter&equals;&quot;2&period;5&quot;&sol;&gt;
@@ -36,7 +37,7 @@ An code example snippet:
 This element generates G-Code for a drill.
 The drill is defined by one point defined with a <point> tag and attributes x and y.The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level.
 
-An code example snippet:
+An example code snippet:
  <pre>
 &lt;drill&gt;
 &Tab;&lt;point x&equals;&quot;40&quot; y&equals;&quot;20&quot;&sol;&gt;
@@ -47,7 +48,7 @@ This element Generates G-Code for a line.
 The line is defined by two points defined with <point> tags with attributes x and y.
 The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
 
-An code example snippet:
+An example code snippet:
 <pre>&lt;line tool&equals;&quot;t1&quot;&gt;
 &Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;150&quot;&sol;&gt;
 &Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;200&quot;&sol;&gt;
@@ -60,6 +61,8 @@ The polyline is defined by two or more points. The <point> tag must define the p
 
 The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
 Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+
+An example code snippet:
 <pre>&lt;polyline tool&equals;&quot;t2&quot;&gt;
 &Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot;&sol;&gt;
 &Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;100&quot;&sol;&gt;
@@ -73,6 +76,8 @@ A Bezier curve can be described with setting control points. The start point (b0
 One ore more inner control points can be defined (b1 to bn-1) with <bezier> tag with attributes x and y.
 One inner control point describes a quadratic bezier curve (second grade), two inner control points describes a cubic bezier curve (third grade). More than two points with n control points describes a curve with grade n + 1.
 For more information see in German https://de.wikipedia.org/wiki/B%C3%A9zierkurve and in English https://en.wikipedia.org/wiki/B%C3%A9zier_curve.
+
+An example code snippet:
 <pre>&lt;polyline tool&equals;&quot;t2&quot;&gt;
 &Tab;&lt;point x&equals;&quot;0&quot; y&equals;&quot;50&quot;&sol;&gt;
 &Tab;&lt;bezier x&equals;&quot;10&quot; y&equals;&quot;100&quot;&sol;&gt;
@@ -85,7 +90,7 @@ For more information see in German https://de.wikipedia.org/wiki/B%C3%A9zierkurv
 <p>The &lt;spl&gt; tag defines a spline curve which goes through the point. The spline must begin with a point (&lt;p&gt; tag) and continue with a &lt;spl&gt; tag. To influence the slope on the begin and end of the curve you can add a line short line section with the &lt;p&gt; tag at the begin and/or end like a direction vector. If you wish a closed spline you only need to set the last spline point equal to the first point.</p>
 <p>See the wikipedia articles for more information in <a href="https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline" target="_blank" rel="noopener">German</a> and in <a href="https://en.wikipedia.org/wiki/Cubic_Hermite_spline" target="_blank" rel="noopener">English</a>.</p>
 
-An code example snippet:
+An example code snippet:
 <pre>&lt;polyline tool&equals;&quot;t2&quot;&gt;
 &Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot;&sol;&gt;
 &Tab;&lt;spline x&equals;&quot;10&quot; y&equals;&quot;100&quot;&sol;&gt;
@@ -103,7 +108,7 @@ The depth must be defined by the <depth> tag  with attributes start for upper z 
 Optional attributes in the <options> tag are segments for the definition of the number of segments i.e. 6 for an hexagon. 
 Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
 
-An code example snippet:
+An example code snippet:
 <pre>&lt;circle tool&equals;&quot;t2&quot;&gt;
 &Tab;&lt;center x&equals;&quot;60&quot; y&equals;&quot;30&quot;&sol;&gt;
 &Tab;&lt;radius value&equals;&quot;20&quot;&sol;&gt; 
@@ -117,7 +122,7 @@ The depth must be defined by the <depth> tag  with attributes start for upper z 
 Optional attributes in the <options> tag are size for font size in point, font for font family, style for bold or italic styles and flatness for accuracy. 
 Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
 
-An code example snippet:
+An example code snippet:
 <pre>&lt;rectangle tool&equals;&quot;t2&quot;&gt;
 &Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;10&quot;&sol;&gt;
 &Tab;&lt;point x&equals;&quot;30&quot; y&equals;&quot;30&quot;&sol;&gt;
@@ -132,7 +137,7 @@ The depth must be defined by the <depth> tag  with attributes start for upper z 
 Optional attributes in the <options> tag are size for font size in point, font for font family, style for bold or italic styles and flatness for accuracy. 
 Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
 
-An code example snippet:
+An example code snippet:
 <pre>&lt;text tool&equals;&quot;t1&quot;&gt;
 &Tab;&lt;content&gt;Guten Morgen&excl;&lt;&sol;content&gt;
 &Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot;&sol;&gt;
@@ -142,11 +147,15 @@ An code example snippet:
 
 <h3>Feedrate Element</h3>
 <p>This element sets the feedrate in mm/min for all subsequent G-Code.</p>
+
+An example code snippet:
 <pre>&lt;feedrate&gt;200&lt;/feedrate&gt;</pre>
 <p>The generated G-Code for this snippet is</p>
 <p>G0 F200</p>
 <h3>Translation Element</h3>
 This element shifts the elements within this tag through the x and y pane. It is possible to use the translation tag recursive.
+
+An example code snippet:
 <pre>&lt;translate x&equals;&quot;100&quot; y&equals;&quot;50&quot;&gt;
 &Tab;&lt;circle tool&equals;&quot;t2&quot;&gt;
 &Tab;&Tab;&lt;center x&equals;&quot;60&quot; y&equals;&quot;30&quot; &sol;&gt;
