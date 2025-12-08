@@ -151,7 +151,7 @@ public class Generator {
 			} else if(commands.item(commandNumber).getNodeName() == "translate") {
 				setTranslation(commands.item(commandNumber));
 				getChildNodes(commands.item(commandNumber));
-				// Translate tag closed. Reset translate values
+				// Translate tag closed. Remove the last translation value.
 				this.translation.remove(translation.size() - 1);
 			}
 		}
@@ -295,11 +295,10 @@ public class Generator {
 		try {
 			y = new BigDecimal(map.getNamedItem("y").getTextContent()).doubleValue();
 		} catch(NullPointerException e) {
-			Main.log.log(Level.SEVERE, "Missing translation parameter(s); " + e);
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal translation parameter(s); " + e);
 		}
-		System.out.println(new Point2D.Double(x, y));
+
 		translation.add(new Point2D.Double(x, y));
 	}	
 
