@@ -41,7 +41,7 @@ import model.Tuple;
  * <pre>{@code
  * <drill>
  * 		<point x="40" y="20"/>
- * 		<depth start="0" end="-1" />
+ * 		<depth start="0" end="-1"/>
  * </drill>
  * }</pre>
  * @param node The node with the needed parameters
