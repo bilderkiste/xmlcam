@@ -22,8 +22,10 @@ package generator;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.util.logging.Level;
 
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -32,14 +34,14 @@ import main.Main;
 import model.Tuple;
 
 /**
- * Generate 2D coordinates for a drill.
- * The drill is defined by one points defined with <p> tags.
- * The z-depth must be defined by the <z> tag.
+ * Generates an 2D coordinate for a drill.
+ * The drill is defined by one point defined with a <point> tag and attributes x and y.
+ * The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level.
  * An code example snippet:
  * <pre>{@code
  * <drill>
  * 		<p>40,20</p>
- * 		<z>0,-1,0.1</z>
+ * 		<depth start="0" end="-1" />
  * </drill>
  * }</pre>
  * @param node The node with the needed parameters
@@ -48,25 +50,37 @@ import model.Tuple;
 
 public class Drill extends Element {
 
-	private Tuple xmlPoint;
+	private Point2D.Double point;
 	
 	public Drill(Node node, Generator gen) {
 		super(node, gen);
-		xmlPoint = null;
+		point = null;
 		zLevel = null;
 	}
 	
 	@Override
 	public void extract() throws IllegalArgumentException {
 		NodeList children = node.getChildNodes();
+		NamedNodeMap map = node.getAttributes();
+		
+		map = node.getAttributes();
+		setTool(gen.getTool(map.getNamedItem("tool").getTextContent()));
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
-			if(item.getNodeName() == "p") {
-				xmlPoint = new Tuple(item);
+			if(item.getNodeName() == "point") {
+				map = item.getAttributes();
+				double coords[] = new double[2];
+				coords[0] = Double.parseDouble(map.getNamedItem("x").getTextContent());
+				coords[1] = Double.parseDouble(map.getNamedItem("y").getTextContent());
+				point.setLocation(coords[0], coords[1]);
 			}
-			if(item.getNodeName() == "z") {
-				zLevel = new Tuple(item);
+			if(item.getNodeName() == "depth") {
+				map = item.getAttributes();
+				double values[] = new double[3];
+				values[0] = Double.parseDouble(map.getNamedItem("start").getTextContent());
+				values[1] = Double.parseDouble(map.getNamedItem("end").getTextContent());
+				zLevel = new Tuple(values);
 			}
 		}
 		
@@ -84,13 +98,13 @@ public class Drill extends Element {
 	public void execute() {
 		shape = new Path2D.Double();
 		
-		shape.moveTo(xmlPoint.getValue(0).doubleValue(), xmlPoint.getValue(1).doubleValue());
+		shape.moveTo(point.getX(), point.getY());
 		
 		at = new AffineTransform();
 		at.translate(gen.getTranslation().getX(), gen.getTranslation().getY()); //Translation from translation tag
 		
-		addToolPathes(generateToolPathes(shape, at, 0.1, new String("Drill at " + xmlPoint)));
+		addToolPathes(generateToolPathes(shape, at, 0.1, new String("Drill at " + point)));
 
-		Main.log.log(Level.FINE, "Drill element: drill at {0} and translation {1}", new Object[] { xmlPoint, gen.getTranslation() } );			
+		Main.log.log(Level.FINE, "Drill element: drill at {0} and translation {1}", new Object[] { point, gen.getTranslation() } );			
 	}
 }

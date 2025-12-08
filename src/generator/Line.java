@@ -43,7 +43,6 @@ import model.Tuple;
  *		<point x="10" y="150" />
  *		<point x="10" y="200" />
  *		<depth start="0" end="-1" step="0.1" />
- *	</line>	
  * </line>
  * }</pre>
  * @param node The node with the needed parameters

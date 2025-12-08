@@ -53,8 +53,8 @@
 	
 	<xs:complexType name="drillType">
 		<xs:sequence>
-			<xs:element name="point" type="pointType" />
-			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="point" type="pointType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="depth" type="depthType2" minOccurs="1" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
@@ -63,7 +63,7 @@
 	<xs:complexType name="lineType">
 		<xs:sequence>
 			<xs:element name="point" type="pointType" minOccurs="2" maxOccurs="2" />
-			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="depth" type="depthType3" minOccurs="1" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="tool" type="xs:string" use="required"/>
 	</xs:complexType>
@@ -71,7 +71,7 @@
 	<xs:complexType name="rectangleType">
 	    <xs:sequence>
 	        <xs:element name="point" type="pointType" minOccurs="2" maxOccurs="2"/>
-	        <xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+	        <xs:element name="depth" type="depthType3" minOccurs="1" maxOccurs="1"/>
 	        <xs:element name="options" type="optionsRectangleType" minOccurs="0" maxOccurs="1"/>
 	    </xs:sequence>
 	    <xs:attribute name="tool" type="xs:string" use="required"/>
@@ -81,7 +81,7 @@
 	    <xs:sequence>
 	        <xs:element name="center" type="pointType" minOccurs="1" maxOccurs="1"/>
 	        <xs:element name="radius" type="radiusType" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="depth" type="depthType3" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="options" type="optionsCircleType" minOccurs="0" maxOccurs="1"/>
 	    </xs:sequence>
 	    <xs:attribute name="tool" type="xs:string" use="required"/>
@@ -91,7 +91,7 @@
 		<xs:sequence>
 			<xs:element name="content" type="xs:string" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="point" type="pointType" minOccurs="1" maxOccurs="1"/>					
-			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="depth" type="depthType3" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="options" type="optionsTextType" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="tool" type="xs:string" use="required"/>
@@ -110,7 +110,7 @@
 				</xs:sequence>
 				<xs:element name="point" type="pointType" />	
 			</xs:choice>
-			<xs:element name="depth" type="depthType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="depth" type="depthType3" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="options" type="optionsPolylineType" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="tool" type="xs:string" use="required"/>
@@ -147,10 +147,15 @@
 	    <xs:attribute name="y" type="posdoubletype" use="required" />
 	</xs:complexType>
 	
-	<xs:complexType name="depthType">
+	<xs:complexType name="depthType3">
 		<xs:attribute name="start" type="doubleType" />
 		<xs:attribute name="end" type="doubleType" />
 		<xs:attribute name="step" type="posdoubletype" />
+	</xs:complexType>
+	
+	<xs:complexType name="depthType2">
+		<xs:attribute name="start" type="doubleType" />
+		<xs:attribute name="end" type="doubleType" />
 	</xs:complexType>
 	
 	<xs:complexType name="radiusType">
