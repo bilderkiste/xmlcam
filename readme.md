@@ -27,28 +27,30 @@
 In the tools section all tools have to be defined.
 An code example snippet:
 <pre>&lt;tools&gt;
-  &lt;tool id&equals;&quot;t1&quot; type&equals;&quot;ballend&quot; diameter&equals;&quot;1&period;2&quot; &sol;&gt;
-  &Tab;&lt;tool id&equals;&quot;t2&quot; type&equals;&quot;endmill&quot; diameter&equals;&quot;2&period;5&quot; &sol;&gt;
+&Tab;&lt;tool id&equals;&quot;t1&quot; type&equals;&quot;ballend&quot; diameter&equals;&quot;1&period;2&quot; &sol;&gt;
+&Tab;&lt;tool id&equals;&quot;t2&quot; type&equals;&quot;endmill&quot; diameter&equals;&quot;2&period;5&quot; &sol;&gt;
 &lt;&sol;tools&gt;</pre>
 <h2>Elements</h2>
 <h3>Drill element</h3>
 This element generates G-Code for a drill.
 The drill is defined by one point defined with a <point> tag and attributes x and y.The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level.
+
 An code example snippet:
  <pre>
 &lt;drill&gt;
-  &lt;point x&equals;&quot;40&quot; y&equals;&quot;20&quot;&sol;&gt;
-  &lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot;&sol;&gt;
+&Tab;&lt;point x&equals;&quot;40&quot; y&equals;&quot;20&quot;&sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot;&sol;&gt;
 &lt;&sol;drill&gt;</pre>
 <h3>Line Element</h3>
 This element Generates G-Code for a line.
 The line is defined by two points defined with <point> tags with attributes x and y.
 The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+
 An code example snippet:
 <pre>&lt;line tool&equals;&quot;t1&quot;&gt;
-  &lt;point x&equals;&quot;10&quot; y&equals;&quot;150&quot; &sol;&gt;
-  &lt;point x&equals;&quot;10&quot; y&equals;&quot;200&quot; &sol;&gt;
-  &lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;150&quot; &sol;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;200&quot; &sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
 &lt;&sol;line&gt;
 </pre>
 <h3>Polyline-Element</h3>
@@ -57,25 +59,27 @@ The polyline is defined by two or more points. The <point> tag must define the p
 
 The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
 Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
- <pre>&lt;polyline tool&equals;&quot;t2&quot;&gt;
-  &lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot; &sol;&gt;
-  &lt;point x&equals;&quot;10&quot; y&equals;&quot;100&quot; &sol;&gt;
-  &lt;point x&equals;&quot;100&quot; y&equals;&quot;100&quot; &sol;&gt;
-  &lt;point x&equals;&quot;100&quot; y&equals;&quot;10&quot; &sol;&gt;
-  &lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
-  &lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot;&sol;&gt;
+<pre>&lt;polyline tool&equals;&quot;t2&quot;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot; &sol;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;100&quot; &sol;&gt;
+&Tab;&lt;point x&equals;&quot;100&quot; y&equals;&quot;100&quot; &sol;&gt;
+&Tab;&lt;point x&equals;&quot;100&quot; y&equals;&quot;10&quot; &sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+&Tab;&lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot;&sol;&gt;
 &lt;&sol;polyline&gt;</pre>
 <h4>Bezier curves</h4>
 <h4>Cubic Hermite splines</h4>
 <p>The &lt;spl&gt; tag defines a spline curve which goes through the point. The spline must begin with a point (&lt;p&gt; tag) and continue with a &lt;spl&gt; tag. To influence the slope on the begin and end of the curve you can add a line short line section with the &lt;p&gt; tag at the begin and/or end like a direction vector. If you wish a closed spline you only need to set the last spline point equal to the first point.</p>
 <p>See the wikipedia articles for more information in <a href="https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline" target="_blank" rel="noopener">German</a> and in <a href="https://en.wikipedia.org/wiki/Cubic_Hermite_spline" target="_blank" rel="noopener">English</a>.</p>
- <pre>&lt;polyline tool&equals;&quot;t2&quot;&gt;
-  &lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot; &sol;&gt;
-  &lt;spline x&equals;&quot;10&quot; y&equals;&quot;100&quot; &sol;&gt;
-  &lt;spline x&equals;&quot;100&quot; y&equals;&quot;100&quot; &sol;&gt;
-  &lt;spline x&equals;&quot;100&quot; y&equals;&quot;10&quot; &sol;&gt;
-  &lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
-  &lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot;&sol;&gt;
+
+An code example snippet:
+<pre>&lt;polyline tool&equals;&quot;t2&quot;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;50&quot; &sol;&gt;
+&Tab;&lt;spline x&equals;&quot;10&quot; y&equals;&quot;100&quot; &sol;&gt;
+&Tab;&lt;spline x&equals;&quot;100&quot; y&equals;&quot;100&quot; &sol;&gt;
+&Tab;&lt;spline x&equals;&quot;100&quot; y&equals;&quot;10&quot; &sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+&Tab;&lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot;&sol;&gt;
 &lt;&sol;polyline&gt;</pre>
 </p>
 <p>The z-depth must be defined by the &lt;z&gt; tag. The tupel in &lt;z&gt; defines the the start layer (workpiece surface), the end layer (depth), and the steps (&lt;z&gt;startZ,endZ,stepZ&lt;/z&gt;).</p>
@@ -85,6 +89,7 @@ A circle is defined by the center determined through a <center> tag with attribu
 The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
 Optional attributes in the <options> tag are segments for the definition of the number of segments i.e. 6 for an hexagon. 
 Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+
 An code example snippet:
 <pre>&lt;circle tool&equals;&quot;t2&quot;&gt;
 &Tab;&lt;center x&equals;&quot;60&quot; y&equals;&quot;30&quot; &sol;&gt;
@@ -92,15 +97,20 @@ An code example snippet:
 &Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
 &Tab;&lt;options segments&equals;&quot;5&quot; offset&equals;&quot;inset&quot; pocket&equals;&quot;parallel&quot; &sol;&gt;
 &lt;&sol;circle&gt;</pre>
- <h3>Rectangle Element</h3>
-<p>A rectangle is defined by two points for the diagonal edges determined through a &lt;p&gt; tag.
-The z-depth must be defined by the &lt;z&gt; tag.
+<h3>Rectangle Element</h3>
+This element generates G-Code for a rectangle.
+A rectangle is defined by two points for the diagonal edges determined through two <point> tags with attributes x and y.
+The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+Optional attributes in the <options> tag are size for font size in point, font for font family, style for bold or italic styles and flatness for accuracy. 
+Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+
 An code example snippet:
-<pre>&lt;rectangle&gt;
-  &lt;p&gt;100,100&lt;&#x2F;p&gt;
-  &lt;p&gt;150,150&lt;&#x2F;p&gt;
-  &lt;z&gt;0,-1,0.1&lt;&#x2F;z&gt;
-&lt;&#x2F;rectangle&gt;</pre>
+<pre>&lt;rectangle tool&equals;&quot;t2&quot;&gt;
+&Tab;&lt;point x&equals;&quot;10&quot; y&equals;&quot;10&quot; &sol;&gt;
+&Tab;&lt;point x&equals;&quot;30&quot; y&equals;&quot;30&quot; &sol;&gt;
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+&Tab;&lt;options pocket&equals;&quot;parallel&quot; offset&equals;&quot;inset&quot; &sol;&gt;
+&lt;&sol;rectangle&gt;</pre>
 <h3>Text Element</h3>
 Generates 2D coordinates for a text.
 A text must defined by a start point bottom left determined through a &lt;p&gt; tag.The Text must defined by the &lt;content&gt; tag. The z-depth must be defined by the &lt;z&gt; tag.
