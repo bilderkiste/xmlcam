@@ -33,16 +33,28 @@ import main.Main;
 import model.Tuple;
 
 /**
- * This class generates 2D coordinates for a polyline.
- * The polyline is defined by two or more points. The tupel in <p> defines the x and y position of the point (<p>x,y</p>). Two consecutive points descibe a line.
+ * This class generates an 2D path for a polyline.
+ * The polyline is defined by two or more points. The <point> tag must define the position of the first point with the attribute x and y. Two consecutive points descibe a line.
  *	
- * You can describe a bow by setting control points. The start point (b0) and end point (bn) are defined by <p> tags. You need to define one ore more inner control points (b1 to bn-1) with tag <bez>x,y</bez>.
- * With one inner control point you describe a quadratic bezier curve (second grade), with two inner control points a cubic bezier curve (third grade), with n control points you describe a curve with grade n + 1.
+ * A bow can be described with setting control points. The start point (b0) and end point (bn) are defined by <point> tags. One ore more inner control points can be defined (b1 to bn-1) with <bezier> tag with attributes x and y.
+ * One inner control point describes a quadratic bezier curve (second grade), two inner control points describes a cubic bezier curve (third grade). More than two points with n control points describes a curve with grade n + 1.
  * For more information see in German https://de.wikipedia.org/wiki/B%C3%A9zierkurve and in English https://en.wikipedia.org/wiki/B%C3%A9zier_curve.
  * 
- * For creating splines the <spl> tag can be used. The curve will go through the point.
+ * For creating splines the <spline> tag can be used. The curve will go through the point.
  *	
- * The z-depth must be defined by the <z> tag. The tupel in <z> defines the the start layer (workpiece surface), the end layer (depth), and the steps (<z>startZ,endZ,stepZ</z>).
+ * The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+ * Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+ * 
+ * <pre>{@code
+	<polyline tool="t2">
+		<point x="10" y="50" />
+		<spline x="10" y="100" />
+		<spline x="100" y="100" />
+		<spline x="100" y="10" />
+		<depth start="0" end="-1" step="0.1" />
+		<options pocket="parallel" offset="inset"/>
+	</polyline>
+ * }</pre>
  * @param node The node with the needed parameters
  */
 

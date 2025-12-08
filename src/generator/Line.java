@@ -34,15 +34,16 @@ import main.Main;
 import model.Tuple;
 
 /**
- * Generate 2D coordinates for a line.
- * The line is defined by two points defined with <p> tags.
- * The z-depth must be defined by the <z> tag.
+ * Generates an 2D path for a line.
+ * The line is defined by two points defined with <point> tags with attributes x and y.
+ * The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
  * An code example snippet:
  * <pre>{@code
- * <line>
- * 		<p>40,20</p>
- * 		<p>80,20</p>
- * 		<z>0,-1,0.1</z>
+ * <line tool="t1">
+ *		<point x="10" y="150" />
+ *		<point x="10" y="200" />
+ *		<depth start="0" end="-1" step="0.1" />
+ *	</line>	
  * </line>
  * }</pre>
  * @param node The node with the needed parameters
