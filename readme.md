@@ -80,13 +80,19 @@ Standard but optional attributes in the <options> are for closed elements pocket
 </p>
 <p>The z-depth must be defined by the &lt;z&gt; tag. The tupel in &lt;z&gt; defines the the start layer (workpiece surface), the end layer (depth), and the steps (&lt;z&gt;startZ,endZ,stepZ&lt;/z&gt;).</p>
 <h3>Circle Element</h3>
-<p> This element generates G-Code for a circle.<br /> A circle is defined by the center point determined through a &lt;p&gt; tag and a radius defined through a &lt;rad&gt; tag. The tupel in &lt;p&gt; defines the x and y position of the point (&lt;p&gt;x,y&lt;/p&gt;). The number in &lt;rad&gt; tag defines the radius (&lt;rad&gt;radius&lt;/rad).<br /> The z-depth must be defined by the &lt;z&gt; tag. The tupel in &lt;z&gt; defines the the start layer (workpiece surface), the end layer (depth), and the steps (&lt;z&gt;startZ,endZ,stepZ&lt;/z&gt;).</p>
-<pre>&lt;circle&gt;<br />  &lt;p&gt;100,200&lt;/p&gt;<br />  &lt;rad&gt;50&lt;/rad&gt;<br />  &lt;z&gt;0,-1,0.1&lt;/z&gt;<br />&lt;/circle&gt;</pre>
-<p>This code snippet has the following result:</p>
-</p>
-With the &lt;seg&gt; tag you can define the number of segments in the circe. You can i.e. define an hexagon by adding the &lt;seg&gt;6&lt;/seg&gt; tag.
-<pre>&lt;circle&gt;<br />  &lt;p&gt;100,200&lt;/p&gt;<br />  &lt;rad&gt;50&lt;/rad&gt;<br />  &lt;seg&gt;6&lt;/seg&gt;<br />  &lt;z&gt;0,-1,0.1&lt;/z&gt;<br />&lt;/circle&gt;</pre>
-<h3>Rectangle Element</h3>
+This element generates G-Code for a circle.
+A circle is defined by the center determined through a <center> tag with attributes x and y and radius defined through a <radius> tag with a value attribute.
+The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+Optional attributes in the <options> tag are segments for the definition of the number of segments i.e. 6 for an hexagon. 
+Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+An code example snippet:
+<pre>&lt;circle tool&equals;&quot;t2&quot;&gt;
+&Tab;&lt;center x&equals;&quot;60&quot; y&equals;&quot;30&quot; &sol;&gt;
+&Tab;&lt;radius value&equals;&quot;20&quot; &sol;&gt; 
+&Tab;&lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; step&equals;&quot;0&period;1&quot; &sol;&gt;
+&Tab;&lt;options segments&equals;&quot;5&quot; offset&equals;&quot;inset&quot; pocket&equals;&quot;parallel&quot; &sol;&gt;
+&lt;&sol;circle&gt;</pre>
+ <h3>Rectangle Element</h3>
 <p>A rectangle is defined by two points for the diagonal edges determined through a &lt;p&gt; tag.
 The z-depth must be defined by the &lt;z&gt; tag.
 An code example snippet:
