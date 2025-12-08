@@ -40,7 +40,7 @@ import model.Tuple;
  * An code example snippet:
  * <pre>{@code
  * <drill>
- * 		<p>40,20</p>
+ * 		<point x="40" y="20"/>
  * 		<depth start="0" end="-1" />
  * </drill>
  * }</pre>

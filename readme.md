@@ -10,7 +10,7 @@
 <h2>Views</h2>
 <h3>XML View</h3>
 <p>The XML View shows the XML document which is the source for G-Code generation. You can write your XML in the textpane and generate G-Code by pressing "Generate G-Code".</p>
-<p>There is a validator, which validates your XML in real time. Red font color shows mistakes and black font color shows correct code. The description of the error will displayed in a field over the XML text pane.</p>
+<p>There is a validator, which validates your XML in real time. Red font markers show mistakes. The description of the error will displayed in a field over the XML text pane.</p>
 <h3>Table view</h3>
 <p>The table view show the generated G-Code. By clicking a cell you can edit the field. If your input is invalid, your input will skipped.</p>
 </p>
@@ -25,13 +25,15 @@
 <p>On the menubar -&gt; Graphic View it is possible to show or hide the G0 and G1 moves as well the calculated points and the grid suitable to the x and y rulers.</p>
 <h2>Elements</h2>
 <h3>Drill element</h3>
-<p>This element generates the G-Code for a drill at the point &lt;p&gt;x,y&lt;/p&gt;. The z tag defines the start and the end (depth) of the drill.
-<pre>&lt;drill&gt;
-  &lt;p&gt;100,100&lt;&#x2F;p&gt;
-  &lt;z&gt;0,-1&lt;&#x2F;z&gt;
-&lt;&#x2F;drill&gt;</pre>
-Hint: You need only two parameters for the z tag.
-</p>
+The Drill Element generates G-Code for a drill.
+The drill is defined by one point defined with a <point> tag and attributes x and y.The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level.
+An code example snippet:
+ <pre>
+ &lt;drill&gt;
+  &lt;point x&equals;&quot;40&quot; y&equals;&quot;20&quot;&sol;&gt;
+  &lt;depth start&equals;&quot;0&quot; end&equals;&quot;-1&quot; &sol;&gt;
+&lt;&sol;drill&gt;
+ </pre>
 <h3>Line Element</h3>
 <p>This element generates G-Code for a line. <br />The line is defined by two points defined with &lt;p&gt; tags. The tupel in &lt;p&gt; defines the x and y position of the point (&lt;p&gt;x,y&lt;/p&gt;).<br />The z-depth must be defined by the &lt;z&gt; tag. The tupel in &lt;z&gt; defines the the start layer (workpiece surface), the end layer (depth), and the steps (&lt;z&gt;startZ,endZ,stepZ&lt;/z&gt;).</p>
 <pre>&lt;line&gt;<br />  &lt;p&gt;40,200&lt;/p&gt;<br />  &lt;p&gt;340,250&lt;/p&gt;<br />  &lt;z&gt;0,-1,0.1&lt;/z&gt;<br />&lt;/line&gt;</pre>
