@@ -7,6 +7,7 @@
 <p>All measures here are in the metric system. Length values are always mm and velocitys mm/s if there is no other unit mentioned.</p>
 <p>I use for my machine the GRBL V1.1 firmware Please take into account, that other firmware could interpret the G-Code different. If you are not sure, check the documentation, how the behaviour of you firmware is.</p>
 <p>I am not responsible for any damages on your machine. Please be careful by using the software in this early state, because I have to check as well if the G-Code works reliable.</p>
+<p>The syntax for the XML has changed since version 0.100. Please see readme.md on the release to obtain the old syntax.</p>
 <h2>Views</h2>
 <h3>XML View</h3>
 <p>The XML View shows the XML document which is the source for G-Code generation. You can write your XML in the textpane and generate G-Code by pressing "Generate G-Code".</p>
