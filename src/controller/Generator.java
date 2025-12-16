@@ -192,16 +192,16 @@ public class Generator {
 			
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			Main.log.log(Level.SEVERE, "XML parsing failed; " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch(NullPointerException | IndexOutOfBoundsException e) {
 			Main.log.log(Level.SEVERE, "Missing or illegal parameter(s) in XML; " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch(NumberFormatException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s) in XML; " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch(IllegalArgumentException e) {
 			Main.log.log(Level.SEVERE, "Illegal parameter(s) in XML; " + e);
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 		// insert end code
@@ -239,7 +239,7 @@ public class Generator {
 		String id = null;
 		String type = null;
 		double diameter = 0;
-		NamedNodeMap map;
+		NamedNodeMap map = null;
 		
 		for(int i = 0; i < children.getLength(); i++) {
 			Node item = children.item(i);
@@ -250,16 +250,25 @@ public class Generator {
 					if (tools.containsKey(id)) {
 						throw new IllegalArgumentException("Tool with id " + id + " already exists.");
 					}
-					type = map.getNamedItem("type").getTextContent();
+				} catch (Exception e) {
+					Main.log.log(Level.SEVERE, e.getMessage());
+					return;
+				}
+				try {
 					diameter = Double.parseDouble(map.getNamedItem("diameter").getTextContent());
 					if(diameter < 0.05) {
 						throw new IllegalArgumentException("Diameter must be greater or equal 0.05.");
 					}
-					tools.put(id, new Tool(id, diameter, type));
-			
 				} catch (Exception e) {
-					e.printStackTrace();
+					Main.log.log(Level.SEVERE, e.getMessage());
+					return;
 				}
+				try {
+					type = map.getNamedItem("type").getTextContent();
+				} catch (Exception e) {
+					Main.log.log(Level.SEVERE, e.getMessage());
+				}
+				tools.put(id, new Tool(id, diameter, type));
 			}
 		}
 	}
