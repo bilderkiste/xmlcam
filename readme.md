@@ -102,8 +102,8 @@ An example code snippet:
 </p>
 <p>The z-depth must be defined by the &lt;z&gt; tag. The tupel in &lt;z&gt; defines the the start layer (workpiece surface), the end layer (depth), and the steps (&lt;z&gt;startZ,endZ,stepZ&lt;/z&gt;).</p>
 <h3>Circle Element</h3>
-This element generates G-Code for a circle.
-A circle is defined by the center determined through a <center> tag with attributes x and y and radius defined through a <radius> tag with a value attribute.
+<p>This element generates G-Code for a circle.</p>
+A circle is defined by the center determined through a &gt;center&lt; tag with attributes x and y and radius defined through a <radius> tag with a value attribute.
 The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
 Optional attributes in the <options> tag are segments for the definition of the number of segments i.e. 6 for an hexagon. 
 Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
@@ -242,7 +242,6 @@ standard-dir = /home; 		// Standard directory for XML and G-Code</pre>
 				&lt;point x=&quot;23.45&quot; y=&quot;20.05&quot;/&gt;
 				&lt;depth start=&quot;0&quot; end=&quot;-4&quot; step=&quot;0.4&quot;/&gt;
 			&lt;/rectangle&gt;
-	
 			&lt;drill tool=&quot;t1&quot;&gt;
 				&lt;point x=&quot;2.25&quot; y=&quot;1.85&quot;/&gt;
 				&lt;depth start=&quot;0&quot; end=&quot;-4&quot;/&gt;
@@ -275,7 +274,6 @@ standard-dir = /home; 		// Standard directory for XML and G-Code</pre>
 				&lt;radius value=&quot;3&quot;/&gt;
 				&lt;depth start=&quot;0&quot; end=&quot;-4&quot; step=&quot;0.4&quot;/&gt;
 			&lt;/circle&gt;
-	
 			&lt;drill tool=&quot;t1&quot;&gt;
 				&lt;point x=&quot;0&quot; y=&quot;16&quot;/&gt;
 				&lt;depth start=&quot;0&quot; end=&quot;-4&quot;/&gt;
