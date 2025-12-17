@@ -164,10 +164,10 @@ public class MainWindow extends JFrame {
 	 * This shut be used, if the file is just closed. The window title and menu bar will updated as well.
 	 */
 	public void clearCurrentGCodeFile() {
-		this.currentGCodeFile = null;
+		//this.currentGCodeFile = null;
 		this.setTitle(getCurrentTitle());
 		// TODO: Make Item accessible via ActionCommand
-		menuBar.getMenu(1).getItem(1).setEnabled(false);
+		//menuBar.getMenu(1).getItem(1).setEnabled(false);
 	}
 	
 	/**
