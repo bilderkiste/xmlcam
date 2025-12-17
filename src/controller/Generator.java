@@ -266,7 +266,7 @@ public class Generator {
 				try {
 					type = map.getNamedItem("type").getTextContent();
 				} catch (Exception e) {
-					Main.log.log(Level.SEVERE, e.getMessage());
+					Main.log.log(Level.FINE, "No type for tool {0} defined: {1}", new Object[] { id, e.getMessage() });
 				}
 				tools.put(id, new Tool(id, diameter, type));
 			}
