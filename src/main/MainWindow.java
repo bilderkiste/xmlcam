@@ -56,6 +56,7 @@ import model.Program;
 import view.GraphicView;
 import view.GraphicViewActionListener;
 import view.GraphicViewMenuBarListener;
+import view.ProgramModelListener;
 import view.TableViewDummyModel;
 import xml.ScriptValidator;
 import xml.ScriptValidatorErrorView;
@@ -113,6 +114,9 @@ public class MainWindow extends JFrame {
             this.setIconImage(icon);
         }
 		
+        // Add this listener to set the unsaved G-Code Flag to true if model has changed.
+        programModel.addProgrammModelListener(new ProgramModelChangeListener());
+        
 		this.pack();
 		this.setVisible(true);
 	}
@@ -125,15 +129,15 @@ public class MainWindow extends JFrame {
 		StringBuilder title = new StringBuilder(WINDOW_TITLE);
 		if(currentXMLFile != null) {
 			title.append(" - " + currentXMLFile.getName());
-		}
-		if(unsavedXML) {
-			title.append(" * ");
+			if(unsavedXML) {
+				title.append(" *");
+			}
 		}
 		if(currentGCodeFile != null) {
 			title.append(" - " + currentGCodeFile.getName());
-		}
-		if(unsavedGCode) {
-			title.append(" * ");
+			if(unsavedGCode) {
+				title.append(" *");
+			}
 		}
 		return title.toString();
 	}
@@ -153,6 +157,7 @@ public class MainWindow extends JFrame {
 	 */
 	public void setCurrentGCodeFile(File currentGCodeFile) {
 		this.currentGCodeFile = currentGCodeFile;
+		this.setUnsavedGCode(false);
 		this.setTitle(getCurrentTitle());
 		// TODO: Make Item accessible via ActionCommand
 		menuBar.getMenu(1).getItem(1).setEnabled(true);
@@ -276,8 +281,7 @@ public class MainWindow extends JFrame {
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
 			
-		menu = new JMenu("Grafische Ansicht");
-		menu.setMnemonic(KeyEvent.VK_R);
+		menu = new JMenu("Grafikansicht");
 		menuBar.add(menu);
 		
 		GraphicViewMenuBarListener graphicViewMenuBarListener = new GraphicViewMenuBarListener(graphicView);
@@ -492,6 +496,16 @@ public class MainWindow extends JFrame {
 
 	public void setUnsavedGCode(boolean unsavedGCode) {
 		this.unsavedGCode = unsavedGCode;
+	}
+	
+	class ProgramModelChangeListener implements ProgramModelListener {
+
+		@Override
+		public void modelChanged(Program model) {
+			setUnsavedGCode(true);
+			setTitle(getCurrentTitle());
+		}
+		
 	}
 
 }

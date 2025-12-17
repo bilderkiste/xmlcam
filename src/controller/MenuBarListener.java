@@ -137,7 +137,9 @@ public class MenuBarListener implements ActionListener {
 		} else if(menuItem.getActionCommand() == "qsave_gcode") {
 			if(((MainWindow) parentWindow).getCurrentGCodeFile() != null) {
 				try {
-					programModel.writeToFile(((MainWindow) parentWindow).getCurrentGCodeFile());
+					File file = ((MainWindow) parentWindow).getCurrentGCodeFile();
+					programModel.writeToFile(file);
+					((MainWindow) parentWindow).setCurrentGCodeFile(file);
 				} catch (IOException e) {
 					Main.log.log(Level.SEVERE, "Error writing file: " + e);
 				}
