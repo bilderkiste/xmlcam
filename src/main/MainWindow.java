@@ -74,6 +74,7 @@ public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private final String WINDOW_TITLE = new String("xmlCAM");
 	private Program programModel;
+	private JTabbedPane tabbedPane;
 	private XMLView xmlEditorPane;
 	private JMenuBar menuBar;
 	private GraphicView graphicView;
@@ -104,7 +105,8 @@ public class MainWindow extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle(getCurrentTitle());
 		
-		this.add(createTabbedPane());
+		tabbedPane = createTabbedPane();
+		this.add(tabbedPane);
 		
 		this.setJMenuBar(createMenuBar());
 		
@@ -355,7 +357,7 @@ public class MainWindow extends JFrame {
 		xmlEditorPane.setCodeFoldingEnabled(true);
 		
 		// TODO: Delete stuff
-		try {
+		/*try {
 			File file = new File("program.xml");
 			FileReader inputStream = new FileReader(file);
 			xmlEditorPane.read(inputStream, null);
@@ -363,7 +365,7 @@ public class MainWindow extends JFrame {
 			this.setTitle(getCurrentTitle());
 		} catch (IOException e) {
 			Main.log.log(Level.WARNING, "Error reading file: " + e);
-		}
+		}*/
 		// until here
 		
 		xmlEditorPane.setScriptvalidator(new ScriptValidator()); 
@@ -498,6 +500,10 @@ public class MainWindow extends JFrame {
 		this.unsavedGCode = unsavedGCode;
 	}
 	
+	public JTabbedPane getTabbedPane() {
+		return tabbedPane;
+	}
+
 	class ProgramModelChangeListener implements ProgramModelListener {
 
 		@Override

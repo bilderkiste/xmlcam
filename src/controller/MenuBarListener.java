@@ -71,6 +71,7 @@ public class MenuBarListener implements ActionListener {
 		if(menuItem.getActionCommand() == "new_xml") {
 			xmlEditorPane.setText("<?xml version=\"1.0\"?>\n");
 			((MainWindow) parentWindow).clearCurrentXMLFile();
+			((MainWindow) parentWindow).getTabbedPane().setSelectedIndex(0);
 		} else if(menuItem.getActionCommand() == "open_xml") {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(new FileNameExtensionFilter("XML Dateien", "xml"));
@@ -81,6 +82,7 @@ public class MenuBarListener implements ActionListener {
 					FileReader inputStream = new FileReader(fileChooser.getSelectedFile());
 					xmlEditorPane.read(inputStream, null);
 					((MainWindow) parentWindow).setCurrentXMLFile(fileChooser.getSelectedFile());
+					((MainWindow) parentWindow).getTabbedPane().setSelectedIndex(0);
 				} catch (IOException e) {
 					Main.log.log(Level.SEVERE, "Error reading file: " + e);
 				}
@@ -120,6 +122,7 @@ public class MenuBarListener implements ActionListener {
 		} else if(menuItem.getActionCommand() == "new_gcode") {
 			programModel.clear();
 			((MainWindow) parentWindow).clearCurrentGCodeFile();
+			((MainWindow) parentWindow).getTabbedPane().setSelectedIndex(1);
 		/*} else if(menuItem.getActionCommand() == "open_gcode") {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(new FileNameExtensionFilter("G-Code Dateien", "gcode"));
