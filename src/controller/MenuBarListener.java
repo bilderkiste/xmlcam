@@ -88,10 +88,12 @@ public class MenuBarListener implements ActionListener {
 			}
 		} else if(menuItem.getActionCommand() == "qsave_xml") {
 			try {
-				FileWriter filewriter = new FileWriter(((MainWindow) parentWindow).getCurrentXMLFile());
+				File file = ((MainWindow) parentWindow).getCurrentXMLFile();
+				FileWriter filewriter = new FileWriter(file);
 				filewriter.write(xmlEditorPane.getText());
 				filewriter.flush();
 				filewriter.close();
+				((MainWindow) parentWindow).setCurrentXMLFile(file);
 			} catch (IOException e) {
 				Main.log.log(Level.SEVERE, "Error writing file: " + e);
 			}
@@ -118,7 +120,7 @@ public class MenuBarListener implements ActionListener {
 		} else if(menuItem.getActionCommand() == "new_gcode") {
 			programModel.clear();
 			((MainWindow) parentWindow).clearCurrentGCodeFile();
-		} else if(menuItem.getActionCommand() == "open_gcode") {
+		/*} else if(menuItem.getActionCommand() == "open_gcode") {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(new FileNameExtensionFilter("G-Code Dateien", "gcode"));
 			fileChooser.setCurrentDirectory(Settings.userDir);
@@ -131,7 +133,7 @@ public class MenuBarListener implements ActionListener {
 				} catch (IOException e) {
 					Main.log.log(Level.SEVERE, "Error reading file: " + e);
 				}
-			}
+			}*/
 		} else if(menuItem.getActionCommand() == "qsave_gcode") {
 			if(((MainWindow) parentWindow).getCurrentGCodeFile() != null) {
 				try {

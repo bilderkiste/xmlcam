@@ -22,6 +22,7 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileReader;
@@ -40,6 +41,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -72,6 +76,8 @@ public class MainWindow extends JFrame {
 	private XMLView xmlEditorPane;
 	private JMenuBar menuBar;
 	private GraphicView graphicView;
+	private boolean unsavedXML;
+	private boolean unsavedGCode;
 	
 	/**
 	 * The current which was open by the XML open file dialog.
@@ -91,6 +97,8 @@ public class MainWindow extends JFrame {
 		this.programModel = programModel;
 		this.currentGCodeFile = null;
 		this.currentXMLFile = null;
+		this.unsavedXML = false;
+		this.unsavedGCode = false;
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle(getCurrentTitle());
@@ -103,7 +111,6 @@ public class MainWindow extends JFrame {
         if (iconURL != null) {
             Image icon = new ImageIcon(iconURL).getImage();
             this.setIconImage(icon);
-            
         }
 		
 		this.pack();
@@ -114,13 +121,19 @@ public class MainWindow extends JFrame {
 	 * Returns the current window title with the opened filenames for XML and G-Code files.
 	 * @return The title as a String.
 	 */
-	private String getCurrentTitle() {
+	public String getCurrentTitle() {
 		StringBuilder title = new StringBuilder(WINDOW_TITLE);
 		if(currentXMLFile != null) {
 			title.append(" - " + currentXMLFile.getName());
 		}
+		if(unsavedXML) {
+			title.append(" * ");
+		}
 		if(currentGCodeFile != null) {
 			title.append(" - " + currentGCodeFile.getName());
+		}
+		if(unsavedGCode) {
+			title.append(" * ");
 		}
 		return title.toString();
 	}
@@ -142,7 +155,7 @@ public class MainWindow extends JFrame {
 		this.currentGCodeFile = currentGCodeFile;
 		this.setTitle(getCurrentTitle());
 		// TODO: Make Item accessible via ActionCommand
-		menuBar.getMenu(1).getItem(2).setEnabled(true);
+		menuBar.getMenu(1).getItem(1).setEnabled(true);
 		
 	}
 	
@@ -154,7 +167,7 @@ public class MainWindow extends JFrame {
 		this.currentGCodeFile = null;
 		this.setTitle(getCurrentTitle());
 		// TODO: Make Item accessible via ActionCommand
-		menuBar.getMenu(1).getItem(2).setEnabled(false);
+		menuBar.getMenu(1).getItem(1).setEnabled(false);
 	}
 	
 	/**
@@ -172,6 +185,7 @@ public class MainWindow extends JFrame {
 	 */
 	public void setCurrentXMLFile(File currentXMLFile) {
 		this.currentXMLFile = currentXMLFile;
+		this.unsavedXML = false;
 		this.setTitle(getCurrentTitle());
 		// TODO: Make Item accessible via ActionCommand
 		menuBar.getMenu(0).getItem(2).setEnabled(true);
@@ -184,6 +198,7 @@ public class MainWindow extends JFrame {
 	 */
 	public void clearCurrentXMLFile() {
 		this.currentXMLFile = null;
+		this.unsavedXML = false;
 		this.setTitle(getCurrentTitle());
 		// TODO: Make Item accessible via ActionCommand
 		menuBar.getMenu(0).getItem(2).setEnabled(false);
@@ -207,27 +222,27 @@ public class MainWindow extends JFrame {
 		menu.setMnemonic(KeyEvent.VK_X);
 		menuBar.add(menu);
 		
-		menuItem = new JMenuItem("Neu", KeyEvent.VK_N);
-		//menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
+		menuItem = new JMenuItem("Neu");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
 		menuItem.setActionCommand("new_xml");
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
 		
-		menuItem = new JMenuItem("Öffnen", KeyEvent.VK_F);
-		//menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
+		menuItem = new JMenuItem("Öffnen");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		menuItem.setActionCommand("open_xml");
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
 		
-		menuItem = new JMenuItem("Speichern", KeyEvent.VK_Q);
-		//menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
+		menuItem = new JMenuItem("Speichern");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		menuItem.setActionCommand("qsave_xml");
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
 		menuItem.setEnabled(false);
 		
-		menuItem = new JMenuItem("Speichern unter", KeyEvent.VK_S);
-		//menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
+		menuItem = new JMenuItem("Speichern unter");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.SHIFT_MASK |ActionEvent.CTRL_MASK));
 		menuItem.setActionCommand("save_xml");
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
@@ -236,27 +251,27 @@ public class MainWindow extends JFrame {
 		menu.setMnemonic(KeyEvent.VK_G);
 		menuBar.add(menu);
 		
-		menuItem = new JMenuItem("Neu", KeyEvent.VK_N);
-		//menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
+		menuItem = new JMenuItem("Leeren");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
 		menuItem.setActionCommand("new_gcode");
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
 		
-		menuItem = new JMenuItem("Öffnen", KeyEvent.VK_F);
+		/*menuItem = new JMenuItem("Öffnen", KeyEvent.VK_F);
 		//menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
 		menuItem.setActionCommand("open_gcode");
 		menuItem.addActionListener(menuBarListener);
-		menu.add(menuItem);
+		menu.add(menuItem);*/
 		
-		menuItem = new JMenuItem("Speichern", KeyEvent.VK_Q);
-		//menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
+		menuItem = new JMenuItem("Speichern");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
 		menuItem.setActionCommand("qsave_gcode");
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
 		menuItem.setEnabled(false);
 		
-		menuItem = new JMenuItem("Speichern unter", KeyEvent.VK_S);
-		//menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.ALT_MASK));
+		menuItem = new JMenuItem("Speichern unter");
+		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.SHIFT_MASK | ActionEvent.ALT_MASK));
 		menuItem.setActionCommand("save_gcode");
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
@@ -349,6 +364,24 @@ public class MainWindow extends JFrame {
 		
 		xmlEditorPane.setScriptvalidator(new ScriptValidator()); 
 		xmlEditorPane.getScriptvalidator().start();
+		
+		xmlEditorPane.getDocument().addDocumentListener(new DocumentListener() {
+			
+		    @Override
+		    public void insertUpdate(DocumentEvent e) {
+		    }
+
+		    @Override
+		    public void removeUpdate(DocumentEvent e) {
+		    }
+
+		    @Override
+		    public void changedUpdate(DocumentEvent e) {
+		        unsavedXML = true;
+		        setTitle(getCurrentTitle());
+		    }
+			
+		});
 	    
 		//JScrollPane scrollPane = new JScrollPane(xmlEditorPane);
 		RTextScrollPane scrollPane = new RTextScrollPane(xmlEditorPane);
@@ -440,11 +473,25 @@ public class MainWindow extends JFrame {
 		zoomOut.addActionListener(graphicViewActionListener);
 		optionPanel.add(zoomOut);
 		
-		
-		
 		panel.add(optionPanel, BorderLayout.SOUTH);
 		
 		return panel;
 	}
-	
+
+	public boolean isUnsavedXML() {
+		return unsavedXML;
+	}
+
+	public void setUnsavedXML(boolean unsavedXML) {
+		this.unsavedXML = unsavedXML;
+	}
+
+	public boolean isUnsavedGCode() {
+		return unsavedGCode;
+	}
+
+	public void setUnsavedGCode(boolean unsavedGCode) {
+		this.unsavedGCode = unsavedGCode;
+	}
+
 }

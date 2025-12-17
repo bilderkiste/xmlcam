@@ -142,7 +142,7 @@ public class Row {
 		for(int i = 0; i < commands.size(); i++) {
 			out += commands.get(i) + " ";
 		}
-		if(!comment.isEmpty()) {
+		if(comment != null) {
 			out += "; " + comment;
 		}
 		return out;
