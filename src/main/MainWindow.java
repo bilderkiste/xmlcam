@@ -20,6 +20,7 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -123,6 +124,8 @@ public class MainWindow extends JFrame {
         programModel.addProgrammModelListener(new ProgramModelChangeListener());
         
 		this.pack();
+		this.setMinimumSize(new Dimension(400, 400));
+		
 		this.setVisible(true);
 	}
 	
