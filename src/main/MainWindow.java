@@ -23,6 +23,7 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileReader;
@@ -30,9 +31,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -289,35 +292,35 @@ public class MainWindow extends JFrame {
 		GraphicViewMenuBarListener graphicViewMenuBarListener = new GraphicViewMenuBarListener(graphicView);
 		
 		checkBoxMenuItem = new JCheckBoxMenuItem("Zeige Formen");
-		checkBoxMenuItem.setMnemonic(KeyEvent.VK_S);
+		checkBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, ActionEvent.CTRL_MASK));
 		checkBoxMenuItem.setSelected(graphicView.getGraphicViewCanvasView().isShapeVisible());
 		checkBoxMenuItem.setActionCommand("show_shapes");
 		checkBoxMenuItem.addActionListener(graphicViewMenuBarListener);
 		menu.add(checkBoxMenuItem);
 		
 		checkBoxMenuItem = new JCheckBoxMenuItem("Zeige G0");
-		checkBoxMenuItem.setMnemonic(KeyEvent.VK_0);
+		checkBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_2, ActionEvent.CTRL_MASK));
 		checkBoxMenuItem.setSelected(graphicView.getGraphicViewCanvasView().isG0lineVisible());
 		checkBoxMenuItem.setActionCommand("show_g0");
 		checkBoxMenuItem.addActionListener(graphicViewMenuBarListener);
 		menu.add(checkBoxMenuItem);
 		
 		checkBoxMenuItem = new JCheckBoxMenuItem("Zeige G1");
-		checkBoxMenuItem.setMnemonic(KeyEvent.VK_1);
+		checkBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_3, ActionEvent.CTRL_MASK));
 		checkBoxMenuItem.setSelected(graphicView.getGraphicViewCanvasView().isG1lineVisible());
 		checkBoxMenuItem.setActionCommand("show_g1");
 		checkBoxMenuItem.addActionListener(graphicViewMenuBarListener);
 		menu.add(checkBoxMenuItem);
 		
 		checkBoxMenuItem = new JCheckBoxMenuItem("Zeige Punkte");
-		checkBoxMenuItem.setMnemonic(KeyEvent.VK_P);
+		checkBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_4, ActionEvent.CTRL_MASK));
 		checkBoxMenuItem.setSelected(graphicView.getGraphicViewCanvasView().isPointVisible());
 		checkBoxMenuItem.setActionCommand("show_points");
 		checkBoxMenuItem.addActionListener(graphicViewMenuBarListener);
 		menu.add(checkBoxMenuItem);
 		
 		checkBoxMenuItem = new JCheckBoxMenuItem("Zeige Raster");
-		checkBoxMenuItem.setMnemonic(KeyEvent.VK_R);
+		checkBoxMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_5, ActionEvent.CTRL_MASK));
 		checkBoxMenuItem.setSelected(graphicView.getGraphicViewCanvasView().isGridVisible());
 		checkBoxMenuItem.setActionCommand("show_grid");
 		checkBoxMenuItem.addActionListener(graphicViewMenuBarListener);
@@ -473,11 +476,38 @@ public class MainWindow extends JFrame {
 		zoomIn.setActionCommand("zoom_in");
 		zoomIn.addActionListener(graphicViewActionListener);
 		optionPanel.add(zoomIn);
-		
+	
 		JButton zoomOut = new JButton("-");
 		zoomOut.setActionCommand("zoom_out");
 		zoomOut.addActionListener(graphicViewActionListener);
 		optionPanel.add(zoomOut);
+		
+		AbstractAction zoomInAction = new AbstractAction() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        zoomIn.doClick();
+		    }
+		};
+		
+		AbstractAction zoomOutAction = new AbstractAction() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        zoomOut.doClick();
+		    }
+		};
+	
+		KeyStroke ksPlus = KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke ksMinus = KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK);
+		
+		/*KeyStroke ksPlusNormal = KeyStroke.getKeyStroke(KeyEvent.VK_PLUS,InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
+		KeyStroke ksPlusNumpad = KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.CTRL_DOWN_MASK);
+		KeyStroke ksMinusNormal = KeyStroke.getKeyStroke(KeyEvent.VK_MINUS,InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
+		KeyStroke ksMinusNumpad = KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_DOWN_MASK);*/
+			
+		panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ksPlus, "zoom_in");
+		panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ksMinus, "zoom_out");
+		panel.getActionMap().put("zoom_in", zoomInAction);
+		panel.getActionMap().put("zoom_out", zoomOutAction);
 		
 		panel.add(optionPanel, BorderLayout.SOUTH);
 		
