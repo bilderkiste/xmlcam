@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import misc.Settings;
+import misc.YAMLGCodeDialect;
 import model.Program;
 
 /**
@@ -39,7 +40,7 @@ public class Main {
 	
 	public static final Logger log = Logger.getLogger("Logger");
 	
-	public static final String version = new String("0.100.2rc");
+	public static final String version = new String("0.101rc");
 
 	public static void main (String[] arguments) {
 		String[] arg = null;
@@ -76,6 +77,9 @@ public class Main {
 		
 		Program program = new Program();
 		Settings.readSettings();
+		YAMLGCodeDialect cd = new YAMLGCodeDialect();
+		System.out.println(cd.getLines("end"));
+		
 		new MainWindow(program);
 	}
 	

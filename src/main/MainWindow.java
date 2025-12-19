@@ -226,6 +226,8 @@ public class MainWindow extends JFrame {
 		JMenu menu;
 		JMenuItem menuItem;
 		JCheckBoxMenuItem checkBoxMenuItem;
+		ImageIcon raw;
+		Image scaled;
 		
 		menuBar = new JMenuBar();
 		
@@ -235,13 +237,17 @@ public class MainWindow extends JFrame {
 		menu.setMnemonic(KeyEvent.VK_X);
 		menuBar.add(menu);
 		
-		menuItem = new JMenuItem("Neu");
+		raw = new ImageIcon("icons/xml_new.png");
+		scaled = raw.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		menuItem = new JMenuItem("Neu"); //, new ImageIcon(scaled));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
 		menuItem.setActionCommand("new_xml");
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
 		
-		menuItem = new JMenuItem("Öffnen");
+		raw = new ImageIcon("icons/xml_open.png");
+		scaled = raw.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		menuItem = new JMenuItem("Öffnen"); //, new ImageIcon(scaled));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		menuItem.setActionCommand("open_xml");
 		menuItem.addActionListener(menuBarListener);

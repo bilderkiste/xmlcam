@@ -21,8 +21,10 @@ package misc;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Level;
 
 import main.Main;
@@ -36,6 +38,10 @@ import main.Main;
 
 public abstract class Settings {
 	
+	/**
+	 * The G-Code dialect.
+	 */
+	public static String dialect;
 	/**
 	 * The security height for a G0 move above the workpiece.
 	 */
@@ -70,12 +76,29 @@ public abstract class Settings {
 			BufferedReader bufferedReader = new BufferedReader(new FileReader("settings.txt"));
 			StringBuilder stringBuilder = new StringBuilder();
 			int searchIndex, endIndex;
-		
+			
+			/*inputStream = new FileInputStream(new File("settings.yaml"));
+	    	Map<String, Object> obj = yaml.load(inputStream);*/
+			
 			while((lineBuffer = bufferedReader.readLine()) != null) {
 				stringBuilder.append(lineBuffer);
 			}
 			
 			bufferedReader.close();
+			
+			searchIndex = stringBuilder.indexOf("dialect");
+			if(searchIndex > -1) {
+				searchIndex = stringBuilder.indexOf("=", searchIndex);
+				endIndex = stringBuilder.indexOf(";", searchIndex);
+				if(searchIndex > -1 && endIndex > -1) {
+					dialect = stringBuilder.substring(searchIndex + 1, endIndex).trim();
+					Main.log.log(Level.FINE, "Set dialect successfully to value " + dialect + ".");
+				} else {
+					setDialectDefault("Wrong parameter in settings file for dialect. ");
+				}
+			} else {
+				setDialectDefault("Could not find dialect parameter in settings file. ");
+			}
 			
 			searchIndex = stringBuilder.indexOf("security-height");
 			if(searchIndex > -1) {
@@ -84,15 +107,15 @@ public abstract class Settings {
 				if(searchIndex > -1 && endIndex > -1) {
 					securityHeight = Integer.parseInt(stringBuilder.substring(searchIndex + 1, endIndex).trim());
 					if(securityHeight < 0) {
-						setSecurityHeightDefault("Security height must be greater than 0.");
+						setSecurityHeightDefault("Security height must be greater than 0. ");
 					} else {
 						Main.log.log(Level.FINE, "Set security height successfully to value " + securityHeight + ".");
 					}
 				} else {
-					setSecurityHeightDefault("Wrong parameter in settings file for securityHeight.");
+					setSecurityHeightDefault("Wrong parameter in settings file for securityHeight. ");
 				}
 			} else {
-				setSecurityHeightDefault("Could not find securityHeight parameter in settings file.");
+				setSecurityHeightDefault("Could not find securityHeight parameter in settings file. ");
 			}
 			
 			workbench = new Workbench(0, 0, 400, 400);
@@ -104,15 +127,15 @@ public abstract class Settings {
 					values = stringBuilder.substring(searchIndex + 1, endIndex).split(",");
 					workbench = new Workbench(Integer.parseInt(values[0].trim()), Integer.parseInt(values[1].trim()), Integer.parseInt(values[2].trim()), Integer.parseInt(values[3].trim()));
 					if(workbench.getXDimension() < 1 || workbench.getYDimension() < 1 ) {
-						setWorkbenchDefault("Workbench has illegal dimenstions");
+						setWorkbenchDefault("Workbench has illegal dimenstions. ");
 					} else {
 						Main.log.log(Level.FINE, "Set workbench successfully to values " + workbench + ".");
 					}
 				} else {
-					setWorkbenchDefault("Wrong parameter in settings file for workbench.");
+					setWorkbenchDefault("Wrong parameter in settings file for workbench. ");
 				}
 			} else {
-				setWorkbenchDefault("Could not find workbench parameter in settings file.");
+				setWorkbenchDefault("Could not find workbench parameter in settings file. ");
 			}
 			
 			searchIndex = stringBuilder.indexOf("grid-step");
@@ -122,15 +145,15 @@ public abstract class Settings {
 				if(searchIndex > -1 && endIndex > -1) {
 					gridStep = Integer.parseInt(stringBuilder.substring(searchIndex + 1, endIndex).trim());
 					if(gridStep < 10) {
-						setGridStepDefault("Scale step must be greater than 9.");
+						setGridStepDefault("Scale step must be greater than 9. ");
 					} else {
 						Main.log.log(Level.FINE, "Set grid step for graphical view successfully to " + gridStep + ".");
 					}
 				} else {
-					setGridStepDefault("Wrong parameter in settings file for scale step.");
+					setGridStepDefault("Wrong parameter in settings file for scale step. ");
 				}
 			} else {
-				setGridStepDefault("Could not find grid step parameter in settings file.");
+				setGridStepDefault("Could not find grid step parameter in settings file. ");
 			}
 			
 			searchIndex = stringBuilder.indexOf("font-size");
@@ -140,15 +163,15 @@ public abstract class Settings {
 				if(searchIndex > -1 && endIndex > -1) {
 					xmlFontSize = Integer.parseInt(stringBuilder.substring(searchIndex + 1, endIndex).trim());
 					if(xmlFontSize < 0 || xmlFontSize > 30) {
-						setFontSizeDefault("Font size must be greater than 0 and smaller than 30.");
+						setFontSizeDefault("Font size must be greater than 0 and smaller than 30. ");
 					} else {
 						Main.log.log(Level.FINE, "Set font size for XML-Editor successfully to " + xmlFontSize + "pt.");
 					}
 				} else {
-					setFontSizeDefault("Wrong parameter in settings file for font size.");
+					setFontSizeDefault("Wrong parameter in settings file for font size. ");
 				}
 			} else {
-				setFontSizeDefault("Could not find font size parameter in settings file.");
+				setFontSizeDefault("Could not find font size parameter in settings file. ");
 			}
 			
 			searchIndex = stringBuilder.indexOf("standard-dir");
@@ -188,6 +211,14 @@ public abstract class Settings {
 		setGridStepDefault("");
 		setFontSizeDefault("");
 		setUserDirDefault("");
+	}
+
+	/**
+	 * Set default for G-Code dialect.
+	 */
+	private static void setDialectDefault(String message) {
+		dialect = "GRBL";
+		Main.log.log(Level.FINE, message + "Set G-Code dialect to default value " + dialect  + ".");
 	}
 	
 	/**
