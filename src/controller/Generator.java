@@ -173,13 +173,8 @@ public class Generator {
 		
 		env.getProgram().clear();
 		
-		// insert start code
-		/*try {
-			env.getProgram().readFromFile(new File("start.gcode"));
-		} catch (IOException e) {
-			Main.log.log(Level.WARNING, "Failed to load >start.gcode<: " + e);
-		}*/
-		
+		// Insert start G-Code
+		env.getProgram().readFromArrayList(env.getDialect().getLines("start"));
 		
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -205,12 +200,8 @@ public class Generator {
 			//e.printStackTrace();
 		}
 		
-		// insert end code
-		try {
-			env.getProgram().readFromFile(new File("end.gcode"));
-		} catch (IOException e) {
-			Main.log.log(Level.WARNING, "Failed to load >end.gcode<: " + e);
-		}
+		// Insert end G-Code
+		env.getProgram().readFromArrayList(env.getDialect().getLines("end"));
 	}
 	
 	/**
@@ -284,7 +275,7 @@ public class Generator {
 		} else {
 			if(newTool != currentTool) {
 				currentTool = newTool;
-				env.getProgram().addRow(new Row(new Field('M', new BigDecimal(6)), "Tool change"));
+				env.getProgram().readFromArrayList(env.getDialect().getLines("toolchange"));
 			}
 		}
 	}

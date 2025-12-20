@@ -5,12 +5,13 @@ sections:
     - G90 ; Absolute positioning, just in case
     - G21 ; Set units to mm
     - G00 Z6.0000 F500 ; Raise Z 5mm to clear clamps and screws
-    - M03 S24000 ; PID, set spindle speed
+    - M03 S24000 ; Set spindle speed
   end:
     - M5 ; Stop spindle
   toolchange:
-    - M5
-    - G0 Z10
-    - "M6 T{{tool}}"   # Template placeholder
+    - M5 ; Toolchange stop spindle
+    - G0 Z10 ; Toolchange lift up
+    - M0 ; Toolchange pause
+    - M03 S24000 ; Toolchange Set spindle speed
   homing:
     - $H
