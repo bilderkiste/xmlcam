@@ -24,7 +24,6 @@ public class GCodeDialect {
 		try {
 			InputStream inputStream = new FileInputStream(new File("dialects/" + dialect + ".yaml"));
 	    	obj = yaml.loadAs(inputStream, Dialect.class);
-	    	System.out.println(obj);
 		} catch (FileNotFoundException e) {
 			Main.log.log(Level.SEVERE, "Failed to load {0}.yaml. {1}", new Object[] { dialect, e });	
 		} catch (Exception e) {

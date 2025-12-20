@@ -174,7 +174,11 @@ public class Generator {
 		env.getProgram().clear();
 		
 		// Insert start G-Code
-		env.getProgram().readFromArrayList(env.getDialect().getLines("start"));
+		try {
+			env.getProgram().readFromArrayList(env.getDialect().getLines("start"));
+		} catch (NullPointerException e) {
+			Main.log.log(Level.SEVERE, "No dialect for start G-Code defined. Please define a valid dialect in settings.yaml.");
+		}
 		
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -201,7 +205,11 @@ public class Generator {
 		}
 		
 		// Insert end G-Code
-		env.getProgram().readFromArrayList(env.getDialect().getLines("end"));
+		try {
+			env.getProgram().readFromArrayList(env.getDialect().getLines("end"));
+		} catch (NullPointerException e) {
+			Main.log.log(Level.SEVERE, "No dialect for end G-Code defined. Please define a valid dialect in settings.yaml.");
+		}
 	}
 	
 	/**
@@ -275,7 +283,11 @@ public class Generator {
 		} else {
 			if(newTool != currentTool) {
 				currentTool = newTool;
-				env.getProgram().readFromArrayList(env.getDialect().getLines("toolchange"));
+				try {
+					env.getProgram().readFromArrayList(env.getDialect().getLines("toolchange"));
+				} catch (NullPointerException e) {
+					Main.log.log(Level.SEVERE, "No dialect for toolchange G-Code defined. Please define a valid dialect in settings.yaml.");
+				}
 			}
 		}
 	}

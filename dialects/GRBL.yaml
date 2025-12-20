@@ -13,5 +13,4 @@ sections:
     - G0 Z10 ; Toolchange lift up
     - M0 ; Toolchange pause
     - M03 S24000 ; Toolchange Set spindle speed
-  homing:
-    - $H
+
