@@ -35,8 +35,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import main.Main;
 import main.MainWindow;
 import model.Environment;
-import model.Program;
-import model.Settings;
 import xml.XMLView;
 
 /**

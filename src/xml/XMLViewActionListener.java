@@ -26,7 +26,6 @@ import javax.swing.JButton;
 
 import controller.Generator;
 import model.Environment;
-import model.Program;
 
 /**
  * This class implements the controller for the button commands in the XMLView.

@@ -31,7 +31,6 @@ import javax.swing.JPanel;
 
 import model.Environment;
 import model.Program;
-import model.Settings;
 
 /**
  * This class paints the canvas where the G moves are displayed.
