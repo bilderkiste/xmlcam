@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
 
+import model.Environment;
 import model.Program;
 import model.Settings;
 
@@ -39,7 +40,7 @@ import model.Settings;
 public class GraphicView extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
-	private Program programModel;
+	private Environment env;
 	private GraphicViewCanvas graphicViewCanvas;
 	private JScrollBar xBar, yBar;
 	private JTextField zoomDisplay;
@@ -52,8 +53,8 @@ public class GraphicView extends JPanel {
 	 * Constructs a GrahpicView including the canvas and the rulers.
 	 * @param programModel The program model, that holds the G-Code
 	 */
-	public GraphicView(Program programModel) {
-		this.programModel = programModel;
+	public GraphicView(Environment env) {
+		this.env = env;
 		
 		this.scale = 1;
 
@@ -61,19 +62,19 @@ public class GraphicView extends JPanel {
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.fill = GridBagConstraints.BOTH;
 		
-		GraphicViewRuler rulerY = new GraphicViewRuler(GraphicViewRuler.Y_RULER, this);
-		rulerY.setMinimumSize(new Dimension(40, Settings.workbench.getYDimension()));
-		rulerY.setPreferredSize(new Dimension(40, Settings.workbench.getYDimension()));
+		GraphicViewRuler rulerY = new GraphicViewRuler(env, GraphicViewRuler.Y_RULER, this);
+		rulerY.setMinimumSize(new Dimension(40, env.getSettings().getWorkbench().getYDimension()));
+		rulerY.setPreferredSize(new Dimension(40, env.getSettings().getWorkbench().getYDimension()));
 		constraints.gridx = 0;
 		constraints.gridy = 1;
 		constraints.weightx = 0;
 		constraints.weighty = 0;
 		this.add(rulerY, constraints);
 		
-		graphicViewCanvas = new GraphicViewCanvas(this.programModel, this);
-		programModel.addProgrammModelListener(graphicViewCanvas);
-		graphicViewCanvas.setMinimumSize(new Dimension(Settings.workbench.getXDimension(), Settings.workbench.getYDimension()));
-		graphicViewCanvas.setPreferredSize(new Dimension(Settings.workbench.getXDimension(), Settings.workbench.getYDimension()));
+		graphicViewCanvas = new GraphicViewCanvas(env, this);
+		env.getProgram().addProgrammModelListener(graphicViewCanvas);
+		graphicViewCanvas.setMinimumSize(new Dimension(env.getSettings().getWorkbench().getXDimension(), env.getSettings().getWorkbench().getYDimension()));
+		graphicViewCanvas.setPreferredSize(new Dimension(env.getSettings().getWorkbench().getXDimension(), env.getSettings().getWorkbench().getYDimension()));
 		
 		constraints.gridx = 1;
 		constraints.gridy = 1;
@@ -81,9 +82,9 @@ public class GraphicView extends JPanel {
 		constraints.weighty = 1;
 		this.add(graphicViewCanvas, constraints);
 		
-		GraphicViewRuler rulerX = new GraphicViewRuler(GraphicViewRuler.X_RULER, this);
-		rulerX.setMinimumSize(new Dimension(Settings.workbench.getXDimension(), 40));
-		rulerX.setPreferredSize(new Dimension(Settings.workbench.getXDimension(), 40));
+		GraphicViewRuler rulerX = new GraphicViewRuler(env, GraphicViewRuler.X_RULER, this);
+		rulerX.setMinimumSize(new Dimension(env.getSettings().getWorkbench().getXDimension(), 40));
+		rulerX.setPreferredSize(new Dimension(env.getSettings().getWorkbench().getXDimension(), 40));
 		constraints.gridx = 1;
 		constraints.gridy = 2;
 		constraints.weightx = 0;
@@ -92,8 +93,8 @@ public class GraphicView extends JPanel {
 		
 		GraphicViewAdjustmentListener adjustmentListener = new GraphicViewAdjustmentListener(this);
 		
-		xBar = new JScrollBar(JScrollBar.HORIZONTAL, 0, 1, 0, Settings.workbench.getXDimension());
-		xBar.setPreferredSize(new Dimension(Settings.workbench.getXDimension(), 16));
+		xBar = new JScrollBar(JScrollBar.HORIZONTAL, 0, 1, 0, env.getSettings().getWorkbench().getXDimension());
+		xBar.setPreferredSize(new Dimension(env.getSettings().getWorkbench().getXDimension(), 16));
 		xBar.addAdjustmentListener(adjustmentListener);
 		constraints.gridx = 1;
 		constraints.gridy = 0;
@@ -101,8 +102,8 @@ public class GraphicView extends JPanel {
 		constraints.weighty = 0;
 		this.add(xBar, constraints);
 		
-		yBar = new JScrollBar(JScrollBar.VERTICAL, 0, 1, 0, Settings.workbench.getYDimension());
-		yBar.setPreferredSize(new Dimension(16, Settings.workbench.getYDimension()));
+		yBar = new JScrollBar(JScrollBar.VERTICAL, 0, 1, 0, env.getSettings().getWorkbench().getYDimension());
+		yBar.setPreferredSize(new Dimension(16, env.getSettings().getWorkbench().getYDimension()));
 		yBar.addAdjustmentListener(adjustmentListener);
 
 		constraints.gridx = 2;

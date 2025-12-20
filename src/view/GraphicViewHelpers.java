@@ -38,9 +38,9 @@ public class GraphicViewHelpers {
      * @param scrollBar The scrollbar, that belongs to this axis
      * @return the output coordinate
      */
-	public static int convertY(double coordinate, int componentHeight, int scale, JScrollBar scrollBar) {
+	/*public static int convertY(double coordinate, int componentHeight, int scale, JScrollBar scrollBar) {
 		return (int) (coordinate * scale + scrollBar.getValue() - Settings.workbench.getYMin() * scale);
-    }
+    }*/
     
 	/**
 	 * Calculates the X point for the G-Code coordinate on the drawing canvas.
@@ -50,7 +50,7 @@ public class GraphicViewHelpers {
      * @param scrollBar The scrollbar, that belongs to this axis
      * @return The output coordinate
      */
-	public static int convertX(double coordinate, int scale, JScrollBar scrollBar) {
+	/*public static int convertX(double coordinate, int scale, JScrollBar scrollBar) {
 		return (int) (coordinate * scale - scrollBar.getValue() - Settings.workbench.getXMin() * scale);	
-    }
+    }*/
 }

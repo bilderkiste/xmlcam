@@ -29,6 +29,7 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
+import model.Environment;
 import model.Program;
 import model.Settings;
 
@@ -39,7 +40,7 @@ import model.Settings;
 public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	
 	private static final long serialVersionUID = 1L;
-	private Program programModel;
+	private Environment env;
 	private boolean gridVisible, g0lineVisible, g1lineVisible, pointVisible, shapeVisible;
 	private GraphicView graphicView;
 	
@@ -47,8 +48,8 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	 * Constructs a new canvas.
 	 * @param programModel The program model with G-Code to be displayed
 	 */
-	public GraphicViewCanvas(Program programModel, GraphicView graphicView) {
-		this.programModel = programModel;
+	public GraphicViewCanvas(Environment env, GraphicView graphicView) {
+		this.env = env;
 		this.graphicView = graphicView;
 		this.setBackground(Color.DARK_GRAY);
 		this.gridVisible = true;
@@ -67,7 +68,7 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	 */
 	@Override
     public void paintComponent(Graphics g){
-    	double x1 = Settings.workbench.getXMin(), y1 = Settings.workbench.getYMin(), x2 = 0, y2 = 0;
+    	double x1 = env.getSettings().getWorkbench().getXMin(), y1 = env.getSettings().getWorkbench().getYMin(), x2 = 0, y2 = 0;
     	int index = -1;
     	boolean draw; // check if a line draw is needed for x and y. (i.e. a G0 Z6 does not need a draw)
     	super.paintComponent(g);
@@ -81,8 +82,8 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	// Transform for elements and workbench
 		
 		int yScrollBarValueInv = graphicView.getyBar().getMaximum() - graphicView.getyBar().getVisibleAmount() - graphicView.getyBar().getValue();
-		int workbenchTranslateX =  Settings.workbench.getXMin() * graphicView.getScale();
-		int workbenchTranslateY =  Settings.workbench.getYMin() * graphicView.getScale();
+		int workbenchTranslateX =  env.getSettings().getWorkbench().getXMin() * graphicView.getScale();
+		int workbenchTranslateY =  env.getSettings().getWorkbench().getYMin() * graphicView.getScale();
 		
 		//System.out.println(graphicView.getxBar().getValue() + " - " + yScrollBarValueInv);
 		
@@ -91,16 +92,16 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 
     	// Paint workbench rectangle
     	g2.setColor(Color.WHITE);
-    	Rectangle2D workbench = new Rectangle2D.Double(0, 0, Settings.workbench.getXDimension() * graphicView.getScale() - graphicView.getxBar().getValue(), 
-    														Settings.workbench.getYDimension() * graphicView.getScale() - yScrollBarValueInv);
+    	Rectangle2D workbench = new Rectangle2D.Double(0, 0, env.getSettings().getWorkbench().getXDimension() * graphicView.getScale() - graphicView.getxBar().getValue(), 
+    										env.getSettings().getWorkbench().getYDimension() * graphicView.getScale() - yScrollBarValueInv);
     	g2.fill(workbench);
     	    	
     	// Paint grid
         if(gridVisible) {
         	g2.setColor(Color.LIGHT_GRAY);
         	// X - Grid
-        	for(int i = 0; i <= Settings.workbench.getXDimension(); i += Settings.gridStep / graphicView.getScale()) {
-        		for(int j = 0; j <= Settings.workbench.getYDimension(); j += Settings.gridStep / graphicView.getScale()) {
+        	for(int i = 0; i <= env.getSettings().getWorkbench().getXDimension(); i += env.getSettings().getGridStep() / graphicView.getScale()) {
+        		for(int j = 0; j <= env.getSettings().getWorkbench().getYDimension(); j += env.getSettings().getGridStep() / graphicView.getScale()) {
 					g.drawLine((int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
 							(j * graphicView.getScale() - 4) - yScrollBarValueInv,
 							(int)(i * graphicView.getScale() - graphicView.getxBar().getValue()),
@@ -108,8 +109,8 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
 	        	}
         	}
         	// Y - Grid
-        	for(int i = 0; i <= Settings.workbench.getYDimension(); i += Settings.gridStep / graphicView.getScale()) {
-        		for(int j = 0; j <= Settings.workbench.getXDimension(); j += Settings.gridStep / graphicView.getScale()) {
+        	for(int i = 0; i <= env.getSettings().getWorkbench().getYDimension(); i += env.getSettings().getGridStep() / graphicView.getScale()) {
+        		for(int j = 0; j <= env.getSettings().getWorkbench().getXDimension(); j += env.getSettings().getGridStep() / graphicView.getScale()) {
 					g.drawLine((j * graphicView.getScale() - 4) - graphicView.getxBar().getValue(),
 							(int)(i * graphicView.getScale() - yScrollBarValueInv),
 							(j * graphicView.getScale() + 4) - graphicView.getxBar().getValue(),
@@ -122,9 +123,9 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	// Paint shapes
     	if(shapeVisible) {
     		g2.setColor(Color.BLUE);
-    		for(int i = 0; i < programModel.sizeElements(); i++) {
-    			Path2D.Double shape = programModel.getElement(i).getShape();
-    			AffineTransform originalAt = programModel.getElement(i).getTransform();
+    		for(int i = 0; i < env.getProgram().sizeElements(); i++) {
+    			Path2D.Double shape = env.getProgram().getElement(i).getShape();
+    			AffineTransform originalAt = env.getProgram().getElement(i).getTransform();
     			
     			PathIterator pi = shape.getPathIterator(originalAt, 0.1); 
     		    
@@ -157,20 +158,20 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
     	}
     	
     	// Paint all G0 and G1 moves
-    	x1 = Settings.workbench.getXMin();
-    	y1 = Settings.workbench.getYMin() ;
-        for(int i = 0; i < programModel.sizeRow(); i++) {
+    	x1 = env.getSettings().getWorkbench().getXMin();
+    	y1 = env.getSettings().getWorkbench().getYMin() ;
+        for(int i = 0; i < env.getProgram().sizeRow(); i++) {
         	draw = false;
-        	if(programModel.getRow(i).getField(0).toString().equals("G0")) {
+        	if(env.getProgram().getRow(i).getField(0).toString().equals("G0")) {
 	        		
-        		index = programModel.getRow(i).getFieldIndex('X');
+        		index = env.getProgram().getRow(i).getFieldIndex('X');
         		if(index > -1) {
-        			x2 = programModel.getRow(i).getField(index).getNumber().doubleValue();
+        			x2 = env.getProgram().getRow(i).getField(index).getNumber().doubleValue();
         			draw = true;
         		}
-        		index = programModel.getRow(i).getFieldIndex('Y');
+        		index = env.getProgram().getRow(i).getFieldIndex('Y');
         		if(index > -1) {
-        			y2 = programModel.getRow(i).getField(index).getNumber().doubleValue();
+        			y2 = env.getProgram().getRow(i).getField(index).getNumber().doubleValue();
         			draw = true;
         		}
         		if(draw) {
@@ -185,15 +186,15 @@ public class GraphicViewCanvas extends JPanel implements ProgramModelListener {
                 	y1 = y2;
         		}
         		
-        	} else if(programModel.getRow(i).getField(0).toString().equals("G1")) {
-        		index = programModel.getRow(i).getFieldIndex('X');
+        	} else if(env.getProgram().getRow(i).getField(0).toString().equals("G1")) {
+        		index = env.getProgram().getRow(i).getFieldIndex('X');
         		if(index > -1) {
-        			x2 = programModel.getRow(i).getField(index).getNumber().doubleValue();
+        			x2 = env.getProgram().getRow(i).getField(index).getNumber().doubleValue();
         			draw = true;
         		}
-        		index = programModel.getRow(i).getFieldIndex('Y');
+        		index = env.getProgram().getRow(i).getFieldIndex('Y');
         		if(index > -1) {
-        			y2 = programModel.getRow(i).getField(index).getNumber().doubleValue();
+        			y2 = env.getProgram().getRow(i).getField(index).getNumber().doubleValue();
         			draw = true;
         		}
         		

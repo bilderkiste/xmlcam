@@ -25,6 +25,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import model.Environment;
 import model.Settings;
 
 /**
@@ -40,6 +41,7 @@ public class GraphicViewRuler extends JPanel {
 	public final static int Y_RULER = 1;
 	public final static int Z_RULER = 2;
 	
+	private Environment env;
 	private int axis;
 	private GraphicView graphicView;
 	
@@ -47,8 +49,9 @@ public class GraphicViewRuler extends JPanel {
 	 * Constructs a new ruler.
 	 * @param axis The axis which the ruler shall displayed
 	 */
-	public GraphicViewRuler(int axis, GraphicView graphicView) {
+	public GraphicViewRuler(Environment env, int axis, GraphicView graphicView) {
 		this.setBackground(Color.LIGHT_GRAY);
+		this.env = env;
 		this.axis = axis;
 		this.graphicView = graphicView;
 	}
@@ -63,8 +66,8 @@ public class GraphicViewRuler extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 		
 		if(axis == 0) {
-			for(int i = Settings.workbench.getXMin(); i <= Settings.workbench.getXMax(); i += Settings.gridStep / graphicView.getScale()) {
-				int translation = Settings.workbench.getXMin() * graphicView.getScale();
+			for(int i = env.getSettings().getWorkbench().getXMin(); i <= env.getSettings().getWorkbench().getXMax(); i += env.getSettings().getGridStep() / graphicView.getScale()) {
+				int translation = env.getSettings().getWorkbench().getXMin() * graphicView.getScale();
 				g.drawLine((int)(i * graphicView.getScale() - graphicView.getxBar().getValue() - translation),
 						this.getHeight(),
 						(int)(i * graphicView.getScale() - graphicView.getxBar().getValue()) - translation, 
@@ -74,8 +77,8 @@ public class GraphicViewRuler extends JPanel {
 		
 		} else if(axis == 1) {
 			int yScrollBarValueInv = graphicView.getyBar().getMaximum() - graphicView.getyBar().getVisibleAmount() - graphicView.getyBar().getValue();
-			for(int i = Settings.workbench.getYMin(); i <= Settings.workbench.getYMax(); i += Settings.gridStep / graphicView.getScale()) {
-				int translation = Settings.workbench.getYMin() * graphicView.getScale();
+			for(int i = env.getSettings().getWorkbench().getYMin(); i <= env.getSettings().getWorkbench().getYMax(); i += env.getSettings().getGridStep() / graphicView.getScale()) {
+				int translation = env.getSettings().getWorkbench().getYMin() * graphicView.getScale();
 				g2.drawLine(0, 
 						(int)(this.getHeight() - i * graphicView.getScale() + yScrollBarValueInv + translation),
 						30, 

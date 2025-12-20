@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractButton;
 
+import model.Environment;
 import model.Settings;
 
 /**
@@ -34,13 +35,15 @@ import model.Settings;
 public class GraphicViewActionListener implements ActionListener {
 	
 	private GraphicView graphicView;
+	private Environment env;
 	
 	/**
 	 * Constructs a new listener.
 	 * @param graphicView The canvas (or panel), that paint the view
 	 */
-	public GraphicViewActionListener(GraphicView graphicView) {
+	public GraphicViewActionListener(Environment env, GraphicView graphicView) {
 		this.graphicView = graphicView;
+		this.env = env;
 	}
 
 	/**
@@ -56,8 +59,8 @@ public class GraphicViewActionListener implements ActionListener {
 				scale += 1;
 			}
 			graphicView.setScale(scale);
-			graphicView.getxBar().setMaximum(Settings.workbench.getXDimension() * graphicView.getScale());
-			graphicView.getyBar().setMinimum(Settings.workbench.getYDimension() * graphicView.getScale() * -1);
+			graphicView.getxBar().setMaximum(env.getSettings().getWorkbench().getXDimension() * graphicView.getScale());
+			graphicView.getyBar().setMinimum(env.getSettings().getWorkbench().getYDimension() * graphicView.getScale() * -1);
 			
 			//System.out.println("bef: " + graphicView.getxBar().getValue() + ":" + graphicView.getyBar().getValue());
 			//TODO: Improvement of value setting if zoomlevel has changed
@@ -67,8 +70,8 @@ public class GraphicViewActionListener implements ActionListener {
 			graphicView.repaint();
 		} else if(actionButton.getActionCommand() == "zoom_out") {
 			graphicView.setScale(graphicView.getScale() - 1);
-			graphicView.getxBar().setMaximum(Settings.workbench.getXDimension() * graphicView.getScale());
-			graphicView.getyBar().setMinimum(Settings.workbench.getYDimension() * graphicView.getScale() * -1);
+			graphicView.getxBar().setMaximum(env.getSettings().getWorkbench().getXDimension() * graphicView.getScale());
+			graphicView.getyBar().setMinimum(env.getSettings().getWorkbench().getYDimension() * graphicView.getScale() * -1);
 			//System.out.println("bef: " + graphicView.getxBar().getValue() + ":" + graphicView.getyBar().getValue());
 			//graphicView.getxBar().setValue((graphicView.getxBar().getValue() / (graphicView.getScale() + 2)) * (graphicView.getScale() + 1));
 			//graphicView.getyBar().setValue(((graphicView.getyBar().getValue() + graphicView.getyBar().getVisibleAmount()) / (graphicView.getScale() + 2)) * (graphicView.getScale() + 1) - graphicView.getyBar().getVisibleAmount());

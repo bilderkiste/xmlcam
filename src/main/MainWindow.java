@@ -407,7 +407,7 @@ public class MainWindow extends JFrame {
 		
 	    panel.add(scrollPane, BorderLayout.CENTER);
 		
-	    XMLViewActionListener generatorViewButtonActionListener = new XMLViewActionListener(env.getProgram(), xmlEditorPane);
+	    XMLViewActionListener generatorViewButtonActionListener = new XMLViewActionListener(env, xmlEditorPane);
 	    
 		JPanel ButtonPanel = new JPanel();
 		JButton generateGCodeButton = new JButton ("G-Code generieren");
@@ -476,11 +476,11 @@ public class MainWindow extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		
-		graphicView = new GraphicView(env.getProgram());
+		graphicView = new GraphicView(env);
 		panel.add(graphicView, BorderLayout.CENTER);
 	
 		JPanel optionPanel = new JPanel();
-		GraphicViewActionListener graphicViewActionListener = new GraphicViewActionListener(graphicView);
+		GraphicViewActionListener graphicViewActionListener = new GraphicViewActionListener(env, graphicView);
 		
 		JButton zoomIn = new JButton("+");
 		zoomIn.setActionCommand("zoom_in");

@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 import controller.Generator;
+import model.Environment;
 import model.Program;
 
 /**
@@ -34,7 +35,7 @@ import model.Program;
 
 public class XMLViewActionListener implements ActionListener {
 
-	private Program programModel;
+	private Environment env;
 	private XMLView editorPane;
 	
 	/**
@@ -42,8 +43,8 @@ public class XMLViewActionListener implements ActionListener {
 	 * @param programModel The model with the changeable items
 	 * @param editorPane The editorPane with the XML script
 	 */
-	public XMLViewActionListener(Program programModel, XMLView editorPane) {
-		this.programModel = programModel;
+	public XMLViewActionListener(Environment env, XMLView editorPane) {
+		this.env = env;
 		this.editorPane = editorPane;
 	}
 	
@@ -55,7 +56,7 @@ public class XMLViewActionListener implements ActionListener {
 		JButton actionButton = (JButton) actionEvent.getSource();
 		
 		if(actionButton.getActionCommand() == "generate_gcode") {
-			Generator generator = new Generator(programModel, editorPane);
+			Generator generator = new Generator(env, editorPane);
 			generator.generate();
 		}
 		
