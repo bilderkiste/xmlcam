@@ -1,4 +1,4 @@
-package misc;
+package model;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,18 +12,13 @@ import org.yaml.snakeyaml.Yaml;
 
 import main.Main;
 
-public class YAMLGCodeDialect {
+public class GCodeDialect {
 	
 	private String dialect;
 	private Dialect obj;
 	
-	public static class YamlData {
-        public String name;
-        public Map<String, ArrayList<String>> sections;
-    }
-
-    public YAMLGCodeDialect() {
-    	dialect = Settings.dialect;
+    public GCodeDialect(Settings settings) {
+    	dialect = settings.getDialect();
     	Yaml yaml = new Yaml();
 
 		try {
@@ -31,9 +26,9 @@ public class YAMLGCodeDialect {
 	    	obj = yaml.loadAs(inputStream, Dialect.class);
 	    	System.out.println(obj);
 		} catch (FileNotFoundException e) {
-			Main.log.log(Level.SEVERE, "Failed to load {0}.yaml. {1}", new Object[] { dialect, e.getMessage() });	
+			Main.log.log(Level.SEVERE, "Failed to load {0}.yaml. {1}", new Object[] { dialect, e });	
 		} catch (Exception e) {
-			Main.log.log(Level.SEVERE, "Error parsing yaml file. {0}", new Object[] { e.getMessage() });
+			Main.log.log(Level.SEVERE, "Error parsing yaml file. {0}", new Object[] { e });
 		}
     }
     

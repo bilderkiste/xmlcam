@@ -27,8 +27,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JTextField;
 
-import misc.Settings;
 import model.Program;
+import model.Settings;
 
 /**
  * This class implements the GraphicView.

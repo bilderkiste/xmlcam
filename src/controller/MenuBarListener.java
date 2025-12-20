@@ -34,8 +34,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import main.Main;
 import main.MainWindow;
-import misc.Settings;
+import model.Environment;
 import model.Program;
+import model.Settings;
 import xml.XMLView;
 
 /**
@@ -45,7 +46,7 @@ import xml.XMLView;
  */
 public class MenuBarListener implements ActionListener {
 	
-	private Program programModel;
+	private Environment env;
 	private XMLView xmlEditorPane;
 	private JFrame parentWindow;
 	
@@ -55,8 +56,8 @@ public class MenuBarListener implements ActionListener {
 	 * @param xmlEditorPane The editorPane with the XML script
 	 * @param parentWindow The main window object
 	 */
-	public MenuBarListener(Program programModel, XMLView xmlEditorPane, JFrame parentWindow) {
-		this.programModel = programModel;
+	public MenuBarListener(Environment env, XMLView xmlEditorPane, JFrame parentWindow) {
+		this.env = env;
 		this.xmlEditorPane = xmlEditorPane;
 		this.parentWindow = parentWindow;
 	}
@@ -75,7 +76,7 @@ public class MenuBarListener implements ActionListener {
 		} else if(menuItem.getActionCommand() == "open_xml") {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(new FileNameExtensionFilter("XML Dateien", "xml"));
-			fileChooser.setCurrentDirectory(Settings.userDir);
+			fileChooser.setCurrentDirectory(env.getSettings().getUserDir());
 			int returnVal = fileChooser.showOpenDialog(parentWindow);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {	
 				try {
@@ -102,7 +103,7 @@ public class MenuBarListener implements ActionListener {
 		} else if(menuItem.getActionCommand() == "save_xml") {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(new FileNameExtensionFilter("XML Dateien", "xml"));
-			fileChooser.setCurrentDirectory(Settings.userDir);
+			fileChooser.setCurrentDirectory(env.getSettings().getUserDir());
 			int returnVal = fileChooser.showSaveDialog(parentWindow);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {
@@ -120,7 +121,7 @@ public class MenuBarListener implements ActionListener {
 				}
 			}
 		} else if(menuItem.getActionCommand() == "new_gcode") {
-			programModel.clear();
+			env.getProgram().clear();
 			((MainWindow) parentWindow).clearCurrentGCodeFile();
 			((MainWindow) parentWindow).getTabbedPane().setSelectedIndex(1);
 		/*} else if(menuItem.getActionCommand() == "open_gcode") {
@@ -141,7 +142,7 @@ public class MenuBarListener implements ActionListener {
 			if(((MainWindow) parentWindow).getCurrentGCodeFile() != null) {
 				try {
 					File file = ((MainWindow) parentWindow).getCurrentGCodeFile();
-					programModel.writeToFile(file);
+					env.getProgram().writeToFile(file);
 					((MainWindow) parentWindow).setCurrentGCodeFile(file);
 				} catch (IOException e) {
 					Main.log.log(Level.SEVERE, "Error writing file: " + e);
@@ -151,7 +152,7 @@ public class MenuBarListener implements ActionListener {
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileFilter(new FileNameExtensionFilter("G-Code Dateien", "gcode"));
 			//fileChooser.setFileFilter(new FileNameExtensionFilter("Textdateien", "txt"));
-			fileChooser.setCurrentDirectory(Settings.userDir);
+			fileChooser.setCurrentDirectory(env.getSettings().getUserDir());
 			int returnVal = fileChooser.showSaveDialog(parentWindow);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {
@@ -159,7 +160,7 @@ public class MenuBarListener implements ActionListener {
 						String[] extensions = ((FileNameExtensionFilter) fileChooser.getFileFilter()).getExtensions();
 						fileChooser.setSelectedFile(new File(fileChooser.getSelectedFile() + "." + extensions[0]));
 					}
-					programModel.writeToFile(fileChooser.getSelectedFile());
+					env.getProgram().writeToFile(fileChooser.getSelectedFile());
 					((MainWindow) parentWindow).setCurrentGCodeFile(fileChooser.getSelectedFile());
 				} catch (IOException e) {
 					Main.log.log(Level.SEVERE, "Error writing file: " + e);

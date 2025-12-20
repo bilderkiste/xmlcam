@@ -55,8 +55,9 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import controller.MenuBarListener;
 import controller.TableViewActionListener;
 import controller.TableViewDummyModelChangeListener;
-import misc.Settings;
+import model.Environment;
 import model.Program;
+import model.Settings;
 import view.GraphicView;
 import view.GraphicViewActionListener;
 import view.GraphicViewMenuBarListener;
@@ -77,7 +78,7 @@ public class MainWindow extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	private final String WINDOW_TITLE = new String("xmlCAM");
-	private Program programModel;
+	private Environment env;
 	private JTabbedPane tabbedPane;
 	private XMLView xmlEditorPane;
 	private JMenuBar menuBar;
@@ -99,8 +100,8 @@ public class MainWindow extends JFrame {
 	 * Constructs the main window.
 	 * @param programModel The ProgramModel
 	 */
-	public MainWindow(Program programModel) {
-		this.programModel = programModel;
+	public MainWindow(Environment env) {
+		this.env = env;
 		this.currentGCodeFile = null;
 		this.currentXMLFile = null;
 		this.unsavedXML = false;
@@ -121,7 +122,7 @@ public class MainWindow extends JFrame {
         }
 		
         // Add this listener to set the unsaved G-Code Flag to true if model has changed.
-        programModel.addProgrammModelListener(new ProgramModelChangeListener());
+        env.getProgram().addProgrammModelListener(new ProgramModelChangeListener());
         
 		this.pack();
 		this.setMinimumSize(new Dimension(400, 400));
@@ -231,7 +232,7 @@ public class MainWindow extends JFrame {
 		
 		menuBar = new JMenuBar();
 		
-		MenuBarListener menuBarListener = new MenuBarListener(programModel, xmlEditorPane, this);
+		MenuBarListener menuBarListener = new MenuBarListener(env, xmlEditorPane, this);
 		
 		menu = new JMenu("XML");
 		menu.setMnemonic(KeyEvent.VK_X);
@@ -361,7 +362,7 @@ public class MainWindow extends JFrame {
 		panel.setLayout(new BorderLayout());
 		
 		xmlEditorPane = new XMLView();
-		xmlEditorPane.setFont(xmlEditorPane.getFont().deriveFont(Font.PLAIN, Settings.xmlFontSize));
+		xmlEditorPane.setFont(xmlEditorPane.getFont().deriveFont(Font.PLAIN, env.getSettings().getXmlFontSize()));
 		
 		xmlEditorPane.setText("<?xml version=\"1.0\"?>\n");
 		
@@ -406,7 +407,7 @@ public class MainWindow extends JFrame {
 		
 	    panel.add(scrollPane, BorderLayout.CENTER);
 		
-	    XMLViewActionListener generatorViewButtonActionListener = new XMLViewActionListener(programModel, xmlEditorPane);
+	    XMLViewActionListener generatorViewButtonActionListener = new XMLViewActionListener(env.getProgram(), xmlEditorPane);
 	    
 		JPanel ButtonPanel = new JPanel();
 		JButton generateGCodeButton = new JButton ("G-Code generieren");
@@ -431,8 +432,8 @@ public class MainWindow extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		
-		TableViewDummyModel tableView = new TableViewDummyModel(programModel);
-		programModel.addProgrammModelListener(tableView);
+		TableViewDummyModel tableView = new TableViewDummyModel(env.getProgram());
+		env.getProgram().addProgrammModelListener(tableView);
 		TableViewDummyModelChangeListener tableViewChangeListener = new TableViewDummyModelChangeListener();
 		tableView.addTableModelChangeListener(tableViewChangeListener);
 		
@@ -444,7 +445,7 @@ public class MainWindow extends JFrame {
 		
 		panel.add(scrollPane, BorderLayout.CENTER);
 		
-		TableViewActionListener tableViewActionListener = new TableViewActionListener(programModel, codeTable);
+		TableViewActionListener tableViewActionListener = new TableViewActionListener(env.getProgram(), codeTable);
 		
 		JPanel ButtonPanel = new JPanel();
 		JButton addRowButton = new JButton ("Zeile hinzufügen");
@@ -475,7 +476,7 @@ public class MainWindow extends JFrame {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		
-		graphicView = new GraphicView(programModel);
+		graphicView = new GraphicView(env.getProgram());
 		panel.add(graphicView, BorderLayout.CENTER);
 	
 		JPanel optionPanel = new JPanel();

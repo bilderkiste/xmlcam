@@ -25,7 +25,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
-import misc.Settings;
+import model.Settings;
 
 /**
  * This class paints the rulers for the Graphic view.

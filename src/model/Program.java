@@ -318,60 +318,64 @@ public class Program {
 	}
 	
 	/**
-	 * Reads from a G-Code text file and load it into the model.
-	 * @param filename Filename of the file.
-	 * @throws IOException
+	 * Reads from an ArrayList with G-Code lines as String and loads it into the model.
+	 * @param lines
 	 */
-	public void readFromFile(String filename) throws IOException {
-		File file = new File(filename);
-		this.readFromFile(file);
+	public void readFromArrayList(ArrayList<String> lines) {
+		for(int i = 0; i < lines.size(); i++) {
+			readFromRow(lines.get(i));
+		}
 	}
 	
 	/**
-	 * Reads from a G-Code text file and load it into the model.
+	 * Reads from a G-Code text file and loads it into the model.
 	 * @param file File-Object..
 	 * @throws IOException
 	 */
-	public void readFromFile(File file) throws IOException {
-		Field field;
-		Row row;
+	public void readFromFile(File file) throws IOException {		
 		String rowBuffer;
-		int index, rowIndex = 0;
 		
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 		
 		while((rowBuffer = bufferedReader.readLine()) != null) {
-		
-			row = new Row();
-			
-			// Read comments
-			index = rowBuffer.indexOf(';');
-			if(index > -1) {      // Found a comment
-				row.setComment(rowBuffer.substring(index + 1).trim());
-				rowBuffer = rowBuffer.substring(0, index);   // Cut comment
-			}
-			
-			Scanner textLine = new Scanner(rowBuffer);    // Split into fields
-			
-			while(textLine.hasNext()) {
-				String fieldBuffer = new String(textLine.next());
-				
-				try {						
-					field = GCodeHelpers.parseField(fieldBuffer);
-					row.addField(field);
-				} catch(NumberFormatException e) {
-					Main.log.log(Level.SEVERE, "Row " + rowIndex + ": " + e + "; Could not read parameter. Field skipped.");
-				} catch(IllegalArgumentException e) {
-					Main.log.log(Level.SEVERE, "Row " + rowIndex + ": " + e + "; Could not read parameter. Field skipped.");
-				}
-			}	
-		
-			this.addRow(row);
-			textLine.close();
-			rowIndex++;
+			readFromRow(rowBuffer);
 		}
 		bufferedReader.close();
 		fireModelChanged();
+	}
+	
+	/**
+	 * Parses a String with a G-Code line and adds it to the model.
+	 * @param line The String with the G-Code
+	 */
+	public void readFromRow(String line) {
+		Row row = new Row();
+		Field field;
+		
+		// Read comments
+		int index = line.indexOf(';');
+		if(index > -1) {      // Found a comment
+			row.setComment(line.substring(index + 1).trim());
+			line = line.substring(0, index);   // Cut comment
+		}
+		
+		Scanner textLine = new Scanner(line);    // Split into fields
+		
+		while(textLine.hasNext()) {
+			String fieldBuffer = new String(textLine.next());
+			
+			try {						
+				field = GCodeHelpers.parseField(fieldBuffer);
+				row.addField(field);
+			} catch(NumberFormatException e) {
+				Main.log.log(Level.SEVERE, "Could not read parameter. Field skipped. {0}", new Object[] { e });
+			} catch(IllegalArgumentException e) {
+				Main.log.log(Level.SEVERE, "Could not read parameter. Field skipped. {0}", new Object[] { e });
+			}
+		}	
+	
+		this.addRow(row);
+		textLine.close();	
 	}
 	
 	/**

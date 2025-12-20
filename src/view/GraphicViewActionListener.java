@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.AbstractButton;
 
-import misc.Settings;
+import model.Settings;
 
 /**
  * This class implements the actions for the components located in the GraphicView.

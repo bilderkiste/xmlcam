@@ -21,7 +21,7 @@ package view;
 
 import javax.swing.JScrollBar;
 
-import misc.Settings;
+import model.Settings;
 
 /**
  * This class provides some helper methods for the GraphicView.

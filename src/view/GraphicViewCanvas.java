@@ -29,8 +29,8 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
-import misc.Settings;
 import model.Program;
+import model.Settings;
 
 /**
  * This class paints the canvas where the G moves are displayed.

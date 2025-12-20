@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package misc;
+package model;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,39 +36,39 @@ import main.Main;
  *
  */
 
-public abstract class Settings {
+public class Settings {
 	
 	/**
 	 * The G-Code dialect.
 	 */
-	public static String dialect;
+	private String dialect;
 	/**
 	 * The security height for a G0 move above the workpiece.
 	 */
-	public static int securityHeight;
+	private int securityHeight;
 	/**
 	 * The bounds of the workbench (xmin, ymin, xmax, ymax).
 	 */
-	public static Workbench workbench;
+	private static Workbench workbench;
 	/**
 	 * The ruler and grid steps for graphical view.
 	 */
-	public static int gridStep;
+	private int gridStep;
 	/**
 	 * The font size for the XML Editor
 	 */
-	public static int xmlFontSize;
+	private int xmlFontSize;
 	
 	/**
 	 * The start directory for the JFileChooser Dialog
 	 */
-	public static File userDir;
+	private File userDir;
 	
 	/**
 	 * Reads the user settings from the file settings.txt. The file shall be located in the main folder.
 	 * If an error occurs, the default setting will be loaded.
 	 */
-	public static void readSettings() {
+	public void readSettings() {
 
 		try {
 			String lineBuffer;
@@ -205,7 +205,7 @@ public abstract class Settings {
 	/**
 	 * Set all default values, if an error occured.
 	 */
-	private static void setAllDefaults() {
+	private void setAllDefaults() {
 		setSecurityHeightDefault("");
 		setWorkbenchDefault("");
 		setGridStepDefault("");
@@ -216,7 +216,7 @@ public abstract class Settings {
 	/**
 	 * Set default for G-Code dialect.
 	 */
-	private static void setDialectDefault(String message) {
+	private void setDialectDefault(String message) {
 		dialect = "GRBL";
 		Main.log.log(Level.FINE, message + "Set G-Code dialect to default value " + dialect  + ".");
 	}
@@ -224,7 +224,7 @@ public abstract class Settings {
 	/**
 	 * Set default for security height.
 	 */
-	private static void setSecurityHeightDefault(String message) {
+	private void setSecurityHeightDefault(String message) {
 		securityHeight = 5;
 		Main.log.log(Level.FINE, message + "Set security height to default value " + securityHeight  + ".");
 	}
@@ -232,7 +232,7 @@ public abstract class Settings {
 	/**
 	 * Set default for workbench measurest.
 	 */
-	private static void setWorkbenchDefault(String message) {
+	private void setWorkbenchDefault(String message) {
 		workbench = new Workbench(0, 0, 400, 400);
 		Main.log.log(Level.FINE, message + "Set workbench to default value " + workbench + ".");
 	}
@@ -240,7 +240,7 @@ public abstract class Settings {
 	/**
 	 * Set default for grid step for graphical view.
 	 */
-	private static void setGridStepDefault(String message) {
+	private void setGridStepDefault(String message) {
 		gridStep= 50;
 		Main.log.log(Level.FINE, message + "Set grid step to default value " + gridStep + ".");
 	}
@@ -248,7 +248,7 @@ public abstract class Settings {
 	/**
 	 * Set default for XML-Editor font size.
 	 */
-	private static void setFontSizeDefault(String message) {
+	private void setFontSizeDefault(String message) {
 		xmlFontSize=12;
 		Main.log.log(Level.FINE, message + "Set XML-Editor font size to default value " + xmlFontSize +"pt.");
 	}
@@ -256,8 +256,33 @@ public abstract class Settings {
 	/**
 	 * Set default for user directory.
 	 */
-	private static void setUserDirDefault(String message) {
+	private void setUserDirDefault(String message) {
 		userDir = new File(System.getProperty("user.dir"));
 		Main.log.log(Level.FINE, message + "Set standard user directory for XML and G-Code to default value " + userDir);
 	}
+
+	public String getDialect() {
+		return dialect;
+	}
+
+	public int getSecurityHeight() {
+		return securityHeight;
+	}
+
+	public Workbench getWorkbench() {
+		return workbench;
+	}
+
+	public int getGridStep() {
+		return gridStep;
+	}
+
+	public int getXmlFontSize() {
+		return xmlFontSize;
+	}
+
+	public File getUserDir() {
+		return userDir;
+	}	
+	
 }

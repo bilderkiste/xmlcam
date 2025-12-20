@@ -17,7 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.         *
 \*********************************************************************/
 
-package misc;
+package model;
 
 /**
  * This class represents the CNC workbench. It returns the size of and dimensions. 
@@ -32,16 +32,6 @@ public class Workbench {
 	private int xMin, yMin, xMax, yMax;
 	
 	protected Workbench(int xMin, int yMin, int xMax, int yMax) {
-		/*if(xMin >= 0) {
-			this.xMin = xMin;
-		} else {
-			this.xMin = 0;
-		}
-		if(yMin >= 0) {
-			this.yMin = yMin;
-		} else {
-			this.yMin = 0;
-		}*/
 		this.xMin = xMin;
 		this.yMin = yMin;
 		this.xMax = xMax;

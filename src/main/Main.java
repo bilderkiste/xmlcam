@@ -26,9 +26,10 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import misc.Settings;
-import misc.YAMLGCodeDialect;
 import model.Program;
+import model.Settings;
+import model.Environment;
+import model.GCodeDialect;
 
 /**
  * The entry class for xmlCam.
@@ -76,11 +77,12 @@ public class Main {
 		Main.log.log(Level.INFO, "Welcome to xmlCAM build " + version);
 		
 		Program program = new Program();
-		Settings.readSettings();
-		YAMLGCodeDialect cd = new YAMLGCodeDialect();
-		System.out.println(cd.getLines("end"));
+		Settings settings = new Settings();
+		settings.readSettings();
+		GCodeDialect dialect = new GCodeDialect(settings);
+		Environment env = new Environment(settings, dialect, program);
 		
-		new MainWindow(program);
+		new MainWindow(env);
 	}
 	
 }

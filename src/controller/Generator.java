@@ -20,6 +20,7 @@
 package controller;
 
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -45,12 +46,11 @@ import generator.Polyline;
 import generator.Rectangle;
 import generator.Text;
 import main.Main;
-import misc.Settings;
+import model.Environment;
 import model.Field;
 import model.Row;
 import model.Tool;
 import model.ToolPath;
-import model.Program;
 import model.Tuple;
 import xml.XMLView;
 
@@ -61,7 +61,7 @@ import xml.XMLView;
  */
 public class Generator {
 	
-	private Program programModel;
+	private Environment env;
 	private XMLView xmlEditorPane;
 	private BigDecimal currentX, currentY, currentZ, newX, newY, newZ;
 	private ArrayList<Point2D.Double> translation;
@@ -73,8 +73,8 @@ public class Generator {
 	 * @param programModel The model with the changeable items
 	 * @param xmlEditorPane The editorPane with the XML script
 	 */
-	public Generator(Program programModel, XMLView xmlEditorPane) {
-		this.programModel = programModel;
+	public Generator(Environment env, XMLView xmlEditorPane) {
+		this.env = env;
 		this.xmlEditorPane = xmlEditorPane;
 		this.currentX = new BigDecimal(Double.MIN_VALUE);
 		this.currentY = new BigDecimal(Double.MIN_VALUE);
@@ -109,14 +109,14 @@ public class Generator {
 				generateToolChange(item.getTool());
 				item.execute();
 				createGCode(item.getToolPathes(), item.getZLevel());
-				programModel.addElement(item);
+				env.getProgram().addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "line") {
 				Line item = new Line(commands.item(commandNumber), this);
 				item.extract();
 				generateToolChange(item.getTool());
 				item.execute();
 				createGCode(item.getToolPathes(), item.getZLevel());
-				programModel.addElement(item);
+				env.getProgram().addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "polyline") {
 				Polyline item = new Polyline(commands.item(commandNumber), this);
 				item.extract();
@@ -124,7 +124,7 @@ public class Generator {
 				item.execute();
 				item.purgePathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
-				programModel.addElement(item);
+				env.getProgram().addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "circle") {
 				Circle item = new Circle(commands.item(commandNumber), this);
 				item.extract();
@@ -134,7 +134,7 @@ public class Generator {
 				item.purgePathes();
 				//item.showToolPathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
-				programModel.addElement(item);
+				env.getProgram().addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "rectangle") {
 				Rectangle item = new Rectangle(commands.item(commandNumber), this);
 				item.extract();
@@ -144,7 +144,7 @@ public class Generator {
 				item.purgePathes();
 				//item.showToolPathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
-				programModel.addElement(item);
+				env.getProgram().addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "text") {
 				Text item = new Text(commands.item(commandNumber), this);
 				item.extract();
@@ -153,7 +153,7 @@ public class Generator {
 				item.purgePathes();
 				//item.showToolPathes();
 				createGCode(item.getToolPathes(), item.getZLevel());
-				programModel.addElement(item);
+				env.getProgram().addElement(item);
 			} else if(commands.item(commandNumber).getNodeName() == "feedrate") {
 				setFeedRate(commands.item(commandNumber));
 			} else if(commands.item(commandNumber).getNodeName() == "translate") {
@@ -171,14 +171,15 @@ public class Generator {
 	public void generate() {
 		Node mainNode;
 		
-		programModel.clear();
+		env.getProgram().clear();
 		
 		// insert start code
-		try {
-			programModel.readFromFile("start.gcode");
+		/*try {
+			env.getProgram().readFromFile(new File("start.gcode"));
 		} catch (IOException e) {
 			Main.log.log(Level.WARNING, "Failed to load >start.gcode<: " + e);
-		}
+		}*/
+		
 		
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -206,7 +207,7 @@ public class Generator {
 		
 		// insert end code
 		try {
-			programModel.readFromFile("end.gcode");
+			env.getProgram().readFromFile(new File("end.gcode"));
 		} catch (IOException e) {
 			Main.log.log(Level.WARNING, "Failed to load >end.gcode<: " + e);
 		}
@@ -219,10 +220,10 @@ public class Generator {
 	private void setFeedRate(Node node) throws IllegalArgumentException {
 		Tuple feedrate = new Tuple(node);
 
-		programModel.addRow(new Row());
-		programModel.addField(new Field('G', new BigDecimal(0)));
-		programModel.addField(new Field('F', feedrate.getValue(0)));
-		programModel.setComment(new String("Set feedrate to " + feedrate.getValue(0)));
+		env.getProgram().addRow(new Row());
+		env.getProgram().addField(new Field('G', new BigDecimal(0)));
+		env.getProgram().addField(new Field('F', feedrate.getValue(0)));
+		env.getProgram().setComment(new String("Set feedrate to " + feedrate.getValue(0)));
 	}
 	
 	/**
@@ -283,7 +284,7 @@ public class Generator {
 		} else {
 			if(newTool != currentTool) {
 				currentTool = newTool;
-				programModel.addRow(new Row(new Field('M', new BigDecimal(6)), "Tool change"));
+				env.getProgram().addRow(new Row(new Field('M', new BigDecimal(6)), "Tool change"));
 			}
 		}
 	}
@@ -427,34 +428,34 @@ public class Generator {
 	 * @param comment A comment for the behind the G0
 	 */
 	private void go0(BigDecimal x, BigDecimal y, BigDecimal feedrate, String comment) {
-		BigDecimal z = new BigDecimal(Settings.securityHeight);
+		BigDecimal z = new BigDecimal(env.getSettings().getSecurityHeight());
 		
-		programModel.addRow(new Row());
+		env.getProgram().addRow(new Row());
 		
 		if(comment != null) {
-			programModel.setComment(programModel.sizeRow() - 1, comment);
+			env.getProgram().setComment(env.getProgram().sizeRow() - 1, comment);
 		}
 		
-		programModel.addField(new Field('G', new BigDecimal(0)));
+		env.getProgram().addField(new Field('G', new BigDecimal(0)));
 		
 		if(!newX.equals(currentX)) {
-			programModel.addField(new Field('X', x));
+			env.getProgram().addField(new Field('X', x));
 			this.currentX = x;
 		}
 		
 		if(!newY.equals(currentY)) {
-			programModel.addField(new Field('Y', y));
+			env.getProgram().addField(new Field('Y', y));
 			this.currentY = y;
 		}
 			
 		// move z always to security high when G0 move shall performed
 		if(!z.equals(currentZ)) {
-			programModel.addField(new Field('Z', z));
+			env.getProgram().addField(new Field('Z', z));
 			this.currentZ = z;
 		}
 		
 		if(feedrate != null) {
-			programModel.addField(new Field('F', feedrate));
+			env.getProgram().addField(new Field('F', feedrate));
 		}
 	
 	}
@@ -495,36 +496,36 @@ public class Generator {
 	 * @param comment A comment for behind the G1
 	 */
 	private void go1(BigDecimal x, BigDecimal y, BigDecimal z, BigDecimal feedrate, String comment) {
-		programModel.addRow(new Row());
+		env.getProgram().addRow(new Row());
 		
 		if(comment != null) {
-			programModel.setComment(programModel.sizeRow() - 1, comment);
+			env.getProgram().setComment(env.getProgram().sizeRow() - 1, comment);
 		}
 		
-		programModel.addField(new Field('G', new BigDecimal(1)));
+		env.getProgram().addField(new Field('G', new BigDecimal(1)));
 		
 		if(!newX.equals(currentX)) {
-			programModel.addField(new Field('X', x));
+			env.getProgram().addField(new Field('X', x));
 			this.currentX = x;
 		}
 		
 		if(!newY.equals(currentY)) {
-			programModel.addField(new Field('Y', y));
+			env.getProgram().addField(new Field('Y', y));
 			this.currentY = y;
 		}
 
 		if(!newZ.equals(currentZ)) {
-			programModel.addField(new Field('Z', z));
+			env.getProgram().addField(new Field('Z', z));
 			this.currentZ = z;
 		}
 		
 		if(feedrate != null) {
-			programModel.addField(new Field('F', feedrate));
+			env.getProgram().addField(new Field('F', feedrate));
 		}
 		
 		// remove line if there are no commands
-		/*if(programModel.getLine(programModel.size() - 1).size() <= 1) {
-			programModel.removeLine(programModel.size() - 1);
+		/*if(env.getProgram().getLine(env.getProgram().size() - 1).size() <= 1) {
+			env.getProgram().removeLine(env.getProgram().size() - 1);
 		}*/
 
 	}
