@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="build" name="xmlCam">
+<project basedir="." default="build" name="xmlCAM">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="8"/>
@@ -32,16 +32,13 @@
         </javac>
     </target>
     <target name="makejar" description="Create a jar for the xmlCAM project">
-    <jar jarfile="${basedir}/xmlCAM.jar" basedir="${basedir}/bin">
-      
-        <zipfileset dir="lib" prefix="lib" includes="*.jar"/>
-
-        <manifest>
-            <attribute name="Main-Class" value="main.Main"/>
-            <attribute name="Class-Path"
-                       value="lib/rsyntaxtextarea-3.6.0.jar lib/snakeyaml-2.5.jar"/>
-        </manifest>
-    </jar>
-</target>
+	    <jar jarfile="${basedir}/xmlCAM.jar" basedir="${basedir}/bin">
+	        <zipfileset dir="lib" prefix="lib" includes="*.jar"/>	
+	        <manifest>
+	            <attribute name="Main-Class" value="main.Main"/>
+	            <attribute name="Class-Path" value="lib/rsyntaxtextarea-3.6.0.jar lib/snakeyaml-2.5.jar"/>
+	        </manifest>
+	    </jar>
+	</target>
 
 </project>
