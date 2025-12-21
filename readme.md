@@ -177,15 +177,16 @@ An example.
 <h3>Pockets</h3>
 It is possible to create pockets by adding the pocket attribute to the <options> tag. Possible values are parallel.
 Pockets work for circle, rectangle and polyline elements.
-<pre>&lt;options &period;&period;&period; pocket&equals;&quot;parallel&quot; &period;&period;&period;</pre>
+<pre>&lt;options &period;&period;&perYou can  iod; pocket&equals;&quot;parallel&quot; &period;&period;&period;</pre>
 <h2>Settings</h2>
-<p>You can define your own settings for xmlCam. At the moment there are only a few settings available.</p>
-<pre>security-height = 5;		// The security height for a G0 move above the workpiece.
-workbench = 0, 0, 400, 400;	// The bounds of the workbench (xmin, ymin, xmax, ymax).
-grid-step = 50; 			// The ruler and grid steps for graphical view.
-font-size = 18; 			// Font size for the XML View
-standard-dir = /home; 		// Standard directory for XML and G-Code</pre>
-<p>You need to save this into a file named "settings.txt" located in the xmlCam main folder. If you don't define the settings, default values will loaded.</p>
+<p>It is possible to define own settings for xmlCAM. These are defined in a yaml file. At the moment there are only a few settings available.</p>
+<pre>dialect: GRBL               # The dialect for the G-Code
+security-height: 5          # The security height for a G0 move above the workpiece.
+workbench: [0,0,400,400] # The dimension of the workbench (xmin, ymin, xmax, ymax).
+grid-step: 50               # The ruler and grid steps for graphical view.
+font-size: 18               # Font size for the XML View
+standard-dir: /home/test/xmlCAM # Standard directory for XML and G-Code</pre>
+<p>It is neccesary to save the settings in a file named "settings.yaml" located in the xmlCAM main folder. If no settings are defined, default values will loaded.</p>
 <h2>Installation</h2>
 <h4>Installation under Linux</h4>
 <p>To run the .jar file you need to install the java virtual machine.</p>
