@@ -210,7 +210,10 @@ standard-dir = /home; 		// Standard directory for XML and G-Code</pre>
 <pre>git clone git://github.com/bilderkiste/xmlCAM</pre>
 <p>Now enter the folder where the file build.xml is located ant execute the build tool by typing</p>
 <pre>ant</pre>
-<p>You will find the compiled class file in the bin directory. If you want to make a executable jar file type</p>
+<p>You will find the compiled class file in the bin directory.</p>
+<p>It is possible to execute with</p>
+<pre>java -cp "bin:lib/rsyntaxtextarea-3.6.0.jar:lib/snakeyaml-2.5.jar" main.Main</pre>
+<p> If you want to make a executable jar file type</p>
 <pre>ant makejar</pre>
 <p> </p>
 <h2>A complete program milling a front panel.</h2>
