@@ -1,0 +1,13 @@
+# no real G-Code. Only for testing purposes
+name: Marvin
+
+sections:
+  start:
+    - G90 ; Absolute positioning, just in case
+    - G21 ; Set units to mm
+    - G00 Z6.0000 F500 ; Raise Z 5mm to clear clamps and screws
+    - M03 S24000 ; Set spindle speed
+  end:
+    - M5 ; Stop spindle
+  toolchange:
+    - M6 ; Toolchange

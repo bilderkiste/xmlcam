@@ -21,9 +21,15 @@ package model;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
+
+import org.yaml.snakeyaml.Yaml;
 
 import main.Main;
 
@@ -47,7 +53,7 @@ public class Settings {
 	/**
 	 * The bounds of the workbench (xmin, ymin, xmax, ymax).
 	 */
-	private static Workbench workbench;
+	private Workbench workbench;
 	/**
 	 * The ruler and grid steps for graphical view.
 	 */
@@ -66,149 +72,99 @@ public class Settings {
 	 * Reads the user settings from the file settings.txt. The file shall be located in the main folder.
 	 * If an error occurs, the default setting will be loaded.
 	 */
+	@SuppressWarnings("unchecked")
 	public void readSettings() {
-
-		try {
-			String lineBuffer;
-			String[] values;
-			BufferedReader bufferedReader = new BufferedReader(new FileReader("settings.txt"));
-			StringBuilder stringBuilder = new StringBuilder();
-			int searchIndex, endIndex;
-			
-			/*inputStream = new FileInputStream(new File("settings.yaml"));
-	    	Map<String, Object> obj = yaml.load(inputStream);*/
-			
-			while((lineBuffer = bufferedReader.readLine()) != null) {
-				stringBuilder.append(lineBuffer);
-			}
-			
-			bufferedReader.close();
-			
-			searchIndex = stringBuilder.indexOf("dialect");
-			if(searchIndex > -1) {
-				searchIndex = stringBuilder.indexOf("=", searchIndex);
-				endIndex = stringBuilder.indexOf(";", searchIndex);
-				if(searchIndex > -1 && endIndex > -1) {
-					dialect = stringBuilder.substring(searchIndex + 1, endIndex).trim();
-					Main.log.log(Level.FINE, "Set dialect successfully to value " + dialect + ".");
-				} else {
-					setDialectDefault("Wrong parameter in settings file for dialect. ");
-				}
-			} else {
+    
+		try {			
+			Yaml yaml = new Yaml();
+			FileInputStream inputStream = new FileInputStream(new File("settings.yaml"));
+	    	Map<String, Object> map = yaml.load(inputStream);
+	    	
+	    	System.out.println(map);
+	    	
+	    	if (map.containsKey("dialect")) {
+	    		dialect = (String) map.get("dialect");
+	    		Main.log.log(Level.FINE, "Set dialect successfully to value " + dialect + ".");
+	    	} else {
 				setDialectDefault("Could not find dialect parameter in settings file. ");
-			}
-			
-			searchIndex = stringBuilder.indexOf("security-height");
-			if(searchIndex > -1) {
-				searchIndex = stringBuilder.indexOf("=", searchIndex);
-				endIndex = stringBuilder.indexOf(";", searchIndex);
-				if(searchIndex > -1 && endIndex > -1) {
-					securityHeight = Integer.parseInt(stringBuilder.substring(searchIndex + 1, endIndex).trim());
+	    	}
+	    	
+	     	if (map.containsKey("security-height")) {
+	    		try {
+	    			securityHeight = (int) map.get("security-height");
 					if(securityHeight < 0) {
-						setSecurityHeightDefault("Security height must be greater than 0. ");
+						setSecurityHeightDefault("security-height must be greater than 0. ");
 					} else {
-						Main.log.log(Level.FINE, "Set security height successfully to value " + securityHeight + ".");
+						Main.log.log(Level.FINE, "Set security-height successfully to " + securityHeight + ".");
 					}
-				} else {
-					setSecurityHeightDefault("Wrong parameter in settings file for securityHeight. ");
-				}
+	    		} catch (ClassCastException e) {
+	    			setSecurityHeightDefault("Wrong parameter in settings for security-height. ");
+	    		}
 			} else {
-				setSecurityHeightDefault("Could not find securityHeight parameter in settings file. ");
+				setSecurityHeightDefault("Could not find security-height parameter in settings file. ");
 			}
-			
-			workbench = new Workbench(0, 0, 400, 400);
-			searchIndex = stringBuilder.indexOf("workbench");
-			if(searchIndex > -1) {
-				searchIndex = stringBuilder.indexOf("=", searchIndex);
-				endIndex = stringBuilder.indexOf(";", searchIndex);
-				if(searchIndex > -1 && endIndex > -1) {
-					values = stringBuilder.substring(searchIndex + 1, endIndex).split(",");
-					workbench = new Workbench(Integer.parseInt(values[0].trim()), Integer.parseInt(values[1].trim()), Integer.parseInt(values[2].trim()), Integer.parseInt(values[3].trim()));
-					if(workbench.getXDimension() < 1 || workbench.getYDimension() < 1 ) {
-						setWorkbenchDefault("Workbench has illegal dimenstions. ");
-					} else {
-						Main.log.log(Level.FINE, "Set workbench successfully to values " + workbench + ".");
-					}
+	     	
+	     	try {
+		     	ArrayList<Integer> wb = (ArrayList<Integer>) map.get("workbench");
+				workbench = new Workbench(wb.get(0), wb.get(1), wb.get(2), wb.get(3));
+				if(workbench.getXDimension() < 1 || workbench.getYDimension() < 1 ) {
+					setWorkbenchDefault("Workbench has illegal dimenstions. ");
 				} else {
-					setWorkbenchDefault("Wrong parameter in settings file for workbench. ");
+					Main.log.log(Level.FINE, "Set workbench successfully to values " + workbench + ".");
 				}
-			} else {
-				setWorkbenchDefault("Could not find workbench parameter in settings file. ");
-			}
-			
-			searchIndex = stringBuilder.indexOf("grid-step");
-			if(searchIndex > -1) {
-				searchIndex = stringBuilder.indexOf("=", searchIndex);
-				endIndex = stringBuilder.indexOf(";", searchIndex);
-				if(searchIndex > -1 && endIndex > -1) {
-					gridStep = Integer.parseInt(stringBuilder.substring(searchIndex + 1, endIndex).trim());
+	     	} catch (IndexOutOfBoundsException e) {
+	     		setWorkbenchDefault("Wrong parameter in settings for workbench. ");
+	     	} catch (ClassCastException e) {
+	     		setWorkbenchDefault("Wrong parameter in settings for workbench. ");
+    		}
+	    	
+	    	if (map.containsKey("grid-step")) {
+	    		try {
+		    		gridStep = (int) map.get("grid-step");
 					if(gridStep < 10) {
 						setGridStepDefault("Scale step must be greater than 9. ");
 					} else {
 						Main.log.log(Level.FINE, "Set grid step for graphical view successfully to " + gridStep + ".");
 					}
-				} else {
-					setGridStepDefault("Wrong parameter in settings file for scale step. ");
-				}
+	    		} catch (ClassCastException e) {
+	    			setGridStepDefault("Wrong parameter in settings for grid-step. ");
+	    		}
 			} else {
-				setGridStepDefault("Could not find grid step parameter in settings file. ");
+				setGridStepDefault("Could not find grid-step parameter in settings file. ");
 			}
-			
-			searchIndex = stringBuilder.indexOf("font-size");
-			if(searchIndex > -1) {
-				searchIndex = stringBuilder.indexOf("=", searchIndex);
-				endIndex = stringBuilder.indexOf(";", searchIndex);
-				if(searchIndex > -1 && endIndex > -1) {
-					xmlFontSize = Integer.parseInt(stringBuilder.substring(searchIndex + 1, endIndex).trim());
-					if(xmlFontSize < 0 || xmlFontSize > 30) {
-						setFontSizeDefault("Font size must be greater than 0 and smaller than 30. ");
+	    	
+	       	if (map.containsKey("font-size")) {
+	    		try {
+		    		xmlFontSize = (int) map.get("font-size");
+		    		if(xmlFontSize < 0 || xmlFontSize > 30) {
+		    			setFontSizeDefault("Font size must be greater than 0 and smaller than 30. ");
 					} else {
 						Main.log.log(Level.FINE, "Set font size for XML-Editor successfully to " + xmlFontSize + "pt.");
 					}
+	    		} catch (ClassCastException e) {
+	    			setFontSizeDefault("Wrong parameter in settings for font-size. ");
+	    		}
+			} else {
+				setFontSizeDefault("Could not find font-size parameter in settings file. ");
+			}
+	       	
+	    	if (map.containsKey("standard-dir")) {
+	    		userDir = new File(String.valueOf(map.get("standard-dir")).trim());
+	    		System.out.println(userDir + " " + userDir.exists());
+	    		if(!userDir.exists()) {
+	    			setUserDirDefault("Standard directory does not exist. ");
 				} else {
-					setFontSizeDefault("Wrong parameter in settings file for font size. ");
+					Main.log.log(Level.FINE, "Set standard directory for XML and G-Code successfully to " + userDir + ".");
 				}
 			} else {
-				setFontSizeDefault("Could not find font size parameter in settings file. ");
+				setUserDirDefault("Could not find standard-dir parameter in settings file. ");
 			}
-			
-			searchIndex = stringBuilder.indexOf("standard-dir");
-			if(searchIndex > -1) {
-				searchIndex = stringBuilder.indexOf("=", searchIndex);
-				endIndex = stringBuilder.indexOf(";", searchIndex);
-				if(searchIndex > -1 && endIndex > -1) {
-					userDir = new File(stringBuilder.substring(searchIndex + 1, endIndex).trim());
-					if(!userDir.exists()) {
-						setUserDirDefault("Standard directory does not exist.");
-					} else {
-						Main.log.log(Level.FINE, "Set standard directory for XML and G-Code successfully to " + userDir + ".");
-					}
-				} 
-			} else {
-				setUserDirDefault("Could not find standard directory for XML and G-Code in settings file.");
-			}
-
-		} catch (IOException e) {
-			Main.log.log(Level.WARNING, "Failed to load settings.txt: " + e + ". Set default values.");
-			setAllDefaults();
-		} catch (IllegalArgumentException e) {
-			Main.log.log(Level.WARNING, e + ". Skip all values in file and set default values.");
-			setAllDefaults();
+	    	
+		} catch (FileNotFoundException e) {
+			Main.log.log(Level.SEVERE, "Failed to load settings.yaml. {0}", new Object[] { e });	
 		} catch (Exception e) {
-			Main.log.log(Level.WARNING, e + ". Skip all values in file and set default values.");
-			setAllDefaults();
-		}
-	}
-	
-	/**
-	 * Set all default values, if an error occured.
-	 */
-	private void setAllDefaults() {
-		setSecurityHeightDefault("");
-		setWorkbenchDefault("");
-		setGridStepDefault("");
-		setFontSizeDefault("");
-		setUserDirDefault("");
+			Main.log.log(Level.SEVERE, "Error parsing yaml file. {0}", new Object[] { e });
+		}		
 	}
 
 	/**
@@ -228,7 +184,7 @@ public class Settings {
 	}
 	
 	/**
-	 * Set default for workbench measurest.
+	 * Set default for workbench dimensions.
 	 */
 	private void setWorkbenchDefault(String message) {
 		workbench = new Workbench(0, 0, 400, 400);
