@@ -34,7 +34,7 @@ import org.yaml.snakeyaml.Yaml;
 import main.Main;
 
 /**
- * This class load the settings for the whole program from the file settings.txt, which is located in xmlCam main folder.
+ * This class load the settings for the whole program from the file settings.yaml, which is located in xmlCam main folder.
  * All settings are reachable by static variables.
  * @author Christian Kirsch
  *
@@ -69,7 +69,7 @@ public class Settings {
 	private File userDir;
 	
 	/**
-	 * Reads the user settings from the file settings.txt. The file shall be located in the main folder.
+	 * Reads the user settings from the file settings.yaml. The file shall be located in the main folder.
 	 * If an error occurs, the default setting will be loaded.
 	 */
 	@SuppressWarnings("unchecked")
@@ -79,9 +79,7 @@ public class Settings {
 			Yaml yaml = new Yaml();
 			FileInputStream inputStream = new FileInputStream(new File("settings.yaml"));
 	    	Map<String, Object> map = yaml.load(inputStream);
-	    	
-	    	System.out.println(map);
-	    	
+	    
 	    	if (map.containsKey("dialect")) {
 	    		dialect = (String) map.get("dialect");
 	    		Main.log.log(Level.FINE, "Set dialect successfully to value " + dialect + ".");
@@ -150,7 +148,6 @@ public class Settings {
 	       	
 	    	if (map.containsKey("standard-dir")) {
 	    		userDir = new File(String.valueOf(map.get("standard-dir")).trim());
-	    		System.out.println(userDir + " " + userDir.exists());
 	    		if(!userDir.exists()) {
 	    			setUserDirDefault("Standard directory does not exist. ");
 				} else {

@@ -1,0 +1,6 @@
+dialect: GRBL               # The dialect for the G-Code
+security-height: 5s          # The security height for a G0 move above the workpiece.
+workbench: [0,0,400,400] # The dimension of the workbench (xmin, ymin, xmax, ymax).
+grid-step: 50               # The ruler and grid steps for graphical view.
+font-size: 26               # Font size for the XML View
+standard-dir: /home/test/xmlCAM # Standard directory for XML and G-Code
