@@ -6,6 +6,8 @@
     <property name="source" value="8"/>
     <path id="xmlCam.classpath">
         <pathelement location="bin"/>
+        <pathelement location="lib/rsyntaxtextarea-3.6.0.jar"/>
+        <pathelement location="lib/snakeyaml-2.5.jar"/>
     </path>
     <path id="run.Main.classpath">
         <path refid="xmlCam.classpath"/>
