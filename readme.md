@@ -207,7 +207,7 @@ standard-dir = /home; 		// Standard directory for XML and G-Code</pre>
 <p>For Ubuntu or Debian open a console and install the build tool ant with</p>
 <pre>apt-get install ant</pre>
 <p>Download the source code and extract it or you can get the current version by clone the git repository.</p>
-<pre>git clone git://github.com/bilderkiste/xmlCAM</pre>
+<pre>git clone https://github.com/bilderkiste/xmlCAM</pre>
 <p>Now enter the folder where the file build.xml is located ant execute the build tool by typing</p>
 <pre>ant</pre>
 <p>You will find the compiled class file in the bin directory.</p>
