@@ -19,12 +19,9 @@
 
 package model;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
@@ -158,10 +155,21 @@ public class Settings {
 			}
 	    	
 		} catch (FileNotFoundException e) {
-			Main.log.log(Level.SEVERE, "Failed to load settings.yaml. {0}", new Object[] { e });	
+			Main.log.log(Level.SEVERE, "Failed to load settings.yaml. {0}", new Object[] { e });
+			setAllDefaults("Set all defaults. ");
 		} catch (Exception e) {
 			Main.log.log(Level.SEVERE, "Error parsing yaml file. {0}", new Object[] { e });
+			setAllDefaults("Set all defaults. ");
 		}		
+	}
+	
+	private void setAllDefaults(String message) {
+		setDialectDefault(message);
+		setSecurityHeightDefault(message);
+		setWorkbenchDefault(message);
+		setGridStepDefault(message);
+		setFontSizeDefault(message);
+		setUserDirDefault(message);
 	}
 
 	/**
