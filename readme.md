@@ -193,22 +193,23 @@ and toolchange G-Code to the firmware of the CNC-Machine. A dialect
 must be saved in the directory ./dialects/ as a YAML file with name
 &lt;dialect&gt;.yaml i.e. GRBL.yaml.</p>
 <p>An example dialect file:</p>
-<pre>name: GRBL
+```yaml
+name: GRBL
 
 sections:
-start:
-- G90 ; Absolute positioning, just in case
-- G21 ; Set units to mm
-- G00 Z6.0000 F500 ; Raise Z 5mm to clear clamps and screws
-- M03 S24000 ; Set spindle speed
-end:
-- M5 ; Stop spindle
-toolchange:
-- M5 ; Toolchange stop spindle
-- G0 Z10 ; Toolchange lift up
-- M0 ; Toolchange pause
-- M03 S24000 ; Toolchange Set spindle speed
-</pre>
+  start:
+    - G90 ; Absolute positioning, just in case
+    - G21 ; Set units to mm
+    - G00 Z6.0000 F500 ; Raise Z 5mm to clear clamps and screws
+     - M03 S24000 ; Set spindle speed
+  end:
+    - M5 ; Stop spindle
+  toolchange:
+    - M5 ; Toolchange stop spindle
+    - G0 Z10 ; Toolchange lift up
+    - M0 ; Toolchange pause
+    - M03 S24000 ; Toolchange Set spindle speed
+```
 <p>Please take into account, that only spaces and NO TABS allowed in YAML files.</p>
 <h2>Installation</h2>
 <h4>Installation under Linux</h4>
