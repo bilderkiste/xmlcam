@@ -41,7 +41,7 @@ public class Main {
 	
 	public static final Logger log = Logger.getLogger("Logger");
 	
-	public static final String version = new String("0.101rc");
+	public static final String version = new String("0.102");
 
 	public static void main (String[] arguments) {
 		String[] arg = null;

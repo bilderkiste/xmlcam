@@ -428,11 +428,11 @@ ant makejar
 		</translate>
 		<!-- Taster -->
 		<translate x="50" y="15.5">
-			<drill tool="t1">
+			<drill tool="t2">
 				<point x="0" y="0"/>
 				<depth start="0" end="-4"/>
 			</drill>
-			<drill tool="t1">
+			<drill tool="t2">
 				<point x="16" y="0"/>
 				<depth start="0" end="-4"/>
 			</drill>
@@ -440,12 +440,13 @@ ant makejar
 				<center x="8" y="0"/>
 				<radius value="3"/>
 				<depth start="0" end="-4" step="0.4"/>
+				<options offset="inset"/>
 			</circle>
-			<drill tool="t1">
+			<drill tool="t2">
 				<point x="0" y="16"/>
 				<depth start="0" end="-4"/>
 			</drill>
-			<drill tool="t1">
+			<drill tool="t2">
 				<point x="16" y="16"/>
 				<depth start="0" end="-4"/>
 			</drill>
@@ -453,17 +454,19 @@ ant makejar
 				<center x="8" y="16"/>
 				<radius value="3"/>
 				<depth start="0" end="-4" step="0.4"/>
+				<options offset="inset"/>
 			</circle>	
 		</translate>
 	  	<translate x="12.5" y="45">
 	      	<circle tool="t1">
-	              	<center x="10" y="10"/>
-	              	<radius value="8.9"/>
-	             	<depth start="0" end="-4" step="0.4"/>
+	       		<center x="10" y="10"/>
+	              <radius value="10"/>
+	  			<depth start="0" end="-4" step="0.4"/>
+	  			<options offset="inset"/>
 	      	</circle>
 	      	<drill tool="t1">
-	              	<point x="20" y="10"/>
-	              	<depth start="0" end="-4"/>
+	              <point x="20" y="10"/>
+	              <depth start="0" end="-4"/>
 	      	</drill>
 	   	</translate>
 	</translate>
