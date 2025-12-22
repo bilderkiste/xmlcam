@@ -209,20 +209,74 @@ An example code snippet:
 </text>
 ```
 
-## Settings
+### Feedrate Element
 
-```yaml
-dialect: GRBL
-security-height: 5
-workbench: [0, 0, 400, 400]
-grid-step: 50
-font-size: 18
-standard-dir: /home/test/xmlCAM
+This element sets the feedrate in mm/min for all subsequent G-Code.
+
+An example code snippet:
+
+```xml
+<feedrate>200</feedrate>
 ```
 
----
+### Translation Element
+
+This element shifts the elements within this tag through the x and y pane. It is possible to use the translation tag recursive.
+
+An example code snippet:
+
+```xml
+<translate x="100" y="50">
+	<circle tool="t2">
+		<center x="60" y="30" />
+		<radius value="20" /> 
+		<depth start="0" end="-1" step="0.1" />
+		<options segments="5" offset="inset" pocket="parallel" />
+	</circle>
+	<translate x="-20" y="0">  
+		...
+	</translate>
+	...
+</translate>
+```
+
+### Offset Pathes
+
+It is possible to create offset pathes regarding the tool diameter. Those offsets can defined with the offset attribute in the <options> tag with values inset, outset or engraving.
+
+An example:
+
+```xml
+<options ... offset="outset" .../>
+```
+
+### Pockets
+
+It is possible to create pockets by adding the pocket attribute to the <options> tag. Possible values are parallel.
+Pockets work for circle, rectangle and polyline elements.
+
+```xml
+<options ... pocket="parallel" .../>
+```
+
+## Settings
+
+It is possible to define own settings for xmlCAM. These are defined in a yaml file. At the moment there are only a few settings available.
+
+```yaml
+dialect: GRBL               # The dialect for the G-Code
+security-height: 5          # The security height for a G0 move above the workpiece.
+workbench: [0,0,400,400] # The dimension of the workbench (xmin, ymin, xmax, ymax).
+grid-step: 50               # The ruler and grid steps for graphical view.
+font-size: 18               # Font size for the XML View
+standard-dir: /home/test/xmlCAM # Standard directory for XML and G-Code</pre>
+```
+
+It is neccesary to save the settings in a file named "settings.yaml" located in the xmlCAM main folder. If no settings are defined, default values will loaded.
 
 ## Dialects
+
+Dialects are neccessary to customize some G-Code blocks, as start, end and toolchange G-Code to the firmware of the CNC-Machine. A dialect must be saved in the directory ./dialects/ as a YAML file with name
 
 ```yaml
 name: GRBL
@@ -240,4 +294,176 @@ sections:
     - G0 Z10
     - M0
     - M03 S24000
+```
+
+Please take into account, that only spaces and NO TABS allowed in YAML files.
+
+## Installation
+
+### Installation under Linux
+
+To run the .jar file you need to install the java virtual machine.
+
+Check if the Java Runtime Environment is installed correctly open a console and execute
+
+```bash
+java
+```
+
+If the java help appears, java is installed correctly, if not you need to install the Java Runtime Environment with command
+
+```bash
+apt-get install openjdk-11-jre
+```
+
+Download the xmlCAM file from here and extract it in a folder of your choice. Enter the folder and execute xmlCAM by running
+
+```bash
+java -jar xmlCAM.jar
+```
+
+### Installation under Windows
+
+To run the .jar file you need to install the java virtual machine version 1.8 or higher.
+
+Check if the Java Runtime Environment is installed correctly open a console by typing cmd and execute
+
+```bash
+java.exe
+```
+
+If the java help appears, java is installed correctly, if not you need to install the Java Runtime Environment, Download the machine suitable to your computer from https://www.java.com/de/download and install the software.
+
+Download the xmlCAM file here and extract it in a folder of your choice. Enter the folder and execute xmlCAM by running
+
+```bash
+java -jar xmlCAM.jar
+```
+
+## Build from source
+
+###Compile under Linux
+
+For Ubuntu or Debian open a console and install the build tool ant with
+
+```bash
+apt-get install ant
+```
+
+Download the source code and extract it or you can get the current version by clone the git repository.
+
+
+```bash
+git clone https://github.com/bilderkiste/xmlCAM
+```
+
+Now enter the folder where the file build.xml is located ant execute the build tool by typing
+
+```bash
+ant
+```
+
+You will find the compiled class file in the bin directory.
+
+It is possible to execute with
+
+```bash
+java -cp "bin:lib/rsyntaxtextarea-3.6.0.jar:lib/snakeyaml-2.5.jar" main.Main
+```
+
+If you want to make a executable jar file type
+
+```bash
+ant makejar
+```
+
+## A complete program milling a front panel
+
+```xml
+<program>
+	<tools>
+		<tool id="t1" diameter="2.2"/>
+	</tools>
+	<feedrate>200</feedrate>
+	<translate x="10" y="10">
+		<!-- Gehäuse -->
+		<polyline tool="t1">
+			<point x="0" y="2"/>
+			<point x="0" y="76"/>
+			<spline x="2" y="78"/>
+			<point x="76" y="78"/>
+			<spline x="78" y="76"/>
+			<point x="78" y="2"/>
+			<spline x="76" y="0"/>
+			<point x="2" y="0"/>
+			<spline x="0" y="2"/>
+			<depth start="0" end="-4" step="0.4"/>
+			<options offset="outset"/>
+		</polyline>
+		<!-- Display -->
+		<translate x="10" y="10">
+			<rectangle tool="t1">
+				<point x="1.55" y="8.65"/>
+				<point x="23.45" y="20.05"/>
+				<depth start="0" end="-4" step="0.4"/>
+			</rectangle>
+			<drill tool="t1">
+				<point x="2.25" y="1.85"/>
+				<depth start="0" end="-4"/>
+			</drill>
+			<drill tool="t1">
+				<point x="2.25" y="24.85"/>
+				<depth start="0" end="-4"/>
+			</drill>
+			<drill tool="t1">
+				<point x="22.75" y="1.85"/>
+				<depth start="0" end="-4"/>
+			</drill>
+			<drill tool="t1">
+				<point x="22.75" y="24.85"/>
+				<depth start="0" end="-4"/>
+			</drill>
+		</translate>
+		<!-- Taster -->
+		<translate x="50" y="15.5">
+			<drill tool="t1">
+				<point x="0" y="0"/>
+				<depth start="0" end="-4"/>
+			</drill>
+			<drill tool="t1">
+				<point x="16" y="0"/>
+				<depth start="0" end="-4"/>
+			</drill>
+			<circle tool="t1">
+				<center x="8" y="0"/>
+				<radius value="3"/>
+				<depth start="0" end="-4" step="0.4"/>
+			</circle>
+			<drill tool="t1">
+				<point x="0" y="16"/>
+				<depth start="0" end="-4"/>
+			</drill>
+			<drill tool="t1">
+				<point x="16" y="16"/>
+				<depth start="0" end="-4"/>
+			</drill>
+			<circle tool="t1">
+				<center x="8" y="16"/>
+				<radius value="3"/>
+				<depth start="0" end="-4" step="0.4"/>
+			</circle>	
+		</translate>
+	  	<translate x="12.5" y="45">
+	      	<circle tool="t1">
+	              	<center x="10" y="10"/>
+	              	<radius value="8.9"/>
+	             	<depth start="0" end="-4" step="0.4"/>
+	      	</circle>
+	      	<drill tool="t1">
+	              	<point x="20" y="10"/>
+	              	<depth start="0" end="-4"/>
+	      	</drill>
+	   	</translate>
+	</translate>
+</program>
 ```
