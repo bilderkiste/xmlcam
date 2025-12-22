@@ -342,7 +342,7 @@ java -jar xmlCAM.jar
 
 ## Build from source
 
-###Compile under Linux
+### Compile under Linux
 
 For Ubuntu or Debian open a console and install the build tool ant with
 
@@ -382,7 +382,8 @@ ant makejar
 ```xml
 <program>
 	<tools>
-		<tool id="t1" diameter="2.2"/>
+		<tool id="t1" diameter="2"/>
+		<tool id="t2" diameter="1.4"/>
 	</tools>
 	<feedrate>200</feedrate>
 	<translate x="10" y="10">
@@ -403,9 +404,10 @@ ant makejar
 		<!-- Display -->
 		<translate x="10" y="10">
 			<rectangle tool="t1">
-				<point x="1.55" y="8.65"/>
-				<point x="23.45" y="20.05"/>
+				<point x="1.4" y="8.8"/>
+				<point x="23.3" y="20.2"/>
 				<depth start="0" end="-4" step="0.4"/>
+				<options offset="inset"/>
 			</rectangle>
 			<drill tool="t1">
 				<point x="2.25" y="1.85"/>
