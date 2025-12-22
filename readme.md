@@ -48,6 +48,10 @@ On the menubar -&gt; Graphic View it is possible to show or hide the G0 and G1 m
 
 ## Tools
 
+In the tools section all tools have to be defined.
+
+An example code snippet:
+
 ```xml
 <tools>
   <tool id="t1" type="ballend" diameter="1.2"/>
@@ -55,7 +59,79 @@ On the menubar -&gt; Graphic View it is possible to show or hide the G0 and G1 m
 </tools>
 ```
 
----
+## Elements
+
+### Drill Element
+
+This element generates G-Code for a drill.
+The drill is defined by one point defined with a <point> tag and attributes x and y.The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level.
+
+An example code snippet:
+
+```xml
+<drill tool="t1">
+  <point x="200" y="150"/>
+  <depth start="0" end="-1"/>
+</drill>
+```
+### Line Element
+
+This element Generates G-Code for a line.
+The line is defined by two points defined with <point> tags with attributes x and y.
+The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+
+```xml
+<line tool="t1">
+  <point x="10" y="10"/>
+  <point x="50" y="10"/>
+  <depth start="0" end="-1" step="1"/>
+</line>
+```
+
+### Polyline Element
+
+This element generates G-Code for a polyline.
+The polyline is defined by two or more points. The <point> tag must define the position of the first point with the attribute x and y. Two consecutive points describe a line.	
+
+The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+
+An example code snippet:
+
+```xml
+<polyline tool="t2">
+  <point x="10" y="50"/>
+  <point x="10" y="100"/>
+  <point x="100" y="100"/>
+  <point x="100" y="10"/>
+  <depth start="0" end="-1" step="0.1"/>
+  <options pocket="parallel" offset="inset"/>
+</polyline>
+```
+
+#### Bezier curves
+
+A Bezier curve can be described with setting control points. The start point (b0) and end point (bn) are defined by <point> tags. 
+One ore more inner control points can be defined (b1 to bn-1) with <bezier> tag with attributes x and y.
+One inner control point describes a quadratic bezier curve (second grade), two inner control points describes a cubic bezier curve (third grade). More than two points with n control points describes a curve with grade n + 1.
+For more information see in [German](https://de.wikipedia.org/wiki/B%C3%A9zierkurve and in English https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
+
+```xml
+<polyline tool="t2">
+	<point x="0" y="50"/>
+	<bezier x="10" y="100"/>
+	<bezier x="100" y="100"/>
+	<point x="100" y="10"/>
+	<depth start="0" end="-1" step="1"/>
+	<options pocket="parallel" offset="inset"/>
+</polyline>
+```
+
+#### Cubic Hermite splines
+
+The &lt;spl&gt; tag defines a spline curve which goes through the point. The spline must begin with a point (&lt;p&gt; tag) and continue with a &lt;spl&gt; tag. To influence the slope on the begin and end of the curve you can add a line short line section with the &lt;p&gt; tag at the begin and/or end like a direction vector. If you wish a closed spline you only need to set the last spline point equal to the first point.
+<p>See the wikipedia articles for more information in [German](https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline) and in [English](https://en.wikipedia.org/wiki/Cubic_Hermite_spline.
+
 
 ## Settings
 
