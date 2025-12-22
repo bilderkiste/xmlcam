@@ -187,6 +187,29 @@ grid-step: 50               # The ruler and grid steps for graphical view.
 font-size: 18               # Font size for the XML View
 standard-dir: /home/test/xmlCAM # Standard directory for XML and G-Code</pre>
 <p>It is neccesary to save the settings in a file named "settings.yaml" located in the xmlCAM main folder. If no settings are defined, default values will loaded.</p>
+<h2>Dialects</h2>
+<p>Dialects are neccessary to customize some G-Code blocks, as start, end
+and toolchange G-Code to the firmware of the CNC-Machine. A dialect
+must be saved in the directory ./dialects/ as a YAML file with name
+&lt;dialect&gt;.yaml i.e. GRBL.yaml.</p>
+<p>An example dialect file:</p>
+<pre>name: GRBL
+
+sections:
+start:
+- G90 ; Absolute positioning, just in case
+- G21 ; Set units to mm
+- G00 Z6.0000 F500 ; Raise Z 5mm to clear clamps and screws
+- M03 S24000 ; Set spindle speed
+end:
+- M5 ; Stop spindle
+toolchange:
+- M5 ; Toolchange stop spindle
+- G0 Z10 ; Toolchange lift up
+- M0 ; Toolchange pause
+- M03 S24000 ; Toolchange Set spindle speed
+</pre>
+<p>Please take into account, that only spaces and NO TABS allowed in YAML files.</p>
 <h2>Installation</h2>
 <h4>Installation under Linux</h4>
 <p>To run the .jar file you need to install the java virtual machine.</p>
