@@ -54,8 +54,8 @@ An example code snippet:
 
 ```xml
 <tools>
-  <tool id="t1" type="ballend" diameter="1.2"/>
-  <tool id="t2" type="endmill" diameter="2.5"/>
+	<tool id="t1" type="ballend" diameter="1.2"/>
+	<tool id="t2" type="endmill" diameter="2.5"/>
 </tools>
 ```
 
@@ -70,8 +70,8 @@ An example code snippet:
 
 ```xml
 <drill tool="t1">
-  <point x="200" y="150"/>
-  <depth start="0" end="-1"/>
+	<point x="200" y="150"/>
+	<depth start="0" end="-1"/>
 </drill>
 ```
 ### Line Element
@@ -82,9 +82,9 @@ The depth must be defined by the <depth> tag  with attributes start for upper z 
 
 ```xml
 <line tool="t1">
-  <point x="10" y="10"/>
-  <point x="50" y="10"/>
-  <depth start="0" end="-1" step="1"/>
+	<point x="10" y="10"/>
+	<point x="50" y="10"/>
+	<depth start="0" end="-1" step="1"/>
 </line>
 ```
 
@@ -100,12 +100,12 @@ An example code snippet:
 
 ```xml
 <polyline tool="t2">
-  <point x="10" y="50"/>
-  <point x="10" y="100"/>
-  <point x="100" y="100"/>
-  <point x="100" y="10"/>
-  <depth start="0" end="-1" step="0.1"/>
-  <options pocket="parallel" offset="inset"/>
+	<point x="10" y="50"/>
+	<point x="10" y="100"/>
+	<point x="100" y="100"/>
+	<point x="100" y="10"/>
+	<depth start="0" end="-1" step="0.1"/>
+	<options pocket="parallel" offset="inset"/>
 </polyline>
 ```
 
@@ -114,7 +114,7 @@ An example code snippet:
 A Bezier curve can be described with setting control points. The start point (b0) and end point (bn) are defined by <point> tags. 
 One ore more inner control points can be defined (b1 to bn-1) with <bezier> tag with attributes x and y.
 One inner control point describes a quadratic bezier curve (second grade), two inner control points describes a cubic bezier curve (third grade). More than two points with n control points describes a curve with grade n + 1.
-For more information see in [German](https://de.wikipedia.org/wiki/B%C3%A9zierkurve and in English https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
+For more information see in [German](https://de.wikipedia.org/wiki/B%C3%A9zierkurve) and in [English](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
 
 ```xml
 <polyline tool="t2">
@@ -130,8 +130,84 @@ For more information see in [German](https://de.wikipedia.org/wiki/B%C3%A9zierku
 #### Cubic Hermite splines
 
 The &lt;spl&gt; tag defines a spline curve which goes through the point. The spline must begin with a point (&lt;p&gt; tag) and continue with a &lt;spl&gt; tag. To influence the slope on the begin and end of the curve you can add a line short line section with the &lt;p&gt; tag at the begin and/or end like a direction vector. If you wish a closed spline you only need to set the last spline point equal to the first point.
-<p>See the wikipedia articles for more information in [German](https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline) and in [English](https://en.wikipedia.org/wiki/Cubic_Hermite_spline.
+<p>See the wikipedia articles for more information in [German](https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline) and in [English](https://en.wikipedia.org/wiki/Cubic_Hermite_spline).
 
+```xml
+<polyline tool="t2">
+	<point x="10" y="50"/>
+	<spline x="10" y="100"/>
+	<spline x="100" y="100"/>
+	<spline x="100" y="10"/>
+	<depth start="0" end="-1" step="0.1"/>
+	<options pocket="parallel" offset="inset"/>
+</polyline>
+```
+
+### Circle Element
+
+This element generates G-Code for a circle.
+
+A circle is defined by the center determined through a &gt;center&lt; tag with attributes x and y and radius defined through a <radius> tag with a value attribute
+.
+The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+
+Optional attributes in the <options> tag are segments for the definition of the number of segments i.e. 6 for an hexagon. 
+
+Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+
+```xml
+<circle tool="t2">
+	<center x="60" y="30"/>
+	<radius value="20"/> 
+	<depth start="0" end="-1" step="0.1"/>
+	<options segments="5" offset="inset" pocket="parallel"/>
+</circle>
+```
+
+### Rectangle Element
+
+This element generates G-Code for a rectangle.
+
+A rectangle is defined by two points for the diagonal edges determined through two <point> tags with attributes x and y.
+
+The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+
+Optional attributes in the <options> tag are size for font size in point, font for font family, style for bold or italic styles and flatness for accuracy. 
+
+Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+
+```xml
+<rectangle tool="t2">
+	<point x="10" y="10"/>
+	<point x="30" y="30"/>
+	<depth start="0" end="-1" step="0.1"/>
+	<options pocket="parallel" offset="inset"/>
+</rectangle>
+```
+
+### Text Element
+
+This element generates G-Code for a text.
+
+The Text must defined by the <content> tag.
+The position of the text is determined through a <point> tag with attributes x and y defining bottom left.
+
+The depth must be defined by the <depth> tag  with attributes start for upper z level end for lower z level and step for dive in.
+
+Optional attributes in the <options> tag are size for font size in point, font for font family, style for bold or italic styles and flatness for accuracy. 
+
+Standard but optional attributes in the <options> are for closed elements pocket with possible values 'parallel' and offset with possible values 'engraving', 'inset', 'outset'. 
+
+An example code snippet:
+
+```xml
+<text tool="t1">
+	<content>Guten Morgen!</content>
+	<point x="10" y="50"/>
+	<depth start="0" end="-1" step="0.1"/>
+	<options size="20" font="C059" style="bold" flatness="0.1" offset="outset"/>
+</text>
+```
 
 ## Settings
 
