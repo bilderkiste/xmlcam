@@ -236,7 +236,7 @@ public class MainWindow extends JFrame {
 		
 		raw = new ImageIcon("icons/xml_new.png");
 		scaled = raw.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-		menuItem = new JMenuItem("Neu"); //, new ImageIcon(scaled));
+		menuItem = new JMenuItem("Neu", new ImageIcon(scaled));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
 		menuItem.setActionCommand("new_xml");
 		menuItem.addActionListener(menuBarListener);
@@ -244,20 +244,24 @@ public class MainWindow extends JFrame {
 		
 		raw = new ImageIcon("icons/xml_open.png");
 		scaled = raw.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-		menuItem = new JMenuItem("Öffnen"); //, new ImageIcon(scaled));
+		menuItem = new JMenuItem("Öffnen", new ImageIcon(scaled));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		menuItem.setActionCommand("open_xml");
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
 		
-		menuItem = new JMenuItem("Speichern");
+		raw = new ImageIcon("icons/xml_save.png");
+		scaled = raw.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		menuItem = new JMenuItem("Speichern", new ImageIcon(scaled));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
 		menuItem.setActionCommand("qsave_xml");
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
 		menuItem.setEnabled(false);
 		
-		menuItem = new JMenuItem("Speichern unter");
+		raw = new ImageIcon("icons/xml_save_as.png");
+		scaled = raw.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		menuItem = new JMenuItem("Speichern unter", new ImageIcon(scaled));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.SHIFT_MASK |ActionEvent.CTRL_MASK));
 		menuItem.setActionCommand("save_xml");
 		menuItem.addActionListener(menuBarListener);
@@ -266,8 +270,10 @@ public class MainWindow extends JFrame {
 		menu = new JMenu("G-Code");
 		menu.setMnemonic(KeyEvent.VK_G);
 		menuBar.add(menu);
-		
-		menuItem = new JMenuItem("Leeren");
+	
+		raw = new ImageIcon("icons/gcode_trash.png");
+		scaled = raw.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		menuItem = new JMenuItem("Leeren", new ImageIcon(scaled));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.ALT_MASK));
 		menuItem.setActionCommand("new_gcode");
 		menuItem.addActionListener(menuBarListener);
@@ -279,14 +285,18 @@ public class MainWindow extends JFrame {
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);*/
 		
-		menuItem = new JMenuItem("Speichern");
+		raw = new ImageIcon("icons/gcode_save.png");
+		scaled = raw.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		menuItem = new JMenuItem("Speichern", new ImageIcon(scaled));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.ALT_MASK));
 		menuItem.setActionCommand("qsave_gcode");
 		menuItem.addActionListener(menuBarListener);
 		menu.add(menuItem);
 		menuItem.setEnabled(false);
 		
-		menuItem = new JMenuItem("Speichern unter");
+		raw = new ImageIcon("icons/gcode_save_as.png");
+		scaled = raw.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+		menuItem = new JMenuItem("Speichern unter", new ImageIcon(scaled));
 		menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.SHIFT_MASK | ActionEvent.ALT_MASK));
 		menuItem.setActionCommand("save_gcode");
 		menuItem.addActionListener(menuBarListener);
