@@ -2,37 +2,33 @@
 
 ## What is xmlCAM?
 
-xmlCAM is a software to generate G-Code very fast and with less effort for a CNC milling machine.
+xmlCAM is a software application designed to facilitate the rapid and efficient generation of G-code for CNC milling machines. Toolpaths are defined exclusively through XML elements, enabling a structured and flexible workflow.
 
-The only thing you need to do is to create the toolpaths with elements via XML code.
+Please note that xmlCAM is in an early stage of development and is provided without any warranty of any kind. Although I intend to continue its development, programming is not my primary profession, and all work on the project is carried out in my spare time. I therefore kindly ask for your understanding should you encounter software bugs.
 
-The software is in an early state and comes with absolutely no warranty. I will try to continue development for xmlCAM, but programming is not my profession, so I have to do it in my free time. Please be understanding if there are bugs in the software.
+xmlCAM is distributed as free software under the **GNU General Public License, version 3**, as published by the Free Software Foundation.
 
-xmlCAM is free software licensed under the **GNU General Public License version 3** published by the Free Software Foundation.
+All measurements within the software adhere to the metric system. Length values are expressed in millimeters **(mm)**, and velocities in millimeters per second **(mm/s)**, unless explicitly stated otherwise.
 
-All measures are in the metric system. Length values are always **mm** and velocities **mm/s**, unless otherwise stated.
+The software is developed and tested using GRBL v1.1 firmware. Other firmware implementations may interpret G-code differently. In such cases, please consult the Dialects section.
 
-I use **GRBL v1.1** firmware. Other firmware may interpret G-Code differently. In this case see sechtion Dialects.
+I am **not** responsible for any damage that may occur to your machine. Please exercise caution when using this software in its current early-development state, as the reliability of the generated G-code is still being evaluated.
 
-I am not responsible for any damages on your machine. Please be careful by using the software in this early state, because I have to check as well if the G-Code works reliable.
-
-The syntax for the XML has changed since version 0.100. Please see readme.md on the release to obtain the old syntax.
+The XML syntax has been updated since version 0.100. For information on the previous syntax, please refer to the readme.md included with that release.
 
 ## Views
 
 ### XML View
 
-The XML View shows the XML document which is the source for G-Code generation. You can write your XML in the textpane and generate G-Code by pressing "Generate G-Code".
+The XML View displays the XML document that serves as the source for G-code generation. You may edit the XML within the text pane and generate the corresponding G-code by selecting “Generate G-Code.”
 
-There is a validator, which validates your XML in real time. Red font markers show mistakes. The description of the error will displayed in a field over the XML text pane.
+A real-time validator is provided to check the XML for correctness. Errors are indicated by red markers and a description of each error is shown in the field above the XML text pane.
 
 ### Table View
 
-The table view shows the generated G-Code. By clicking a cell you can edit the field. If your input is invalid, your input will skipped.
+The Table View displays the generated G-code. You can edit a cell by clicking on it. If the value you enter is invalid, your input will be discarded.
 
-If you click the "Insert row" button, a new row will inserted above the selected row. If you click the "Delete row" button the selected row or rows (multiple selection) will deleted. By clicking "New Field" a new field will inserted in the selected row.
-
-You can define start and end G-Code in two text files. This files shall placed in the same folder as the .jar file and named "start.gcode" and "end.gcode". The files will parsed and inserted to the generated G-Code automatically.
+Selecting “Insert Row” will insert a new row above the currently selected row. Selecting “Delete Row” will remove the selected row or, in the case of multiple selection, all selected rows. By clicking “New Field,” a new field will be inserted into the selected row.
 
 ### Graphic View
 
