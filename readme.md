@@ -32,15 +32,17 @@ Selecting “Insert Row” will insert a new row above the currently selected ro
 
 ### Graphic View
 
-The graphic view show the generated G-Code as the name says as a graphic. The bottom sided ruler shows the x axis and the left sided ruler shows the y axis.
+The Graphic View displays the generated G-code visually, as its name suggests. The ruler at the bottom indicates the x-axis, and the ruler on the left indicates the y-axis.
 
-Green lines represent G0 moves with an security height for the z axis. You can define the security height in the settings.txt file. You can find more about the settings below.</p>
+Blue lines represent the original shapes as defined in the XML.
 
-The black lines represent the G1 moves, which will move at z height defined in the &lt;z&gt; tag.
+Green lines represent G0 movements at the configured safety height for the z-axis. This safety height can be specified in the settings.txt file; additional information regarding these settings is provided below.
 
-It is possible to zoom in and out by clicking the "+" and "-" button.
+Black lines represent G1 movements, which are executed at the z height defined in the <z> tag.
 
-On the menubar -&gt; Graphic View it is possible to show or hide the G0 and G1 moves as well the calculated points and the grid suitable to the x and y rulers.
+You can zoom in and out using the “+” and “–” buttons.
+
+In the menu under Graphic View, you can show or hide G0 and G1 movements, the calculated points, and the grid that corresponds to the x and y rulers.
 
 ## Tools
 
