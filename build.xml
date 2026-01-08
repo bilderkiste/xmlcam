@@ -34,6 +34,9 @@
     <target name="makejar" description="Create a jar for the xmlCAM project">
 	    <jar jarfile="${basedir}/xmlCAM.jar" basedir="${basedir}/bin">	
 	    	<fileset dir="bin"/>
+	        <fileset dir="${basedir}">
+	            <include name="icons/**"/>
+	        </fileset>
 	    	<zipgroupfileset dir="lib" includes="*.jar"/>
 	        <manifest>
 	            <attribute name="Main-Class" value="main.Main"/>
