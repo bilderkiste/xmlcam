@@ -32,13 +32,12 @@
         </javac>
     </target>
     <target name="makejar" description="Create a jar for the xmlCAM project">
-	    <jar jarfile="${basedir}/xmlCAM.jar" basedir="${basedir}/bin">
-	        <zipfileset dir="lib" prefix="lib" includes="*.jar"/>	
+	    <jar jarfile="${basedir}/xmlCAM.jar" basedir="${basedir}/bin">	
+	    	<fileset dir="bin"/>
+	    	<zipgroupfileset dir="lib" includes="*.jar"/>
 	        <manifest>
 	            <attribute name="Main-Class" value="main.Main"/>
-	            <attribute name="Class-Path" value="lib/rsyntaxtextarea-3.6.0.jar lib/snakeyaml-2.5.jar"/>
 	        </manifest>
 	    </jar>
 	</target>
-
 </project>

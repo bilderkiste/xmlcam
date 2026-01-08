@@ -38,7 +38,7 @@ import model.Environment;
 public class GraphicView extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
-	private Environment env;
+	//private Environment env;
 	private GraphicViewCanvas graphicViewCanvas;
 	private JScrollBar xBar, yBar;
 	private JTextField zoomDisplay;
@@ -52,7 +52,7 @@ public class GraphicView extends JPanel {
 	 * @param programModel The program model, that holds the G-Code
 	 */
 	public GraphicView(Environment env) {
-		this.env = env;
+		//this.env = env;
 		
 		this.scale = 1;
 
