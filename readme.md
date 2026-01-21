@@ -330,9 +330,9 @@ Check if the Java Runtime Environment is installed correctly open a console by t
 java.exe
 ```
 
-If the java help appears, java is installed correctly, if not you need to install the Java Runtime Environment, Download the machine suitable to your computer from https://www.java.com/de/download and install the software.
+If the java help appears, java is installed correctly, if not you need to install the Java Runtime Environment (JRE). Download the JRE suitable to your computer from https://www.java.com/de/download/manual.jsp and install the software.
 
-Download the xmlCAM file here and extract it in a folder of your choice. Enter the folder and execute xmlCAM by running
+Download the latest xmlCAM release here and sabe in a folder of your choice. Enter the folder and execute xmlCAM by running
 
 ```bash
 java -jar xmlCAM.jar
